@@ -23,7 +23,7 @@ Loader.prototype.loadAll = function() {
     }
 };
 
-Loader.prototype.loadImage = function(src) {
+Loader.prototype.loadImage = function(src, frameCount) {
     this.count++;
     var img = new Image();
     img.onload = () => {
@@ -37,6 +37,9 @@ Loader.prototype.loadImage = function(src) {
         this.update();
     };
     img.src = src;
+    if (frameCount) {
+        img.frameCount = frameCount;
+    }
     return img;
 };
 

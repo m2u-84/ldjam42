@@ -15,7 +15,7 @@ function getRandom(array) {
     return array[index];
 };
 
-function drawImage(ctx, img, x, y, w, h, relx, rely, mirrored) {
+function drawImage(ctx, img, x, y, w, h, relx, rely, mirrored, frameIndex) {
     if (relx == null) { relx = 0.5; }
     if (rely == null) { rely = 1.0; }
     ctx.save();
@@ -25,7 +25,10 @@ function drawImage(ctx, img, x, y, w, h, relx, rely, mirrored) {
     if (mirrored) {
         ctx.scale(-1, 1);
     }
-    if (w || h) {
+    if (frameIndex) {
+        let frameWidth = img.width / img.frameCount;
+        ctx.drawImage(img, frameIndex * frameWidth, 0, frameWidth, img.height, x, y, w || frameWidth, h || img.height);
+    } else if (w || h) {
         ctx.drawImage(img, x, y, w, h);
     } else {
         ctx.drawImage(img, x, y);
