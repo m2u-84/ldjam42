@@ -1,12 +1,10 @@
-function KeyHandler(target) {
+function KeyHandler(target, watchers) {
     this.attachTo(target);
     this.initListeners();
+    this.watchers = watchers;
     this.keyStates = {
-        right: false,
-        left: false,
-        up: false,
-        down: false
     };
+    watchers.forEach( key => this.keyStates[key] = false );
 }
 
 KeyHandler.prototype.eventTarget = null;
@@ -26,39 +24,13 @@ KeyHandler.prototype.detach = function() {
 }
 
 KeyHandler.prototype.onKeyDown = function (keyDownEvent) {
-    switch (keyDownEvent.key) {
-        case 'ArrowLeft':
-            this.keyStates.left = true;
-            break;
-        case 'ArrowRight':
-            this.keyStates.right = true;
-            break;
-        case 'ArrowUp':
-            this.keyStates.up = true;
-            break;
-        case 'ArrowDown':
-            this.keyStates.down = true;
-            break;
-        default:
-            break;
+    if (this.keyStates[keyDownEvent.key] != null) {
+        this.keyStates[keyDownEvent.key] = true;
     }
 }
 
 KeyHandler.prototype.onKeyUp = function (keyUpEvent) {
-    switch (keyUpEvent.key) {
-        case 'ArrowLeft':
-            this.keyStates.left = false;
-            break;
-        case 'ArrowRight':
-            this.keyStates.right = false;
-            break;
-        case 'ArrowUp':
-            this.keyStates.up = false;
-            break;
-        case 'ArrowDown':
-            this.keyStates.down = false;
-            break;
-        default:
-            break;
+    if (this.keyStates[keyUpEvent.key] != null) {
+        this.keyStates[keyUpEvent.key] = false;
     }
 }

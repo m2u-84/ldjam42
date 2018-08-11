@@ -4,7 +4,7 @@ function GameHandler(parentElement) {
     this.parentElement = parentElement;
 
     loader = new Loader();
-    keyHandler = new KeyHandler(window);
+    keyHandler = new KeyHandler(window, ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "e", "w", "a", "s", "d"]);
 
     this.classes = [
         // Player, Zombies, Corpses, Graves, ...

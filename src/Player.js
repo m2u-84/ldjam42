@@ -13,8 +13,9 @@ Player.load = function() {
 
 Player.prototype.update = function(delta) {
     // Set Velocity based on State (inserted by keyHandler)
-    var vx = ((state.keyStates.right ? 1 : 0) - (state.keyStates.left ? 1 : 0));
-    var vy = ((state.keyStates.down ? 1 : 0) - (state.keyStates.up ? 1 : 0));
+    var keys = state.keyStates;
+    var vx = ((keys.ArrowRight || keys.d ? 1 : 0) - (keys.ArrowLeft || keys.a ? 1 : 0));
+    var vy = ((keys.ArrowDown || keys.s ? 1 : 0) - (keys.ArrowUp || keys.w ? 1 : 0));
 
     // Normalize if both directions are set
     if (vx || vy) {
@@ -24,6 +25,8 @@ Player.prototype.update = function(delta) {
     } else {
         this.velocity[0] = this.velocity[1] = 0;
     }
+
+    // E pressed?
     
     Character.prototype.update.call(this, delta);
 };
