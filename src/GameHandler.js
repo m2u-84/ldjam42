@@ -35,7 +35,8 @@ function GameHandler(parentElement) {
         Entity,
         Character,
         Player,
-        Corpse
+        Corpse,
+        Grave
     ].map(c => ({class: c, instances: []}));
 
     // Global game state which can be accessed by all game objects
@@ -43,6 +44,7 @@ function GameHandler(parentElement) {
         map: new Map(20, 20, 24, 24),
         player: new Player([8, 5], movementSounds),
         corpses: [],
+        graves: [],
         keyStates: keyHandler.keyStates
     };
 
@@ -135,6 +137,7 @@ GameHandler.prototype.renderLoop = function() {
         }
     } */
     state.map.draw(this.ctx);
+    state.graves.forEach(g => g.draw(this.ctx));
     state.corpses.forEach(c => c.draw(this.ctx));
     state.player.draw(this.ctx);
 

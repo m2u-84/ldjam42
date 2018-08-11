@@ -33,7 +33,7 @@ Player.prototype.VELOCITY = 0.004;
 Player.prototype.PULL_DISTANCE = 0.7;
 
 Player.load = function() {
-    Player.sprite = loader.loadImage("img/character/character sprite.png", 3);
+    Player.sprite = loader.loadImage("img/character/characteranimation2.png", 4);
 };
 
 Player.prototype.update = function(delta) {
@@ -160,7 +160,7 @@ Player.prototype.getFrame = function() {
     var frame = 1;
     if (this.velocity[0] || this.velocity[1]) {
         // Running animation
-        var frame = Math.floor(state.time / 260) % 3;
+        var frame = Math.floor(state.time / 260) % 4;
     }
     return frame;
 };

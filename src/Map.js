@@ -25,6 +25,15 @@ Map.prototype.load = function() {
 
 Map.prototype.set = function(x, y, tp) {
     this.tiles[y][x] = new Tile(x, y, tp, this);
+    // Check if grave need to be placed
+    if (tp == TileTypes.HOLE) {
+        // Find neighbour
+        var nb = this.findNeighbour(x, y, t => t.type == TileTypes.HOLE, false);
+        if (nb) {
+            // Turn both into grave
+            state.graves.push(new Grave(x, y, nb.x, nb.y));
+        }
+    }
 };
 
 Map.prototype.getTile = function(x, y) {
@@ -43,6 +52,24 @@ Map.prototype.getCollision = function(x, y) {
 
 Map.prototype.get = function(x, y) {
     return this.getTile(x, y).type;
+};
+
+Map.prototype.findNeighbour = function(x, y, check, diagonal) {
+    for (var dy = -1; dy < 2; dy++) {
+        for (var dx = -1; dx < 2; dx++) {
+            if (dx || dy) {
+                if (diagonal || (!dx || !dy)) {
+                    var tile = this.getTile(x + dx, y + dy);
+                    if (tile) {
+                        if (check(tile)) {
+                            return tile;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return null;
 };
 
 Map.prototype.draw = function(ctx) {
