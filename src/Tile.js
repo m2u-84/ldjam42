@@ -50,6 +50,7 @@ function Tile(x, y, tp, map) {
     
     // Type dependent behaviour
     var type = tileTypes[tp];
+    this.tileType = type;
     var spr = getRandom(type.sprites);
     if (spr) {
         this.sprite = spr;
@@ -67,4 +68,8 @@ Tile.prototype.draw = function(ctx) {
         ctx.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
         ctx.restore();
     }
+};
+
+Tile.prototype.getCollision = function() {
+    return this.tileType.collision;
 };
