@@ -1,7 +1,7 @@
 
 
-function Player(position) {
-    Character.call(this, position);
+function Player(position, movementSounds) {
+    Character.call(this, position, movementSounds);
 }
 inherit(Player, Character);
 
