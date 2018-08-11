@@ -41,7 +41,7 @@ function GameHandler(parentElement) {
     // Global game state which can be accessed by all game objects
     window.state = this.state = {
         map: new Map(20, 20, 24, 24),
-        player: new Player([8, 5], movementSounds),
+        player: new Player([10, 11], movementSounds),
         corpses: [],
         keyStates: keyHandler.keyStates
     };

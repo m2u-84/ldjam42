@@ -4,7 +4,12 @@ const TileTypes = {
     HOLE: 1,
     GRAVE: 2,
     TREE: 3,
-    PATH: 4
+    PATH: 4,
+    STONE: 5,
+    FENCE: 6,
+    FENCE_SIDE: 7,
+    STONE_FENCE: 8,
+    STONE_FENCE_SIDE: 9
 }
 
 Tile.load = function() {
@@ -16,7 +21,12 @@ Tile.load = function() {
         new TileType("Grave", ["img/ground/grave.png"], true),
         // Deco Image: [src, centerX, centerY, frames, frameDelay]
         new TileType("Tree", ["img/ground/mud1.png"], true, false, 0, ["img/environment/tree.png", 0.5, 0.8, 2, 740]),
-        new TileType("Path", [ "img/ground/path.png" ], false, true, 1)
+        new TileType("Path", [ "img/ground/path.png" ], false, true, 1),
+        new TileType("Stone", [ "img/ground/stonefloor.png" ], false, true, 1),
+        new TileType("Fence", [ "img/ground/path.png" ], true, false, 0, ["img/environment/fence.png", 0.5, 0.8]),
+        new TileType("FenceSide", [ "img/ground/path.png" ], true, false, 0, ["img/environment/fence side.png", 0.5, 0.8]),
+        new TileType("StoneFence", [ "img/ground/stonefloor.png" ], true, false, 0, ["img/environment/fence.png", 0.5, 0.8]),
+        new TileType("StoneFenceSide", [ "img/ground/stonefloor.png" ], true, false, 0, ["img/environment/fence side.png", 0.5, 0.8]),
     ];
     types.forEach(tp => tileTypes.push(tp));
 };

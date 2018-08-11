@@ -18,8 +18,8 @@ Map.prototype.load = function() {
         }
     }
     for (var x = 3; x < 8; x++) {
-        this.tiles[6][x] = new Tile(x, 6, TileTypes.PATH, this);
-        this.tiles[9][2 * x] = new Tile(2 * x, 9, Math.random() < 0.5 ? TileTypes.HOLE : TileTypes.TREE, this);
+        this.tiles[6][x] = new Tile(x, 6, TileTypes.STONE, this);
+        this.tiles[9][2 * x] = new Tile(2 * x, 9, Math.random() < 0.5 ? TileTypes.FENCE : TileTypes.STONE_FENCE_SIDE, this);
     }
 };
 
