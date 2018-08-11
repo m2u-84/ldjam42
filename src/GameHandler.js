@@ -3,8 +3,12 @@
 function GameHandler(parentElement) {
     this.parentElement = parentElement;
 
+    loader = new Loader();
+
     this.classes = [
         // Player, Zombies, Corpses, Graves, ...
+        Map,
+        Tile
     ].map(c => ({class: c, instances: []}));
 
     this.startTime = +Date.now();
