@@ -10,9 +10,9 @@ const TileTypes = {
 Tile.load = function() {
     var types = [
         new TileType("Ground", ["img/ground/mud1.png", "img/ground/mud2.png", "img/ground/mud3.png"], false, true, -1),
-        new TileType("Hole", [], true),
-        new TileType("Grave", [], true),
-        new TileType("Tree", [], true),
+        new TileType("Hole", ["img/grave/hole.png"], true),
+        new TileType("Grave", ["img/ground/grave.png"], true),
+        new TileType("Tree", ["img/ground/mud1.png"], true, false, 0, ["img/environment/tree.png", 0.5, 0.8]),
         new TileType("Path", [ "img/ground/path.png" ], false, true, 1)
     ];
     types.forEach(tp => tileTypes.push(tp));
@@ -23,7 +23,7 @@ var tileTypes = [];
 tileTypes.minZIndex = 0;
 tileTypes.maxZIndex = 0;
 
-function TileType(name, sprites, collision, randomAngles, zIndex) {
+function TileType(name, sprites, collision, randomAngles, zIndex, decoImage) {
     this.name = name;
     if (sprites instanceof Array) {
         this.sprites = sprites;
@@ -36,6 +36,8 @@ function TileType(name, sprites, collision, randomAngles, zIndex) {
     this.zIndex = zIndex || 0;
     tileTypes.minZIndex = Math.min(tileTypes.minZIndex, this.zIndex);
     tileTypes.maxZIndex = Math.max(tileTypes.maxZIndex, this.zIndex);
+    this.decoImage = decoImage;
+    if (decoImage) { decoImage[0] = loader.loadImage(decoImage[0]); }
 }
 
 function Tile(x, y, tp, map) {
@@ -60,13 +62,18 @@ function Tile(x, y, tp, map) {
 
 Tile.prototype.draw = function(ctx) {
     if (this.sprite) {
-        var x = this.x * this.map.tw;
-        var y = this.y * this.map.th;
+        var x = (this.x + 0.5) * this.map.tw;
+        var y = (this.y + 0.5) * this.map.th;
         ctx.save();
-        ctx.translate(x + this.map.tw / 2, y + this.map.th / 2);
+        ctx.translate(x, y);
         ctx.rotate(this.angle * Math.PI / 2);
         ctx.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
         ctx.restore();
+
+        if (this.tileType.decoImage) {
+            var deco = this.tileType.decoImage;
+            drawImage(ctx, deco[0], x, y, null, null, deco[1], deco[2]);
+        }
     }
 };
 
