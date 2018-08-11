@@ -27,7 +27,7 @@ function GameHandler(parentElement) {
 
     loader = new Loader();
     keyHandler = new KeyHandler(window, ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "e", "w", "a", "s", "d"]);
-
+    
     this.classes = [
         // Player, Zombies, Corpses, Graves, ...
         Tile,
@@ -36,22 +36,24 @@ function GameHandler(parentElement) {
         Character,
         Player,
         Corpse,
-        Grave
+        Grave,
+        LightSystem
     ].map(c => ({class: c, instances: []}));
-
+    
     // Global game state which can be accessed by all game objects
     window.state = this.state = {
         map: new Map(20, 20, 24, 24),
         player: new Player([10, 10], movementSounds),
         corpses: [],
         graves: [],
-        keyStates: keyHandler.keyStates
+        keyStates: keyHandler.keyStates,
+        cam: { x: 0, y: 0 }
     };
-
+    
     this.startTime = +Date.now();
     this.currentTime = 0;
     this.lastTime = this.startTime;
-
+    
     // Setup canvas
     this.canvas = document.createElement("canvas");
     this.canvas.width = 320;
@@ -59,7 +61,9 @@ function GameHandler(parentElement) {
     this.ctx = this.canvas.getContext("2d");
     parentElement.appendChild(this.canvas);
 
-
+    lightSystem = new LightSystem(320, 240);
+    lightSystem.setAmbientColor("#404070");
+    
 
     // First load all the things, then start render and update loops
     this.load().then(() => {
@@ -92,6 +96,7 @@ GameHandler.prototype.gameLoop = function() {
     this.lastTime = t;
     this.currentTime += dt;
     state.time = this.currentTime;
+    state.dayTime = state.time / 60000;
 
     // Update all classes and instances
     for (var c of this.classes) {
@@ -117,10 +122,15 @@ GameHandler.prototype.renderLoop = function() {
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.translate(
-        Math.round(-state.player.position[0] * state.map.tw + this.canvas.width / 2),
-        Math.round(-state.player.position[1] * state.map.tw + this.canvas.height / 2)
-    );
+    state.cam = {
+        x: Math.round(-state.player.position[0] * state.map.tw + this.canvas.width / 2),
+        y: Math.round(-state.player.position[1] * state.map.tw + this.canvas.height / 2)
+    }
+    this.ctx.translate(state.cam.x, state.cam.y);
+
+
+    lightSystem.setAmbientColor(getAmbientColor(state.dayTime % 1));
+    lightSystem.clear();
     
     // Render all classes and instances
     /*
@@ -140,6 +150,33 @@ GameHandler.prototype.renderLoop = function() {
     state.graves.forEach(g => g.draw(this.ctx));
     state.corpses.forEach(c => c.draw(this.ctx));
     state.player.draw(this.ctx);
+    lightSystem.drawLight(null, 160, 120, 200, "#ffffff", 0.6);
+    // lightSystem.drawLight(null, 160 + 160 * Math.sin(state.time * 0.001), 120 + 120 * Math.sin(state.time * 0.00132), 130, "#3030ff", 0.6);
+    lightSystem.renderToContext(this.ctx);
 
     requestAnimationFrame(this.renderLoop.bind(this));
 };
+
+var ambientColors = [
+    [0.25, 0.25, 0.5],
+    [0.35, 0.35, 0.5],
+    [1.0, 0.8, 0.55],
+    [1.0, 1.0, 1.0],
+    [1.0, 1.0, 1.0],
+    [0.8, 0.55, 0.4],
+    [0.5, 0.5, 0.45],
+    [0.25, 0.25, 0.5],
+    [0.25, 0.25, 0.5]
+];
+function getAmbientColor(t) {
+    var colors = ambientColors.length;
+    var index = t * colors;
+    var index1 = Math.floor(index);
+    if (index1 >= colors - 1) { return ambientColors[0]; }
+    var f = index - index1;
+    var f1 = 1 - f;
+    var c1 = ambientColors[index1];
+    var c2 = ambientColors[index1 + 1];
+    return "rgb(" + Math.round(255 * (f * c2[0] + f1 * c1[0])) + "," + Math.round(255 * (f * c2[1] + f1 * c1[1]))
+            + "," + Math.round(255 * (f * c2[2] + f1 * c1[2])) + ")"; 
+}

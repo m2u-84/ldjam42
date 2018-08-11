@@ -9,7 +9,8 @@ const TileTypes = {
     FENCE: 6,
     FENCE_SIDE: 7,
     STONE_FENCE: 8,
-    STONE_FENCE_SIDE: 9
+    STONE_FENCE_SIDE: 9,
+    TORCH: 10
 }
 
 Tile.load = function() {
@@ -27,6 +28,7 @@ Tile.load = function() {
         new TileType("FenceSide", [ "img/ground/mud1.png" ], true, false, 0, ["img/environment/fence side.png", 0.5, 0.8]),
         new TileType("StoneFence", [ "img/ground/stonefloor.png" ], true, false, 0, ["img/environment/fence.png", 0.5, 0.8]),
         new TileType("StoneFenceSide", [ "img/ground/stonefloor.png" ], true, false, 0, ["img/environment/fence side.png", 0.5, 0.8]),
+        new TileType("Torch", "img/ground/grave.png", true, false, 0, null, ["#f0c030", 200, 1])
     ];
     types.forEach(tp => tileTypes.push(tp));
 };
@@ -36,7 +38,7 @@ var tileTypes = [];
 tileTypes.minZIndex = 0;
 tileTypes.maxZIndex = 0;
 
-function TileType(name, sprites, collision, randomAngles, zIndex, decoImages) {
+function TileType(name, sprites, collision, randomAngles, zIndex, decoImages, light) {
     this.name = name;
     if (sprites instanceof Array) {
         this.sprites = sprites;
@@ -55,6 +57,9 @@ function TileType(name, sprites, collision, randomAngles, zIndex, decoImages) {
         for (var decoImage of decoImages) {
             if (decoImage) { decoImage[0] = loader.loadImage(decoImage[0], decoImage[3]); }
         }
+    }
+    if (light) {
+        this.light = light;
     }
 }
 
@@ -83,9 +88,9 @@ function Tile(x, y, tp, map) {
 }
 
 Tile.prototype.draw = function(ctx) {
+    var x = (this.x + 0.5) * this.map.tw;
+    var y = (this.y + 0.5) * this.map.th;
     if (this.sprite) {
-        var x = (this.x + 0.5) * this.map.tw;
-        var y = (this.y + 0.5) * this.map.th;
         ctx.save();
         ctx.translate(x, y);
         ctx.rotate(this.angle * Math.PI / 2);
@@ -98,6 +103,11 @@ Tile.prototype.draw = function(ctx) {
             if (deco[4]) { frame = Math.floor(this.randomizer * deco[3] + state.time / deco[4]) % deco[3]; }
             drawImage(ctx, deco[0], x, y, null, null, deco[1], deco[2], null, null, frame);
         }
+    }
+
+    if (this.tileType.light) {
+        var alpha = 0.8 * this.tileType.light[2] * getFlicker(state.time * 0.00002 * (0.7 + 0.3 * this.randomizer) + this.randomizer, 2);
+        lightSystem.drawLight(LightSystem.defaultSoftLight, state.cam.x + x, state.cam.y + y, this.tileType.light[1], this.tileType.light[0], alpha);
     }
 };
 
