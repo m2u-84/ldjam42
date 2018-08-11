@@ -1,0 +1,13 @@
+
+
+h1 {
+    font-family: "Arial";
+    text-align: center;
+}
+#game canvas {
+    display: block;
+    border: 1px solid gray;
+    width: calc(320px * 3);
+    height: calc(240px * 3);
+    margin: auto;
+}

@@ -1,5 +1,6 @@
 
 
 window.onload = () => {
-    gameHandler = new GameHandler();
+    var gameDiv = document.getElementById("game");
+    gameHandler = new GameHandler(gameDiv);
 };
