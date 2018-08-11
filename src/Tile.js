@@ -9,7 +9,9 @@ const TileTypes = {
 
 Tile.load = function() {
     var types = [
-        new TileType("Ground", ["img/ground/mud1.png", "img/ground/mud2.png", "img/ground/mud3.png"], false, true, -1),
+        new TileType("Ground", ["img/ground/mud1.png", "img/ground/mud2.png", "img/ground/mud3.png"], false, true, -1,
+            [ ["img/environment/grass.png", 0.5, 0.7], ["img/environment/stone.png", 0.5, 0.8], null, null, null, null,
+            null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]),
         new TileType("Hole", ["img/grave/hole.png"], true),
         new TileType("Grave", ["img/ground/grave.png"], true),
         // Deco Image: [src, centerX, centerY, frames, frameDelay]
@@ -24,7 +26,7 @@ var tileTypes = [];
 tileTypes.minZIndex = 0;
 tileTypes.maxZIndex = 0;
 
-function TileType(name, sprites, collision, randomAngles, zIndex, decoImage) {
+function TileType(name, sprites, collision, randomAngles, zIndex, decoImages) {
     this.name = name;
     if (sprites instanceof Array) {
         this.sprites = sprites;
@@ -37,8 +39,13 @@ function TileType(name, sprites, collision, randomAngles, zIndex, decoImage) {
     this.zIndex = zIndex || 0;
     tileTypes.minZIndex = Math.min(tileTypes.minZIndex, this.zIndex);
     tileTypes.maxZIndex = Math.max(tileTypes.maxZIndex, this.zIndex);
-    this.decoImage = decoImage;
-    if (decoImage) { decoImage[0] = loader.loadImage(decoImage[0], decoImage[3]); }
+    if (decoImages) {
+        if (!(decoImages[0] instanceof Array)) { decoImages = [ decoImages ]; }
+        this.decoImages = decoImages;
+        for (var decoImage of decoImages) {
+            if (decoImage) { decoImage[0] = loader.loadImage(decoImage[0], decoImage[3]); }
+        }
+    }
 }
 
 function Tile(x, y, tp, map) {
@@ -60,6 +67,9 @@ function Tile(x, y, tp, map) {
     }
     this.angle = getRandom(type.angles);
     this.randomizer = Math.random();
+    if (type.decoImages) {
+        this.decoImage = getRandom(type.decoImages);
+    }
 }
 
 Tile.prototype.draw = function(ctx) {
@@ -72,8 +82,8 @@ Tile.prototype.draw = function(ctx) {
         ctx.drawImage(this.sprite, -this.sprite.width / 2, -this.sprite.height / 2);
         ctx.restore();
 
-        if (this.tileType.decoImage) {
-            var deco = this.tileType.decoImage;
+        if (this.decoImage) {
+            var deco = this.decoImage;
             var frame = null;
             if (deco[4]) { frame = Math.floor(this.randomizer * deco[3] + state.time / deco[4]) % deco[3]; }
             drawImage(ctx, deco[0], x, y, null, null, deco[1], deco[2], null, null, frame);
