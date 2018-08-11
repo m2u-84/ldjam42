@@ -63,6 +63,12 @@ function GameHandler(parentElement) {
 
     lightSystem = new LightSystem(320, 240);
     lightSystem.setAmbientColor("#404070");
+
+    musicManager = new MusicManager([
+        document.getElementById("music1"),
+        document.getElementById("music2"),
+        document.getElementById("music3"),
+    ])
     
 
     // First load all the things, then start render and update loops
