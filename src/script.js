@@ -23,8 +23,8 @@ function drawImage(ctx, img, x, y, w, h, relx, rely, mirrored, angle, frameIndex
     }
     ctx.save();
     ctx.translate(x, y);
-    x = -relx * frameWidth || img.width;
-    y = -rely * frameWidth || img.height;
+    x = -relx * (frameWidth || img.width);
+    y = -rely * (frameWidth || img.height);
     if (mirrored) {
         ctx.scale(-1, 1);
     }
