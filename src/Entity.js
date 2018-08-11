@@ -1,9 +1,12 @@
 function Entity(position) {
-    this.position = position;
+    this.setPosition(position);
 }
 
-Entity.prototype.getTile = function() {
-    return [Math.floor(position[0]), Math.floor(position[1])];
-} 
+Entity.prototype.updateTile = function() {
+    return [Math.floor(this.position[0]), Math.floor(this.position[1])];
+}
 
-Entity.prototype.tile = this.getTile();
+Entity.prototype.setPosition = function(position) {
+    this.position = position;
+    this.tile = this.updateTile();
+}
