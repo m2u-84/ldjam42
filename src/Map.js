@@ -21,6 +21,9 @@ Map.prototype.load = function() {
         this.tiles[6][x] = new Tile(x, 6, TileTypes.PATH, this);
         this.tiles[9][2 * x] = new Tile(2 * x, 9, Math.random() < 0.5 ? TileTypes.HOLE : TileTypes.TREE, this);
     }
+    for (var x = 2; x < 12; x += 4) {
+        this.set(x, 19 - x, TileTypes.TORCH);
+    }
 };
 
 Map.prototype.set = function(x, y, tp) {

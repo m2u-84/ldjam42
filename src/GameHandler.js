@@ -46,7 +46,8 @@ function GameHandler(parentElement) {
         player: new Player([8, 5], movementSounds),
         corpses: [],
         graves: [],
-        keyStates: keyHandler.keyStates
+        keyStates: keyHandler.keyStates,
+        cam: { x: 0, y: 0 }
     };
     
     this.startTime = +Date.now();
@@ -121,10 +122,15 @@ GameHandler.prototype.renderLoop = function() {
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.translate(
-        Math.round(-state.player.position[0] * state.map.tw + this.canvas.width / 2),
-        Math.round(-state.player.position[1] * state.map.tw + this.canvas.height / 2)
-    );
+    state.cam = {
+        x: Math.round(-state.player.position[0] * state.map.tw + this.canvas.width / 2),
+        y: Math.round(-state.player.position[1] * state.map.tw + this.canvas.height / 2)
+    }
+    this.ctx.translate(state.cam.x, state.cam.y);
+
+
+    lightSystem.setAmbientColor(getAmbientColor(state.dayTime % 1));
+    lightSystem.clear();
     
     // Render all classes and instances
     /*
@@ -144,10 +150,7 @@ GameHandler.prototype.renderLoop = function() {
     state.graves.forEach(g => g.draw(this.ctx));
     state.corpses.forEach(c => c.draw(this.ctx));
     state.player.draw(this.ctx);
-
-    lightSystem.setAmbientColor(getAmbientColor(state.dayTime % 1));
-    lightSystem.clear();
-    lightSystem.drawLight(null, 160, 120, 200, "#ff3030", 0.8);
+    lightSystem.drawLight(null, 160, 120, 200, "#ffffff", 0.6);
     // lightSystem.drawLight(null, 160 + 160 * Math.sin(state.time * 0.001), 120 + 120 * Math.sin(state.time * 0.00132), 130, "#3030ff", 0.6);
     lightSystem.renderToContext(this.ctx);
 

@@ -22,6 +22,7 @@ function LightSystem(w, h) {
 
 LightSystem.load = function() {
     LightSystem.defaultLight = loader.loadImage("img/misc/light2.png");
+    LightSystem.defaulSofttLight = loader.loadImage("img/misc/light.png");
 };
 
 LightSystem.prototype.setAmbientColor = function(color) {
