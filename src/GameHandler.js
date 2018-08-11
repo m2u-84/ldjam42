@@ -27,7 +27,7 @@ function GameHandler(parentElement) {
 
     loader = new Loader();
     keyHandler = new KeyHandler(window, ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "e", "w", "a", "s", "d"]);
-
+    
     this.classes = [
         // Player, Zombies, Corpses, Graves, ...
         Tile,
@@ -36,9 +36,10 @@ function GameHandler(parentElement) {
         Character,
         Player,
         Corpse,
-        Grave
+        Grave,
+        LightSystem
     ].map(c => ({class: c, instances: []}));
-
+    
     // Global game state which can be accessed by all game objects
     window.state = this.state = {
         map: new Map(20, 20, 24, 24),
@@ -47,11 +48,11 @@ function GameHandler(parentElement) {
         graves: [],
         keyStates: keyHandler.keyStates
     };
-
+    
     this.startTime = +Date.now();
     this.currentTime = 0;
     this.lastTime = this.startTime;
-
+    
     // Setup canvas
     this.canvas = document.createElement("canvas");
     this.canvas.width = 320;
@@ -59,7 +60,9 @@ function GameHandler(parentElement) {
     this.ctx = this.canvas.getContext("2d");
     parentElement.appendChild(this.canvas);
 
-
+    lightSystem = new LightSystem(320, 240);
+    lightSystem.setAmbientColor("#404070");
+    
 
     // First load all the things, then start render and update loops
     this.load().then(() => {
@@ -140,6 +143,10 @@ GameHandler.prototype.renderLoop = function() {
     state.graves.forEach(g => g.draw(this.ctx));
     state.corpses.forEach(c => c.draw(this.ctx));
     state.player.draw(this.ctx);
+
+    lightSystem.clear();
+    lightSystem.drawLight(null, 160, 120, 200);
+    lightSystem.renderToContext(this.ctx);
 
     requestAnimationFrame(this.renderLoop.bind(this));
 };
