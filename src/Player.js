@@ -12,7 +12,11 @@ Player.prototype.update = function(delta) {
     this.velocity[0] = ((state.keyStates.right ? 1 : 0) - (state.keyStates.left ? 1 : 0)) * this.VELOCITY;
     this.velocity[1] = ((state.keyStates.down ? 1 : 0) - (state.keyStates.up ? 1 : 0)) * this.VELOCITY;
 
-    // TODO Normalize
+    // Normalize if both directions are set
+    if( this.velocity[0] && this.velocity[1] ) {
+        this.velocity[0] *= Math.sqrt(2);
+        this.velocity[1] *= Math.sqrt(2);
+    }
     
     Character.prototype.update.call(delta);
 }
