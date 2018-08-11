@@ -160,7 +160,7 @@ Player.prototype.getFrame = function() {
     var frame = 1;
     if (this.velocity[0] || this.velocity[1]) {
         // Running animation
-        var frame = Math.floor(state.time / 260) % 3;
+        var frame = Math.floor(state.time / 180) % 3;
     }
     return frame;
 };

@@ -2,22 +2,22 @@
 const movementSounds = [
     {
         src: "sounds/step_dirt.wav",
-        playbackRate: 2,
+        playbackRate: 1,
         volume: .5
     },
     {
         src: "sounds/step_dirt2.wav",
-        playbackRate: 2,
+        playbackRate: 1,
         volume: .5
     },
     {
         src: "sounds/step_dirt3.wav",
-        playbackRate: 2,
+        playbackRate: 1,
         volume: .5
     },
     {
         src: "sounds/step_dirt4.wav",
-        playbackRate: 2,
+        playbackRate: 1,
         volume: .5
     }
 ];
