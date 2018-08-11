@@ -10,4 +10,5 @@ h1 {
     width: calc(320px * 3);
     height: calc(240px * 3);
     margin: auto;
+    image-rendering: pixelated;
 }
