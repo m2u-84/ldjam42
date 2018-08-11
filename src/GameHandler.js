@@ -7,14 +7,17 @@ function GameHandler(parentElement) {
 
     this.classes = [
         // Player, Zombies, Corpses, Graves, ...
+        Tile,
         Map,
-        Tile
+        Entity,
+        Character,
+        Player
     ].map(c => ({class: c, instances: []}));
 
     // Global game state which can be accessed by all game objects
     window.state = this.state = {
         map: new Map(20, 20, 24, 24),
-        player: new Player(10, 10),
+        player: new Player([5, 5]),
         keyStates: {}
     };
 
@@ -33,12 +36,18 @@ function GameHandler(parentElement) {
     this.load().then(() => {
         this.gameLoop();
         this.renderLoop();
+        this.renderLoop();
     });
 }
 
 GameHandler.prototype.load = function() {
-    // Call static load methods of all known classes
-    return Promise.resolve();
+    for (var c of this.classes) {
+        if (c.class.load) {
+            c.class.load();
+        }
+    }
+    state.map.load();
+    return loader.loadAll();
 };
 
 GameHandler.prototype.gameLoop = function() {
@@ -67,10 +76,13 @@ GameHandler.prototype.gameLoop = function() {
 
 GameHandler.prototype.renderLoop = function() {
     // Clear stuff
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
+    // this.ctx.translate(Math.random() * 5, Math.random() * 5);
+    
     // Render all classes and instances
+    /*
     for (var c of this.classes) {
         // Static update
         if (c.class.draw) {
@@ -82,7 +94,9 @@ GameHandler.prototype.renderLoop = function() {
                 i.draw(this.ctx, this.currentTime);
             }
         }
-    }
+    } */
+    state.map.draw(this.ctx);
+    state.player.draw(this.ctx);
 
     requestAnimationFrame(this.renderLoop.bind(this));
 };
