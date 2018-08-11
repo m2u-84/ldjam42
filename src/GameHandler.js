@@ -95,6 +95,7 @@ GameHandler.prototype.gameLoop = function() {
     this.lastTime = t;
     this.currentTime += dt;
     state.time = this.currentTime;
+    state.dayTime = state.time / 60000;
 
     // Update all classes and instances
     for (var c of this.classes) {
@@ -144,9 +145,35 @@ GameHandler.prototype.renderLoop = function() {
     state.corpses.forEach(c => c.draw(this.ctx));
     state.player.draw(this.ctx);
 
+    lightSystem.setAmbientColor(getAmbientColor(state.dayTime % 1));
     lightSystem.clear();
-    lightSystem.drawLight(null, 160, 120, 200);
+    lightSystem.drawLight(null, 160, 120, 200, "#ff3030", 0.8);
+    // lightSystem.drawLight(null, 160 + 160 * Math.sin(state.time * 0.001), 120 + 120 * Math.sin(state.time * 0.00132), 130, "#3030ff", 0.6);
     lightSystem.renderToContext(this.ctx);
 
     requestAnimationFrame(this.renderLoop.bind(this));
 };
+
+var ambientColors = [
+    [0.25, 0.25, 0.5],
+    [0.35, 0.35, 0.5],
+    [1.0, 0.8, 0.55],
+    [1.0, 1.0, 1.0],
+    [1.0, 1.0, 1.0],
+    [0.8, 0.55, 0.4],
+    [0.5, 0.5, 0.45],
+    [0.25, 0.25, 0.5],
+    [0.25, 0.25, 0.5]
+];
+function getAmbientColor(t) {
+    var colors = ambientColors.length;
+    var index = t * colors;
+    var index1 = Math.floor(index);
+    if (index1 >= colors - 1) { return ambientColors[0]; }
+    var f = index - index1;
+    var f1 = 1 - f;
+    var c1 = ambientColors[index1];
+    var c2 = ambientColors[index1 + 1];
+    return "rgb(" + Math.round(255 * (f * c2[0] + f1 * c1[0])) + "," + Math.round(255 * (f * c2[1] + f1 * c1[1]))
+            + "," + Math.round(255 * (f * c2[2] + f1 * c1[2])) + ")"; 
+}

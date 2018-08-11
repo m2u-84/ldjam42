@@ -35,22 +35,26 @@ LightSystem.prototype.clear = function() {
     this.ctx.globalCompositeOperation = "screen";
 };
 
-LightSystem.prototype.drawLight = function(image, x, y, size, tint) {
+LightSystem.prototype.drawLight = function(image, x, y, size, tint, alpha) {
     if (image == null) { image = LightSystem.defaultLight; }
 
     var factor = size / Math.max(image.width, image.height);
     var w = image.width * factor, h = image.height * factor;
 
+    if (alpha != null) {
+        this.ctx.globalAlpha = alpha;
+    }
     if (tint) {
         this.tintCtx.fillStyle = tint;
         this.tintCtx.fillRect(0, 0, this.w, this.h);
         this.tintCtx.globalCompositeOperation = "destination-in";
         this.tintCtx.drawImage(image, x - w/2, y - h/2, w, h);
-        this.tintCtx.fillStyle = "source-over";
-        this.ctx.drawImage(this.tintCtx, 0, 0);
+        this.tintCtx.globalCompositeOperation = "source-over";
+        this.ctx.drawImage(this.tintCanvas, 0, 0);
     } else {
         this.ctx.drawImage(image, x - w/2, y - h/2, w, h);
     }
+    this.ctx.globalAlpha = 1;
 };
 
 LightSystem.prototype.renderToContext = function(ctx, w, h) {
