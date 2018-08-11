@@ -67,6 +67,7 @@ GameHandler.prototype.gameLoop = function() {
     var dt = t - this.lastTime;
     this.lastTime = t;
     this.currentTime += dt;
+    state.time = this.currentTime;
 
     // Update all classes and instances
     for (var c of this.classes) {
@@ -114,6 +115,13 @@ GameHandler.prototype.renderLoop = function() {
     state.map.draw(this.ctx);
     state.corpses.forEach(c => c.draw(this.ctx));
     state.player.draw(this.ctx);
+
+    var v = getFlicker(state.time * 0.0001);
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.ctx.beginPath();
+    this.ctx.rect(10, 10, 300*v, 5);
+    this.ctx.fillStyle = "red";
+    this.ctx.fill();
 
     requestAnimationFrame(this.renderLoop.bind(this));
 };
