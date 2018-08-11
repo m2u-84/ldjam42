@@ -19,6 +19,7 @@ Map.prototype.load = function() {
     }
     for (var x = 3; x < 8; x++) {
         this.tiles[6][x] = new Tile(x, 6, TileTypes.PATH, this);
+        this.tiles[9][2 * x] = new Tile(x, 6, TileTypes.TREE, this);
     }
 };
 
@@ -27,6 +28,11 @@ Map.prototype.set = function(x, y, tp) {
 };
 
 Map.prototype.getTile = function(x, y) {
+    if (x < 0 || y < 0 || x >= this.tilesX || y >= this.tilesY) {
+        return null;
+    }
+    var x = Math.floor(x);
+    var y = Math.floor(y);
     return this.tiles[y][x];
 };
 
