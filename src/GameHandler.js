@@ -11,6 +11,13 @@ function GameHandler(parentElement) {
         Tile
     ].map(c => ({class: c, instances: []}));
 
+    // Global game state which can be accessed by all game objects
+    window.state = this.state = {
+        map: new Map(20, 20, 24, 24),
+        player: new Player(10, 10),
+        keyStates: {}
+    };
+
     this.startTime = +Date.now();
     this.currentTime = 0;
     this.lastTime = this.startTime;

@@ -1,32 +1,18 @@
 function Player(position) {
-    Entity.call(this, position);
+    Character.call(this, position);
 }
-
 inherit(Player, Character);
 
 Player.prototype.VELOCITY = 5.0;
-Player.prototype.setState = function(state) {
-    this.state = state;
-}
 
 
 
 Player.prototype.update = function(delta) {
     // Set Velocity based on State (inserted by keyHandler)
-    this.velocity[0] = this.state.left ? (-1) * this.VELOCITY : 0;
-    this.velocity[0] = this.state.right ? this.VELOCITY : 0;
-    this.velocity[1] = this.state.up ? (-1) * this.VELOCITY : 0;
-    this.velocity[1] = this.state.down ? this.VELOCITY : 0;
-    
-    // Both left and right pressed?
-    if (this.state.left && this.state.right) {
-        this.velocity[0] = 0;
-    } 
+    this.velocity[0] = ((state.keyStates.right ? 1 : 0) - (state.keyStates.left ? 1 : 0)) * this.VELOCITY;
+    this.velocity[1] = ((state.keyStates.down ? 1 : 0) - (state.keyStates.up ? 1 : 0)) * this.VELOCITY;
 
-    // Both up and down pressed?
-    if (this.state.up && this.state.bottom ) {
-        this.velocity[1] = 0;
-    }
+    // TODO Normalize
     
     Character.prototype.update.call(delta);
 }

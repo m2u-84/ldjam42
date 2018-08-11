@@ -1,6 +1,6 @@
 function Character(position) {
     Entity.call(this, position);
-    this.velocity = 0;
+    this.velocity = [0, 0];
 }
 
 inherit(Character, Entity);

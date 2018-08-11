@@ -10,7 +10,7 @@ const TileTypes = {
 // Initialized in Tile.load
 var tileTypes = [];
 
-function TileType(name, sprites) {
+function TileType(name, sprites, collision) {
     this.name = name;
     if (sprites instanceof Array) {
         this.sprites = sprites;
@@ -18,6 +18,7 @@ function TileType(name, sprites) {
         this.sprites = [ sprites ];
     }
     this.sprites = this.sprites.map(sprite => loader.loadImage(sprite));
+    this.collision = collision;
 }
 
 function Tile(x, y, tp) {
@@ -39,10 +40,10 @@ function Tile(x, y, tp) {
 
 Tile.load = function() {
     tileTypes = [
-        new TileType("Ground", ["img/ground/mud1.png", "img/ground/mud2.png", "img/ground/mud3.png"]),
-        new TileType("Hole", []),
-        new TileType("Grave", []),
-        new TileType("Path", "img/ground/path.png")
+        new TileType("Ground", ["img/ground/mud1.png", "img/ground/mud2.png", "img/ground/mud3.png"], false),
+        new TileType("Hole", [], true),
+        new TileType("Grave", [], true),
+        new TileType("Path", "img/ground/path.png", false)
     ];
 };
 
