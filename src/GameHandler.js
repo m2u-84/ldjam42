@@ -12,13 +12,15 @@ function GameHandler(parentElement) {
         Map,
         Entity,
         Character,
-        Player
+        Player,
+        Corpse
     ].map(c => ({class: c, instances: []}));
 
     // Global game state which can be accessed by all game objects
     window.state = this.state = {
         map: new Map(20, 20, 24, 24),
         player: new Player([8, 5]),
+        corpses: [],
         keyStates: keyHandler.keyStates
     };
 
@@ -33,8 +35,17 @@ function GameHandler(parentElement) {
     this.ctx = this.canvas.getContext("2d");
     parentElement.appendChild(this.canvas);
 
+
+
     // First load all the things, then start render and update loops
     this.load().then(() => {
+
+        // Create some corpses
+        for (var i = 0; i < 5; i++) {
+            var corpse = new Corpse([Math.random() * 20 * state.map.tw, Math.random() * 20 * state.map.th]);
+            state.corpses.push(corpse);
+        }
+
         this.gameLoop();
         this.renderLoop();
     });
@@ -101,6 +112,7 @@ GameHandler.prototype.renderLoop = function() {
         }
     } */
     state.map.draw(this.ctx);
+    state.corpses.forEach(c => c.draw(this.ctx));
     state.player.draw(this.ctx);
 
     requestAnimationFrame(this.renderLoop.bind(this));

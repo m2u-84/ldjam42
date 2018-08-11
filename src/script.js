@@ -10,12 +10,12 @@ var inherit = function (child, parent) {
 };
 
 function getRandom(array) {
-    if (array.length < 1) { return null; }
+    if (!array || array.length < 1) { return null; }
     var index = Math.floor(Math.random() * array.length);
     return array[index];
 };
 
-function drawImage(ctx, img, x, y, w, h, relx, rely, mirrored) {
+function drawImage(ctx, img, x, y, w, h, relx, rely, mirrored, angle) {
     if (relx == null) { relx = 0.5; }
     if (rely == null) { rely = 1.0; }
     ctx.save();
@@ -24,6 +24,9 @@ function drawImage(ctx, img, x, y, w, h, relx, rely, mirrored) {
     y = -rely * img.height;
     if (mirrored) {
         ctx.scale(-1, 1);
+    }
+    if (angle) {
+        ctx.rotate(angle);
     }
     if (w || h) {
         ctx.drawImage(img, x, y, w, h);
