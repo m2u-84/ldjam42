@@ -2,10 +2,13 @@
 
 function Player(position) {
     Character.call(this, position);
+    this.ePressed = false;
+    this.pulling = null;
 }
 inherit(Player, Character);
 
 Player.prototype.VELOCITY = 0.005;
+Player.prototype.PULL_DISTANCE = 0.7;
 
 Player.load = function() {
     Player.sprite = loader.loadImage("img/character/char run01.png");
@@ -27,6 +30,24 @@ Player.prototype.update = function(delta) {
     }
 
     // E pressed?
+    var prev = this.ePressed;
+    this.ePressed = keys.e;
+    if (this.ePressed && !prev) {
+        // E was pressed just now, try to drag corpse
+        if (this.pulling) {
+            this.pulling = null;
+        } else {
+            var corpse = Player.getNearestCorpse(this.position[0], this.position[1], 1);
+            if (corpse) {
+                this.pulling = corpse;
+            }
+        }
+    }
+
+    // Pulling corpse
+    if (this.pulling) {
+        Player.pullCorpse(this.pulling, this.position[0], this.position[1], this.PULL_DISTANCE);
+    }
     
     Character.prototype.update.call(this, delta);
 };
@@ -37,5 +58,29 @@ Player.prototype.draw = function(ctx) {
         var y = Math.round(this.position[1] * state.map.th);
         drawImage(ctx, Player.sprite, x, y,
                 null, null, null, null, this.direction == 1);
+    }
+};
+
+
+Player.getNearestCorpse = function(x, y, maxDistance) {
+    var nearest = null, bestDistance2 = maxDistance * maxDistance;
+    for (var corpse of state.corpses) {
+        var dx = x - corpse.position[0], dy = y - corpse.position[1];
+        var d2 = dx * dx + dy * dy;
+        if (d2 < bestDistance2) {
+            nearest = corpse;
+            bestDistance2 = d2;
+        }
+    }
+    return nearest;
+};
+
+Player.pullCorpse = function(corpse, x, y, distance) {
+    var dx = x - corpse.position[0], dy = y - corpse.position[1];
+    var d2 = dx * dx + dy * dy;
+    if (d2 > distance * distance) {
+        var dis = Math.sqrt(d2);
+        var disf = distance / dis;
+        corpse.setPosition( [x - dx * disf, y - dy * disf] );
     }
 };
