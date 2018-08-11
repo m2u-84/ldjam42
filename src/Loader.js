@@ -29,10 +29,12 @@ Loader.prototype.loadImage = function(src) {
     img.onload = () => {
         this.loaded++;
         this.total++;
+        this.update();
     };
     img.onerror = () => {
         this.errors++;
         this.total++;
+        this.update();
     };
     img.src = src;
     return img;

@@ -19,11 +19,13 @@ function TileType(name, sprites, collision) {
     }
     this.sprites = this.sprites.map(sprite => loader.loadImage(sprite));
     this.collision = collision;
+    console.log(name, this.sprites);
 }
 
-function Tile(x, y, tp) {
+function Tile(x, y, tp, map) {
     this.x = x;
     this.y = y;
+    this.map = map;
     this.sprite = null;
     // type refers to TileTypes list
     this.type = tp;
@@ -43,12 +45,14 @@ Tile.load = function() {
         new TileType("Ground", ["img/ground/mud1.png", "img/ground/mud2.png", "img/ground/mud3.png"], false),
         new TileType("Hole", [], true),
         new TileType("Grave", [], true),
-        new TileType("Path", "img/ground/path.png", false)
+        new TileType("Tree", [], true),
+        new TileType("Path", [ "img/ground/path.png" ], false)
     ];
 };
 
 Tile.prototype.draw = function(ctx) {
     if (this.sprite) {
-        ctx.drawImage(this.sprite, this.x, this.y);
+        if (this.y == 6) { console.log(this.sprite); }
+        ctx.drawImage(this.sprite, this.x * this.map.tileWidth, this.y * this.map.tileHeight);
     }
 };

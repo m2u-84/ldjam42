@@ -6,15 +6,21 @@ function Map(tilesX, tilesY, tileWidth, tileHeight) {
     this.tileWidth = tileWidth;
     this.tileHeight = tileHeight;
 
-    // Set up tiles array
     this.tiles = [];
-    for (var y = 0; y < tilesY; y++) {
+}
+
+Map.prototype.load = function() {
+    // Set up tiles array
+    for (var y = 0; y < this.tilesY; y++) {
         this.tiles[y] = [];
-        for (var x = 0; x < tilesX; x++) {
-            this.tiles[y][x] = new Tile(x, y, TileTypes.GROUND);
+        for (var x = 0; x < this.tilesX; x++) {
+            this.tiles[y][x] = new Tile(x, y, TileTypes.GROUND, this);
         }
     }
-}
+    for (var x = 3; x < 8; x++) {
+        this.tiles[6][x] = new Tile(x, 6, TileTypes.PATH, this);
+    }
+};
 
 Map.prototype.set = function(x, y, tp) {
     this.tiles[y][x] = new Tile(x, y, tp);
@@ -30,8 +36,9 @@ Map.prototype.get = function(x, y) {
 
 Map.prototype.draw = function(ctx) {
     for (var y = 0; y < this.tilesY; y++) {
-        for (var x = 0;x < this.tilesX; x++) {
-            this.getTile(x, y).draw(ctx);
+        for (var x = 0; x < this.tilesX; x++) {
+            var tile = this.getTile(x,y);
+            tile.draw(ctx);
         }
     }
 };
