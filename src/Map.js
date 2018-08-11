@@ -3,8 +3,8 @@
 function Map(tilesX, tilesY, tileWidth, tileHeight) {
     this.tilesX = tilesX;
     this.tilesY = tilesY;
-    this.tileWidth = tileWidth;
-    this.tileHeight = tileHeight;
+    this.tileWidth = this.tw = tileWidth;
+    this.tileHeight = this.th = tileHeight;
 
     this.tiles = [];
 }

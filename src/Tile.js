@@ -19,7 +19,6 @@ function TileType(name, sprites, collision) {
     }
     this.sprites = this.sprites.map(sprite => loader.loadImage(sprite));
     this.collision = collision;
-    console.log(name, this.sprites);
 }
 
 function Tile(x, y, tp, map) {
@@ -52,7 +51,6 @@ Tile.load = function() {
 
 Tile.prototype.draw = function(ctx) {
     if (this.sprite) {
-        if (this.y == 6) { console.log(this.sprite); }
         ctx.drawImage(this.sprite, this.x * this.map.tileWidth, this.y * this.map.tileHeight);
     }
 };

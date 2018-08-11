@@ -1,3 +1,5 @@
+
+
 function Player(position) {
     Character.call(this, position);
 }
@@ -5,7 +7,9 @@ inherit(Player, Character);
 
 Player.prototype.VELOCITY = 5.0;
 
-
+Player.load = function() {
+    Player.sprite = loader.loadImage("img/character/char run01.png");
+};
 
 Player.prototype.update = function(delta) {
     // Set Velocity based on State (inserted by keyHandler)
@@ -19,4 +23,10 @@ Player.prototype.update = function(delta) {
     }
     
     Character.prototype.update.call(delta);
-}
+};
+
+Player.prototype.draw = function(ctx) {
+    if (Player.sprite) {
+        ctx.drawImage(Player.sprite, this.position[0] * state.map.tw, this.position[1] * state.map.th);
+    }
+};
