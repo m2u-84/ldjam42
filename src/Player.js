@@ -1,5 +1,3 @@
-
-
 const PlayerActions = {
     NONE: 0,
     PULL: 1,
@@ -16,8 +14,8 @@ var playerActions = [
     { duration: 1200, move: false }
 ];
 
-function Player(position) {
-    Character.call(this, position);
+function Player(position, movementSounds) {
+    Character.call(this, position, movementSounds);
     this.ePressed = false;
     this.pulling = null;
     this.targetDirection = [1, 0];

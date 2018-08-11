@@ -43,6 +43,27 @@ Loader.prototype.loadImage = function(src, frameCount) {
     return img;
 };
 
+Loader.prototype.loadAudio = function(src, playbackRate, volume) {
+    // this.count++;
+    // try {
+        // } catch (error) {
+            //     this.errors++;
+            //     this.total++;
+            //     this.update();
+            // }
+            // this.loaded++;
+            // this.total++;
+            // this.update();
+    var sound = new Audio(src);
+    if (playbackRate != undefined) {
+        sound.playbackRate = playbackRate;
+    }
+    if (volume != undefined) {
+        sound.volume = volume;
+    }
+    return sound;
+}
+
 Loader.prototype.update = function() {
     if (this.allAdded) {
         if (this.total >= this.count) {
