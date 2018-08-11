@@ -11,4 +11,5 @@ h1 {
     height: calc(240px * 3);
     margin: auto;
     image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
 }
