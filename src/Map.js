@@ -24,7 +24,7 @@ Map.prototype.load = function() {
 };
 
 Map.prototype.set = function(x, y, tp) {
-    this.tiles[y][x] = new Tile(x, y, tp);
+    this.tiles[y][x] = new Tile(x, y, tp, this);
 };
 
 Map.prototype.getTile = function(x, y) {

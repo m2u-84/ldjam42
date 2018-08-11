@@ -86,7 +86,7 @@ Tile.prototype.drawOutline = function(ctx) {
     var y = (this.y) * this.map.th;
     ctx.save();
     ctx.translate(x, y);
-    ctx.strokeStyle = "rgba(97, 236, 22, 0.6)";
+    ctx.strokeStyle = "rgba(97, 236, 22, 0.3)";
     ctx.strokeRect(0, 0, this.map.tw, this.map.th);
     ctx.restore();
 };
