@@ -31,11 +31,11 @@ function Player(position) {
 }
 inherit(Player, Character);
 
-Player.prototype.VELOCITY = 0.005;
+Player.prototype.VELOCITY = 0.004;
 Player.prototype.PULL_DISTANCE = 0.7;
 
 Player.load = function() {
-    Player.sprite = loader.loadImage("img/character/char run01.png");
+    Player.sprite = loader.loadImage("img/character/character sprite.png", 3);
 };
 
 Player.prototype.update = function(delta) {
@@ -140,8 +140,7 @@ Player.prototype.draw = function(ctx) {
     if (Player.sprite) {
         var x = Math.round(this.position[0] * state.map.tw);
         var y = Math.round(this.position[1] * state.map.th);
-        drawImage(ctx, Player.sprite, x, y,
-                null, null, 0.5, 0.85, this.direction == 1);
+        drawImage(ctx, Player.sprite, x, y, null, null, 0.5, 0.85, this.direction == 1, 0, this.getFrame());
     }
     // Progress of action
     if (this.action && playerActions[this.action].duration > 0) {
@@ -159,6 +158,14 @@ Player.prototype.draw = function(ctx) {
     }
 };
 
+Player.prototype.getFrame = function() {
+    var frame = 1;
+    if (this.velocity[0] || this.velocity[1]) {
+        // Running animation
+        var frame = Math.floor(state.time / 260) % 3;
+    }
+    return frame;
+};
 
 Player.getNearestCorpse = function(x, y, maxDistance) {
     var nearest = null, bestDistance2 = maxDistance * maxDistance;

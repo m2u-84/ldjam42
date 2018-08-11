@@ -32,7 +32,8 @@ function drawImage(ctx, img, x, y, w, h, relx, rely, mirrored, angle, frameIndex
         ctx.rotate(angle);
     }
     if (frameWidth != undefined) {
-        ctx.drawImage(img, frameIndex * frameWidth, 0, frameWidth, img.height, x, y, w || frameWidth, h || img.height);
+        var frameLeft = Math.floor(frameIndex * frameWidth);
+        ctx.drawImage(img, frameLeft, 0, Math.round(frameWidth), img.height, x, y, w || frameWidth, h || img.height);
     } else if (w || h) {
         ctx.drawImage(img, x, y, w, h);
     } else {
