@@ -42,7 +42,7 @@ function GameHandler(parentElement) {
     // Global game state which can be accessed by all game objects
     window.state = this.state = {
         map: new Map(20, 20, 24, 24),
-        player: new Player([10, 11], movementSounds),
+        player: new Player([10, 10], movementSounds),
         corpses: [],
         graves: [],
         keyStates: keyHandler.keyStates
@@ -65,10 +65,10 @@ function GameHandler(parentElement) {
     this.load().then(() => {
 
         // Create some corpses
-        for (var i = 0; i < 5; i++) {
-            var corpse = new Corpse([Math.random() * 20, Math.random() * 20]);
-            state.corpses.push(corpse);
-        }
+        // for (var i = 0; i < 5; i++) {
+        //     var corpse = new Corpse([Math.random() * 20, Math.random() * 20]);
+        //     state.corpses.push(corpse);
+        // }
 
         this.gameLoop();
         this.renderLoop();

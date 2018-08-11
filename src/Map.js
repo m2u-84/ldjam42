@@ -17,10 +17,45 @@ Map.prototype.load = function() {
             this.tiles[y][x] = new Tile(x, y, TileTypes.GROUND, this);
         }
     }
-    for (var x = 3; x < 8; x++) {
-        this.tiles[6][x] = new Tile(x, 6, TileTypes.STONE, this);
-        this.tiles[9][2 * x] = new Tile(2 * x, 9, Math.random() < 0.5 ? TileTypes.FENCE : TileTypes.STONE_FENCE_SIDE, this);
+
+    const playerPos = state.player.position;
+    const fencedZoneWidth = 8;
+    const centerZoneOffset = Math.floor(fencedZoneWidth / 2) ;
+
+    // create f3nc3™ around player
+    for (let x = 0; x < fencedZoneWidth; x++) {
+        let posX = playerPos[0] + x - centerZoneOffset;
+        let posY = playerPos[1] - centerZoneOffset;
+        this.tiles[posY - 1][posX] = new Tile(posX, posY - 1, TileTypes.FENCE, this);
+        // opening
+        if (x !== Math.floor(fencedZoneWidth / 2 - 1) && x !== Math.floor(fencedZoneWidth / 2)) {
+            this.tiles[posY + fencedZoneWidth][posX] = new Tile(posX, posY + fencedZoneWidth, TileTypes.FENCE, this);
+        }        
+
+        posX = playerPos[0] - centerZoneOffset;
+        posY = playerPos[1] + x - centerZoneOffset;
+        this.tiles[posY][posX - 1] = new Tile(posX - 1, posY, TileTypes.FENCE_SIDE, this);
+        this.tiles[posY][posX + fencedZoneWidth] = new Tile(posX + fencedZoneWidth, posY, TileTypes.FENCE_SIDE, this);
     }
+
+    // create st0neZ0ne™ with f3nc3™
+    const entranceHeight = 3;
+    for (let y = this.tilesY - entranceHeight; y < this.tilesY; y++) {
+        for (let x = 0; x < this.tilesX; x++) {
+            // fence
+            if (y === this.tilesY - entranceHeight) {
+                // opening or stone
+                if (x !== Math.floor(this.tilesX / 2 - 1) && x !== Math.floor(this.tilesX / 2)) {
+                    this.tiles[y][x] = new Tile(x, y, TileTypes.STONE_FENCE, this);
+                } else {
+                    this.tiles[y][x] = new Tile(x, y, TileTypes.STONE, this);
+                }
+            } else {
+                this.tiles[y][x] = new Tile(x, y, TileTypes.STONE, this);
+            }
+        }
+    }
+
 };
 
 Map.prototype.set = function(x, y, tp) {
