@@ -36,6 +36,11 @@ Map.prototype.getTile = function(x, y) {
     return this.tiles[y][x];
 };
 
+Map.prototype.getCollision = function(x, y) {
+    var tile = this.getTile(x, y);
+    return (!tile || tile.getCollision())
+};
+
 Map.prototype.get = function(x, y) {
     return this.getTile(x, y).type;
 };
