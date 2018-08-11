@@ -23,8 +23,8 @@ Tile.load = function() {
         new TileType("Tree", ["img/ground/mud1.png"], true, false, 0, ["img/environment/tree.png", 0.5, 0.8, 2, 740]),
         new TileType("Path", [ "img/ground/path.png" ], false, true, 1),
         new TileType("Stone", [ "img/ground/stonefloor.png" ], false, true, 1),
-        new TileType("Fence", [ "img/ground/path.png" ], true, false, 0, ["img/environment/fence.png", 0.5, 0.8]),
-        new TileType("FenceSide", [ "img/ground/path.png" ], true, false, 0, ["img/environment/fence side.png", 0.5, 0.8]),
+        new TileType("Fence", [ "img/ground/mud1.png" ], true, false, 0, ["img/environment/fence.png", 0.5, 0.8]),
+        new TileType("FenceSide", [ "img/ground/mud1.png" ], true, false, 0, ["img/environment/fence side.png", 0.5, 0.8]),
         new TileType("StoneFence", [ "img/ground/stonefloor.png" ], true, false, 0, ["img/environment/fence.png", 0.5, 0.8]),
         new TileType("StoneFenceSide", [ "img/ground/stonefloor.png" ], true, false, 0, ["img/environment/fence side.png", 0.5, 0.8]),
     ];
