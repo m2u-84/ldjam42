@@ -9,14 +9,13 @@ Player.prototype.VELOCITY = 5.0;
 
 Player.prototype.update = function(delta) {
     // Set Velocity based on State (inserted by keyHandler)
-    this.velocity[0] = ((state.keyStates.right ? 1 : 0) - (state.keyStates.left ? 1 : 0)) * this.VELOCITY;
-    this.velocity[1] = ((state.keyStates.down ? 1 : 0) - (state.keyStates.up ? 1 : 0)) * this.VELOCITY;
+    var vx = ((state.keyStates.right ? 1 : 0) - (state.keyStates.left ? 1 : 0));
+    var vy = ((state.keyStates.down ? 1 : 0) - (state.keyStates.up ? 1 : 0));
 
     // Normalize if both directions are set
-    if( this.velocity[0] && this.velocity[1] ) {
-        this.velocity[0] *= Math.sqrt(2);
-        this.velocity[1] *= Math.sqrt(2);
-    }
+    var length = Math.sqrt(vx * vx + vy * vy);
+    this.velocity[0] = vx * this.VELOCITY / length;
+    this.velocity[1] = vy * this.VELOCITY / length;
     
     Character.prototype.update.call(delta);
 }
