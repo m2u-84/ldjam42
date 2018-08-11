@@ -4,6 +4,9 @@ function Player(position) {
     Character.call(this, position);
     this.ePressed = false;
     this.pulling = null;
+    this.targetDirection = [1, 0];
+    this.targetPosition = [0, 0];
+    this.targetTile = null;
 }
 inherit(Player, Character);
 
@@ -25,6 +28,11 @@ Player.prototype.update = function(delta) {
         var length = Math.sqrt(vx * vx + vy * vy);
         this.velocity[0] = vx * this.VELOCITY / length;
         this.velocity[1] = vy * this.VELOCITY / length;
+        if (this.velocity[0]) {
+            this.targetDirection = [this.velocity[0] > 0 ? 1 : -1, 0];
+        } else {
+            this.targetDirection = [0, this.velocity[1] > 0 ? 1 : -1];
+        }
     } else {
         this.velocity[0] = this.velocity[1] = 0;
     }
@@ -50,14 +58,24 @@ Player.prototype.update = function(delta) {
     }
     
     Character.prototype.update.call(this, delta);
+
+    // Target tile
+    this.targetPosition = [ Math.floor(this.position[0]) + this.targetDirection[0],
+        Math.floor(this.position[1] + this.targetDirection[1]) ];
+    this.targetTile = state.map.getTile(this.targetPosition[0], this.targetPosition[1]);
 };
 
 Player.prototype.draw = function(ctx) {
+    // Outline of target tile
+    if (this.targetTile) {
+        this.targetTile.drawOutline(ctx);
+    }
+    // Self
     if (Player.sprite) {
         var x = Math.round(this.position[0] * state.map.tw);
         var y = Math.round(this.position[1] * state.map.th);
         drawImage(ctx, Player.sprite, x, y,
-                null, null, null, null, this.direction == 1);
+                null, null, 0.5, 0.85, this.direction == 1);
     }
 };
 
