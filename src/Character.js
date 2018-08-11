@@ -36,6 +36,6 @@ Character.prototype.checkCollision = function(x, y) {
     var y1 = y - this.height / 2;
     var x2 = x1 + this.width;
     var y2 = y1 + this.height;
-    return state.map.getTile(x1, y1).getCollision() || state.map.getTile(x2, y1).getCollision() ||
-            state.map.getTile(x1, y2).getCollision() || state.map.getTile(x2, y2).getCollision();
+    return state.map.getCollision(x1, y1) || state.map.getCollision(x2, y1) ||
+            state.map.getCollision(x1, y2) || state.map.getCollision(x2, y2);
 };
