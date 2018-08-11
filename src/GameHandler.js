@@ -4,6 +4,7 @@ function GameHandler(parentElement) {
     this.parentElement = parentElement;
 
     loader = new Loader();
+    keyHandler = new KeyHandler(window);
 
     this.classes = [
         // Player, Zombies, Corpses, Graves, ...
@@ -17,8 +18,8 @@ function GameHandler(parentElement) {
     // Global game state which can be accessed by all game objects
     window.state = this.state = {
         map: new Map(20, 20, 24, 24),
-        player: new Player([5, 5]),
-        keyStates: {}
+        player: new Player([8, 5]),
+        keyStates: keyHandler.keyStates
     };
 
     this.startTime = +Date.now();
@@ -35,7 +36,6 @@ function GameHandler(parentElement) {
     // First load all the things, then start render and update loops
     this.load().then(() => {
         this.gameLoop();
-        this.renderLoop();
         this.renderLoop();
     });
 }
@@ -71,6 +71,8 @@ GameHandler.prototype.gameLoop = function() {
         }
     }
 
+    state.player.update(dt);
+
     requestAnimationFrame(this.gameLoop.bind(this));
 };
 
@@ -79,7 +81,10 @@ GameHandler.prototype.renderLoop = function() {
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    // this.ctx.translate(Math.random() * 5, Math.random() * 5);
+    this.ctx.translate(
+        Math.round(-state.player.position[0] * state.map.tw + this.canvas.width / 2),
+        Math.round(-state.player.position[1] * state.map.tw + this.canvas.height / 2)
+    );
     
     // Render all classes and instances
     /*

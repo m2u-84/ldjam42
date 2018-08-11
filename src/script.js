@@ -14,3 +14,21 @@ function getRandom(array) {
     var index = Math.floor(Math.random() * array.length);
     return array[index];
 };
+
+function drawImage(ctx, img, x, y, w, h, relx, rely, mirrored) {
+    if (relx == null) { relx = 0.5; }
+    if (rely == null) { rely = 1.0; }
+    ctx.save();
+    ctx.translate(x, y);
+    x = -relx * img.width;
+    y = -rely * img.height;
+    if (mirrored) {
+        ctx.scale(-1, 1);
+    }
+    if (w || h) {
+        ctx.drawImage(img, x, y, w, h);
+    } else {
+        ctx.drawImage(img, x, y);
+    }
+    ctx.restore();
+}

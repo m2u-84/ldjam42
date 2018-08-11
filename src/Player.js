@@ -5,7 +5,7 @@ function Player(position) {
 }
 inherit(Player, Character);
 
-Player.prototype.VELOCITY = 5.0;
+Player.prototype.VELOCITY = 0.005;
 
 Player.load = function() {
     Player.sprite = loader.loadImage("img/character/char run01.png");
@@ -17,15 +17,22 @@ Player.prototype.update = function(delta) {
     var vy = ((state.keyStates.down ? 1 : 0) - (state.keyStates.up ? 1 : 0));
 
     // Normalize if both directions are set
-    var length = Math.sqrt(vx * vx + vy * vy);
-    this.velocity[0] = vx * this.VELOCITY / length;
-    this.velocity[1] = vy * this.VELOCITY / length;
+    if (vx || vy) {
+        var length = Math.sqrt(vx * vx + vy * vy);
+        this.velocity[0] = vx * this.VELOCITY / length;
+        this.velocity[1] = vy * this.VELOCITY / length;
+    } else {
+        this.velocity[0] = this.velocity[1] = 0;
+    }
     
-    Character.prototype.update.call(delta);
+    Character.prototype.update.call(this, delta);
 };
 
 Player.prototype.draw = function(ctx) {
     if (Player.sprite) {
-        ctx.drawImage(Player.sprite, this.position[0] * state.map.tw, this.position[1] * state.map.th);
+        var x = Math.round(this.position[0] * state.map.tw);
+        var y = Math.round(this.position[1] * state.map.th);
+        drawImage(ctx, Player.sprite, x, y,
+                null, null, null, null, this.direction == 1);
     }
 };

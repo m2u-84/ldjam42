@@ -1,13 +1,12 @@
 function KeyHandler(target) {
     this.attachTo(target);
     this.initListeners();
-}
-
-KeyHandler.prototype.keyStates = {
-    right: false,
-    left: false,
-    up: false,
-    down: false,
+    this.keyStates = {
+        right: false,
+        left: false,
+        up: false,
+        down: false
+    };
 }
 
 KeyHandler.prototype.eventTarget = null;

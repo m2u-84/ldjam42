@@ -35,10 +35,19 @@ Map.prototype.get = function(x, y) {
 };
 
 Map.prototype.draw = function(ctx) {
-    for (var y = 0; y < this.tilesY; y++) {
-        for (var x = 0; x < this.tilesX; x++) {
-            var tile = this.getTile(x,y);
-            tile.draw(ctx);
+    // Draw based on zIndex of tile types
+    for (var z = tileTypes.minZIndex; z <= tileTypes.maxZIndex; z++) {
+        for (var tp of tileTypes) {
+            if (tp.zIndex == z) {
+                for (var y = 0; y < this.tilesY; y++) {
+                    for (var x = 0; x < this.tilesX; x++) {
+                        var tile = this.getTile(x,y);
+                        if (tileTypes[tile.type] == tp) {
+                            tile.draw(ctx);
+                        }
+                    }
+                }
+            }
         }
     }
 };
