@@ -9,9 +9,9 @@ const PlayerActions = {
 var playerActions = [
     { duration: 0, move: true },
     { duration: 0, move: true },
-    { duration: 3000, move: false },
-    { duration: 5000, move: false },
-    { duration: 1200, move: false }
+    { duration: 3000 / 3, move: false },
+    { duration: 5000 / 3, move: false },
+    { duration: 1200 / 3, move: false }
 ];
 
 function Player(position, movementSounds) {
@@ -66,6 +66,12 @@ Player.prototype.update = function(delta) {
         this.actionStarted = state.time;
         // E was pressed just now, try to drag corpse
         if (this.pulling) {
+            // Check if dropped on grave
+            console.log(this.targetTile);
+            if (this.targetTile && this.targetTile.type == TileTypes.GRAVE && this.targetTile.reference.empty) {
+                this.targetTile.reference.takeCorpse(this.pulling);
+            }
+            // Abort pull action
             this.pulling = null;
             this.action = PlayerActions.NONE;
         } else {

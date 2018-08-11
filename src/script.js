@@ -13,7 +13,15 @@ function getRandom(array) {
     if (!array || array.length < 1) { return null; }
     var index = Math.floor(Math.random() * array.length);
     return array[index];
-};
+}
+
+function removeItem(array, item) {
+    var index = array.indexOf(item);
+    if (index >= 0) {
+        array.splice(index, 1);
+    }
+    return index;
+}
 
 function drawImage(ctx, img, x, y, w, h, relx, rely, mirrored, angle, frameIndex) {
     if (relx == null) { relx = 0.5; }
