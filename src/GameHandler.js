@@ -64,7 +64,7 @@ function GameHandler(parentElement) {
 
         // Create some corpses
         for (var i = 0; i < 5; i++) {
-            var corpse = new Corpse([Math.random() * 20 * state.map.tw, Math.random() * 20 * state.map.th]);
+            var corpse = new Corpse([Math.random() * 20, Math.random() * 20]);
             state.corpses.push(corpse);
         }
 
@@ -89,6 +89,7 @@ GameHandler.prototype.gameLoop = function() {
     var dt = t - this.lastTime;
     this.lastTime = t;
     this.currentTime += dt;
+    state.time = this.currentTime;
 
     // Update all classes and instances
     for (var c of this.classes) {
