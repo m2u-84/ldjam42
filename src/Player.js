@@ -273,6 +273,9 @@ Player.prototype.update = function(delta) {
         if (this.action === PlayerActions.CUT) {
             this.cutTreeSound.trigger();
         }
+        if (this.action === PlayerActions.FILL) {
+            this.digSound.trigger();
+        }
         var tile = this.targetTile;
         if (state.time >= this.actionStarted + this.actionDuration && tile) {
             // Conclude action
