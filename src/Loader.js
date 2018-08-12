@@ -63,11 +63,14 @@ Loader.prototype.loadAudio = function(soundData) {
         }
     }
     sound.setVolume = function(volume) {
-        if (this.minVolume && volume < minVolume) {
+        if (this.minVolume && volume < this.minVolume) {
             this.volume = this.minVolume;
-        }else if (this.maxVolume && volume > maxVolume) {
-            this.volume = this.maxVolume; 
-        } else {
+        }else if (this.maxVolume && volume > this.maxVolume) {
+            this.volume = this.maxVolume;
+        } else if (volume < 0) {
+            this.volume = 0;
+        }
+        else {
             this.volume = volume;
         }
     }
