@@ -1,30 +1,7 @@
-const movementSounds = [
-    {
-        src: "sounds/step_dirt.wav",
-        playbackRate: 1,
-        volume: .35
-    },
-    {
-        src: "sounds/step_dirt2.wav",
-        playbackRate: 1,
-        volume: .35
-    },
-    {
-        src: "sounds/step_dirt3.wav",
-        playbackRate: 1,
-        volume: .35
-    },
-    {
-        src: "sounds/step_dirt4.wav",
-        playbackRate: 1,
-        volume: .35
-    }
-];
-
 const draggingSounds =  [
     {
         src: "sounds/player_drag.wav",
-        playbackRate: 1.8,
+        playbackRate: 1.6,
         volume: 1
     },
     // {
@@ -34,7 +11,7 @@ const draggingSounds =  [
     // },
     {
         src: "sounds/player_drag3.wav",
-        playbackRate: 2,
+        playbackRate: 1.8,
         volume: 1
     },
 ]
@@ -56,7 +33,7 @@ var playerActions = [
 ];
 
 function Player(position) {
-    Character.call(this, position, movementSounds);
+    Character.call(this, position);
     this.ePressed = false;
     this.pulling = null;
     this.targetDirection = [1, 0];

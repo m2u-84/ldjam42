@@ -79,3 +79,13 @@ function getAngleDif(a1, a2) {
     }
     return dif;
 }
+
+function getRandomSound(sounds, tileType) {
+    if (!sounds || sounds.length < 1) { return null; }
+    let typeSounds = sounds.filter(sound => sound.tileTypes.includes(tileType));
+    if (typeSounds.length === 0) {
+        typeSounds = sounds;
+    }
+    var index = Math.floor(Math.random() * typeSounds.length);
+    return typeSounds[index];
+}

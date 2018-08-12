@@ -1,4 +1,49 @@
-function Character(position, movementSoundsData) {
+const movementSounds = [
+    {
+        src: "sounds/step_dirt.wav",
+        playbackRate: 1,
+        volume: .35,
+        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
+    },
+    {
+        src: "sounds/step_dirt2.wav",
+        playbackRate: 1,
+        volume: .35,
+        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
+    },
+    {
+        src: "sounds/step_dirt3.wav",
+        playbackRate: 1,
+        volume: .35,
+        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
+    },
+    {
+        src: "sounds/step_dirt4.wav",
+        playbackRate: 1,
+        volume: .35,
+        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
+    },
+    {
+        src: "sounds/step_stone.wav",
+        playbackRate: .8,
+        volume: .6,
+        tileTypes: [TileTypes.STONE]
+    },
+    // {
+    //     src: "sounds/step_stone2.wav",
+    //     playbackRate: .8,
+    //     volume: .6,
+    //     tileTypes: [TileTypes.STONE]
+    // },
+    {
+        src: "sounds/step_stone3.wav",
+        playbackRate: .8,
+        volume: .6,
+        tileTypes: [TileTypes.STONE]
+    }
+];
+
+function Character(position) {
     Entity.call(this, position);
     this.velocity = [0, 0];
     this.direction = 1;
@@ -6,8 +51,8 @@ function Character(position, movementSoundsData) {
     this.width = 0.5;
     this.height = 0.3;
 
-    if (movementSoundsData) {
-       this.loadMovementSounds(movementSoundsData);
+    if (movementSounds) {
+       this.loadMovementSounds(movementSounds);
     }
 }
 
@@ -57,11 +102,12 @@ Character.prototype.checkCollision = function (x, y) {
 Character.prototype.loadMovementSounds = function (movementSounds) {
     this.movementAudioFiles = [];
     movementSounds.forEach(soundData => {
-        this.movementAudioFiles.push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume));
+        this.movementAudioFiles.push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume, soundData.tileTypes));
     })
     for (const audio of this.movementAudioFiles) {
         audio.onended = () => {
-            this.movementSound = getRandom(this.movementAudioFiles);
+            this.movementSound = getRandomSound(this.movementAudioFiles, this.targetTile.type);
+            console.log(this.movementSound);
         }
 
     }
