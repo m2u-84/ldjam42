@@ -49,7 +49,7 @@ Map.prototype.load = function() {
     ];
     const shopStart = [ entranceArea[2], entranceArea[3] - 1 ];
 
-    // create f3nc3™ around player
+    // create fence around player
     for (let x = 0; x < fencedZoneWidth; x++) {
         let posX = playerPos[0] + x - centerZoneOffset;
         let posY = playerPos[1] - centerZoneOffset;
