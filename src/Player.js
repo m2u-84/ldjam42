@@ -16,6 +16,12 @@ const draggingSounds =  [
     },
 ]
 
+const digSound = {
+        src: "sounds/player_dig.wav",
+        playbackRate: 1,
+        volume: 1
+    }
+
 const PlayerActions = {
     NONE: 0,
     PULL: 1,
@@ -41,6 +47,7 @@ function Player(position) {
     this.targetTile = null;
 
     this.loadDraggingSounds(draggingSounds);
+    this.digSound = loader.loadAudio(digSound.src, digSound.playbackRate, digSound.volume);
 
     // Actions such as digging or cutting a tree
     this.action = PlayerActions.NONE;
@@ -113,8 +120,10 @@ Player.prototype.update = function(delta) {
                     } else if (tile.type == TileTypes.GROUND) {
                         // Path
                         this.action = PlayerActions.PATH;
+                        this.digSound.play();
                     } else if (tile.type == TileTypes.PATH) {
                         // Dig
+                        this.digSound.play();
                         this.action = PlayerActions.DIG;
                     }
                 }
@@ -126,6 +135,9 @@ Player.prototype.update = function(delta) {
         this.action = PlayerActions.NONE;
     } else if (this.ePressed && prev && this.action > 0 && !playerActions[this.action].move) {
         // During action, check if ready
+        if (this.action === PlayerActions.DIG) {
+            this.digSound.play();
+        }
         var tile = this.targetTile;
         if (state.time >= this.actionStarted + this.actionDuration && tile) {
             // Conclude action
