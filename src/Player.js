@@ -19,7 +19,7 @@ const draggingSounds =  [
 const digSound = {
         src: "sounds/player_dig.wav",
         playbackRate: 1,
-        volume: 0.6
+        volume: 0.2
     }
 
 const PlayerActions = {
