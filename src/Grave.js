@@ -15,6 +15,9 @@ function Grave(x1, y1, x2, y2) {
     this.empty = true;
     this.fillTime = 0;
     this.expirationTime = 0;
+    // Center coordinate
+    this.cx = (x1 + x2) / 2;
+    this.cy = (y1 + y2) / 2;
 }
 
 Grave.load = function() {
@@ -34,8 +37,11 @@ Grave.prototype.draw = function(ctx) {
     // Progress
     if (!this.empty) {
         if (state.dayTime <= this.expirationTime) {
-            var p = (state.dayTime - this.fillTime) / (this.expirationTime - this.fillTime);
-            drawProgressBar(ctx, x, y, 32, p);
+            // only in range of player
+            if (Math.abs(this.cx - state.player.position[0]) <= 3 && Math.abs(this.cy - state.player.position[1]) <= 3) {
+                var p = (state.dayTime - this.fillTime) / (this.expirationTime - this.fillTime);
+                drawProgressBar(ctx, x, y, 32, p, "#8080a0");
+            }
         } else {
             // is done! empty grave, although this is draw and not update function (but this is a game jam so it's alright)
             this.ejectCorpse();

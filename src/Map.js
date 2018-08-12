@@ -14,14 +14,17 @@ Map.prototype.load = function() {
     for (var y = 0; y < this.tilesY; y++) {
         this.tiles[y] = [];
         for (var x = 0; x < this.tilesX; x++) {
-            this.tiles[y][x] = new Tile(x, y, TileTypes.GROUND, this);
+            var tp = Math.random() < 0.02 ? TileTypes.TREE : TileTypes.GROUND;
+            this.tiles[y][x] = new Tile(x, y, tp, this);
         }
     }
 
     this.defaultTile = new Tile(x, y, TileTypes.GROUND, this);
     this.defaultTile.decoImage = null;
 
-    const playerPos = state.player.position;
+    var playerPos = state.player.position;
+    playerPos = playerPos.map(v => Math.floor(v));
+    this.set(playerPos[0], playerPos[1], TileTypes.GROUND);
     playerPos[1] -= 2;
     const fencedZoneWidth = 9;
     const centerZoneOffset = Math.floor(fencedZoneWidth / 2) ;
@@ -46,8 +49,9 @@ Map.prototype.load = function() {
     }
 
     // Close gap between st0neZ0ne and player area
+    const entranceHeight = 4;
     var y1 = playerPos[1] - centerZoneOffset + fencedZoneWidth + 1;
-    for (var y = y1; y < this.tilesY - 3; y++) {
+    for (var y = y1; y < this.tilesY - entranceHeight; y++) {
         // Left side
         this.set(playerPos[0] - 2, y, TileTypes.FENCE_SIDE);
         // Right side
@@ -59,7 +63,6 @@ Map.prototype.load = function() {
     this.set(playerPos[0], y1 - 2, TileTypes.PATH);
 
     // create st0neZ0ne™ with f3nc3™
-    const entranceHeight = 3;
     for (let y = this.tilesY - entranceHeight; y < this.tilesY; y++) {
         for (let x = 0; x < this.tilesX; x++) {
             // fence
@@ -136,10 +139,10 @@ Map.prototype.draw = function(ctx) {
         for (var tp of tileTypes) {
             if (tp.zIndex == z) {
                 // Only render visible view, instead of whole map
-                var y1 = Math.floor(-state.cam.y / state.map.tw);
-                var x1 = Math.floor(-state.cam.x / state.map.th);
-                var y2 = y1 + 11;
-                var x2 = x1 + 15;
+                var x1 = Math.floor(-state.cam.x / state.map.th) - 1;
+                var y1 = Math.floor(-state.cam.y / state.map.tw) - 1;
+                var x2 = x1 + 15 + 2;
+                var y2 = y1 + 11 + 3;
                 for (var y = y1; y < y2; y++) {
                     for (var x = x1; x < x2; x++) {
                         var tile = this.getTile(x,y);
