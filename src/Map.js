@@ -121,6 +121,8 @@ Map.prototype.load = function() {
     for (var x = 2; x < 28; x += 7) {
         this.set(x, 31 - x, TileTypes.TORCH);
     }
+
+    this.spawningZone = [ 0, entranceHeight ];
 };
 
 Map.prototype.set = function(x, y, tp) {
