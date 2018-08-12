@@ -28,18 +28,11 @@ const treeFallingSound = {
     volume: 0.5
 }
 
-const cuttingTreeSounds = [
-    // {
-    //     src: "sounds/player_cut_tree.wav",
-    //     playbackRate: 1,
-    //     volume: 0.2
-    // },
-    {
-        src: "sounds/player_cut_tree2.wav",
-        playbackRate: 1,
-        volume: 0.2
-    },
-]
+const cuttingTreeSounds = {
+    src: "sounds/player_cut_tree2.wav",
+    playbackRate: 1,
+    volume: 0.2
+};
 
 const PlayerActions = {
     NONE: 0,
@@ -188,7 +181,10 @@ Player.prototype.update = function(delta) {
                                 this.action = PlayerActions.FILL;
                                 this.digSound.trigger();
                             }
-                        }
+                        } else if (tile.type == TileTypes.FENCE || tile.type == TileTypes.FENCE_SIDE
+                                    || tile.type == TileType.STONE_FENCE || tile.type == TileType.STONE_FENCE_SIDE) {
+                                        this.cutTreeSound.trigger();
+                                    }
                     }
                 }
             }
