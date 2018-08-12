@@ -72,8 +72,8 @@ Shop.prototype.draw = function(ctx) {
         // Button
         var s = (this.open == id ? ">" : "") + article[0];
         if (!article[4]) { s += " (" + article[1] + ")" };
-        var x = bx + (this.open == id ? 8 : 0);
-        if (Shop.button(ctx, x, by + 24 * (i + 1), s, bw, this.open == id || article[1] > state.money)) {
+        var vx = bx + (this.open == id ? 8 : 0);
+        if (Shop.button(ctx, vx, by + 24 * (i + 1), s, bw, this.open == id || article[1] > state.money)) {
             this.open = id;
         }
     }
@@ -116,7 +116,7 @@ Shop.prototype.draw = function(ctx) {
     }
 
     // Back button
-    if (Shop.button(ctx, x, y + h - 20, "Leave Shop", 84)) {
+    if (Shop.button(ctx, bx, y + h - 20, "Leave Shop", 84)) {
         state.shopOpen = false;
     }
 };

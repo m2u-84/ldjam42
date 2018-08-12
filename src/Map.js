@@ -131,7 +131,7 @@ Map.prototype.load = function() {
     state.owl = new Owl([shopStart[0] + 1.4, shopStart[1] - 2.4]);
 
     for (var x = 2; x < 28; x += 7) {
-        this.set(x, 31 - x, TileTypes.TORCH);
+        // this.set(x, 31 - x, TileTypes.TORCH);
     }
 
     this.spawningZone = [ 0, entranceHeight ];
@@ -143,7 +143,7 @@ Map.prototype.update = function() {
     if (state.dayTime % 1 >= t && state.lastDayTime % 1 < t) {
         this.daybreakSound.play();
     }
-    var t = 0.092;
+    var t = 0.692;
     if (state.dayTime % 1 >= t && state.lastDayTime % 1 < t) {
         this.nightbreakSound.play();
     }
