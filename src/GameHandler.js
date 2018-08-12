@@ -226,6 +226,7 @@ GameHandler.prototype.renderLoop = function() {
 
 var ambientColors = [
     [0.1, 0.1, 0.5],
+    [0.1, 0.1, 0.5],
     [0.25, 0.25, 0.5],
     [0.5, 0.42, 0.52],
     [1.0, 0.8, 0.55],
@@ -235,7 +236,6 @@ var ambientColors = [
     [0.5, 0.5, 0.45],
     [0.25, 0.25, 0.5],
     [0.15, 0.15, 0.5],
-    [0.1, 0.1, 0.5],
     [0.1, 0.1, 0.5]
 ];
 function getAmbientColor(t) {

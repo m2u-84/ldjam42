@@ -1,6 +1,7 @@
 
 
 const MUSIC_VOLUME = 0.1;
+const AMBIENT_VOLUME = 0.4;
 
 function MusicManager(audios) {
     this.playing = -1;
@@ -16,6 +17,13 @@ MusicManager.prototype.update = function() {
             this.playRandom(this.playing);
         }
     }
+
+    var factor = 0.5 + 0.5 * Math.cos(state.dayTime * 2 * Math.PI);
+    // Cos interpolate for stronger cut
+    for (var i = 0; i < 2; i++) { factor = 0.5 - 0.5 * Math.cos(Math.PI * factor); }
+    // Apply factor to volumes
+    document.getElementById("nightmusic").volume = AMBIENT_VOLUME * factor;
+    this.audios[this.playing].volume = MUSIC_VOLUME * (1 - factor);
 };
 
 MusicManager.prototype.playRandom = function(except) {
