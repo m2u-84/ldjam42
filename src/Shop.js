@@ -39,7 +39,9 @@ Shop.update = function() {
 Shop.load = function() {
     Shop.buttons = [
         loader.loadImage("img/misc/button small.png"),
-        loader.loadImage("img/misc/button large.png")
+        loader.loadImage("img/misc/button small shadow.png"),
+        loader.loadImage("img/misc/button large.png"),
+        loader.loadImage("img/misc/button large shadow.png")
     ];
 };
 
@@ -58,7 +60,7 @@ Shop.prototype.draw = function(ctx) {
 
     // Left: Titles of things to buy
     var first = this.perPage * this.page;
-    var bx = x + 70, by = y + 16, bw = 128;
+    var bx = x + 70, by = y + 16, bw = 132;
     for (var i = 0; i < this.perPage; i++) {
         var id = first + i;
         if (id >= this.options.length) { break; }
@@ -100,7 +102,7 @@ Shop.prototype.draw = function(ctx) {
 
     // Buy button
     var buyTitle = "Buy (" + (article ? article[1] : "") + ")";
-    if (Shop.button(ctx, tx + 50, y + h - 20, buyTitle, 70, this.open < 0 || article[4])) {
+    if (Shop.button(ctx, tx + 50, y + h - 20, buyTitle, 84, this.open < 0 || article[4])) {
         article[4] = true;
         // Take money
         shop.removeMoney(article[1]);
@@ -109,18 +111,20 @@ Shop.prototype.draw = function(ctx) {
     }
 
     // Back button
-    if (Shop.button(ctx, x, y + h - 20, "Leave Shop", 70)) {
+    if (Shop.button(ctx, x, y + h - 20, "Leave Shop", 84)) {
         state.shopOpen = false;
     }
 };
 
 Shop.button = function(ctx, x, y, text, w, disabled) {
-    var img = w < 100 ? Shop.buttons[0] : Shop.buttons[1];
-    var h = 16;
+    var h = 20;
     var x1 = Math.floor(x - w/2), y1 = Math.floor(y - h/2);
     // Inside?
     var mouse = state.mousePos;
     var hover = !disabled && (mouse[0] >= x1 && mouse[1] >= y1 && mouse[0] <= x1 + w && mouse[1] <= y1 + h);
+    var imgindex = w < 100 ? 0 : 2;
+    if (hover) { imgindex++; }
+    var img = Shop.buttons[imgindex];
     /*
     ctx.fillStyle = "black";
     ctx.fillRect(x1, y1, w, h); */
@@ -128,10 +132,10 @@ Shop.button = function(ctx, x, y, text, w, disabled) {
     // ctx.fillRect(x1 + 1, y1 + 1, w - 2, h - 2);
     ctx.drawImage(img, x1, y1, w, h);
     // Text
-    ctx.fillStyle = hover ? "black" : "#111";
+    ctx.fillStyle = hover ? "black" : "rgba(0,0,0,0.75)";
     ctx.textAlign = "center";
     if (disabled) { ctx.globalAlpha = 0.4; }
-    ctx.fillText(text, x, y + 5);
+    ctx.fillText(text, x, y + 4);
     ctx.globalAlpha = 1;
     // Click?
     return hover && this.newClick;
