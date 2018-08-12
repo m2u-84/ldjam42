@@ -289,6 +289,7 @@ Player.prototype.draw = function(ctx) {
     // Self
     var sprite = Player.sprite;
     if (this.action == PlayerActions.PULL) { sprite = Player.dragSprite; }
+    if (this.action == PlayerActions.FILL) { sprite = Player.digSprite; }
     if (this.action == PlayerActions.DIG) { sprite = Player.digSprite; }
     if (this.action == PlayerActions.CUT) { sprite = Player.fightSprite; }
     if (this.action == PlayerActions.PATH) {

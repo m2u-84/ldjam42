@@ -13,12 +13,13 @@ SoundManager.load = function() {
     SoundManager.loadSound("digging", 5);
     SoundManager.loadSound("dragging", 5);
     SoundManager.loadSound("obstacles", 5);
+    SoundManager.loadSound("sighting", 5, "zombie");
 };
 
-SoundManager.loadSound = function(name, count) {
+SoundManager.loadSound = function(name, count, directory) {
     var sounds = [];
     for (var i = 1; i <= count; i++) {
-        var file = "voice/gravedigger/" + name + "/" + i + ".mp3";
+        var file = "voice/" + (directory || "gravedigger") + "/" + name + "/" + i + ".mp3";
         sounds[i - 1] = loader.loadAudio(file);
     }
     sounds.previous = null;
