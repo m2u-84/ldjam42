@@ -115,8 +115,8 @@ Map.prototype.load = function() {
     this.set(shopStart[0] + 4, shopStart[1], TileTypes.TREE);
     this.set(shopStart[0] + 4, shopStart[1] - 1, TileTypes.TREE);
     // Invisible torches
-    this.set(shopStart[0] + 1, shopStart[1] - 1, TileTypes.TORCH);
-    this.set(shopStart[0] + 3, shopStart[1] - 1, TileTypes.TORCH);
+    this.set(shopStart[0] + 1, shopStart[1] - 1, TileTypes.COLLIDING_TORCH);
+    this.set(shopStart[0] + 3, shopStart[1] - 1, TileTypes.COLLIDING_TORCH);
 
     for (var x = 2; x < 28; x += 7) {
         this.set(x, 31 - x, TileTypes.TORCH);
