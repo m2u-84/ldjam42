@@ -29,16 +29,27 @@ Map.prototype.load = function() {
     for (let x = 0; x < fencedZoneWidth; x++) {
         let posX = playerPos[0] + x - centerZoneOffset;
         let posY = playerPos[1] - centerZoneOffset;
+        // Top side
         this.tiles[posY - 1][posX] = new Tile(posX, posY - 1, TileTypes.FENCE, this);
-        // opening
+        // Bottom side, minus opening
         if (x !== Math.floor(fencedZoneWidth / 2 - 1) && x !== Math.floor(fencedZoneWidth / 2)) {
             this.tiles[posY + fencedZoneWidth][posX] = new Tile(posX, posY + fencedZoneWidth, TileTypes.FENCE, this);
-        }        
+        }
 
         posX = playerPos[0] - centerZoneOffset;
         posY = playerPos[1] + x - centerZoneOffset;
+        // Left side
         this.tiles[posY][posX - 1] = new Tile(posX - 1, posY, TileTypes.FENCE_SIDE, this);
+        // Right side
         this.tiles[posY][posX + fencedZoneWidth] = new Tile(posX + fencedZoneWidth, posY, TileTypes.FENCE_SIDE, this);
+    }
+
+    // Close gap between st0neZ0ne and player area
+    for (var y = playerPos[1] - centerZoneOffset + fencedZoneWidth + 1; y < this.tilesY - 3; y++) {
+        // Left side
+        this.set(playerPos[0] - 2, y, TileTypes.FENCE_SIDE);
+        // Right side
+        this.set(playerPos[0] + 1, y, TileTypes.FENCE_SIDE);
     }
 
     // create st0neZ0ne™ with f3nc3™
