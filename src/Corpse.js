@@ -48,8 +48,16 @@ Corpse.displayCount = function(ctx, x, y, count) {
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, x, y);
     ctx.scale(0.75, 0.75);
+    let row = 0;
+    let column = 0;
     for (var i = 0; i < count; i++) {
-        ctx.drawImage(Corpse.sprites[1], 11 * i, 0);
+        if (column < 38) {
+            ctx.drawImage(Corpse.sprites[1], 11 * column, row * (-30));
+            column += 1;
+        } else {
+            row += 1;
+            column = 0;
+        }
     }
     ctx.restore();
 };
