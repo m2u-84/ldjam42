@@ -8,9 +8,7 @@ CorpseHandler.prototype.update = function(delta) {
     }
 
     if (this.lastDayTime <= 0.25 && relativeDayTime > 0.25) {
-        console.log('New Corpses!');
         const spawningAmount = state.initialSpawnAmount * (1 + Math.floor(state.dayTime) * state.spawnIncreaseRate);
-        console.log('spawningAmount: ' + spawningAmount);
         for (let i = 0; i < spawningAmount; i++) {
             const corpse = new Corpse([Math.random() * 20, 30]);
             state.corpses.push(corpse);
