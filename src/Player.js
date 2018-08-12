@@ -63,6 +63,8 @@ function Player(position) {
     this.targetPosition = [0, 0];
     this.targetTile = null;
 
+    this.loadDraggingSounds(draggingSounds);
+
     // Actions such as digging or cutting a tree
     this.action = PlayerActions.NONE;
     this.actionStarted = 0;
@@ -75,7 +77,6 @@ Player.prototype.PULL_DISTANCE = 0.7;
 
 Player.load = function() {
     Player.sprite = loader.loadImage("img/character/characteranimation2.png", 4);
-    Player.loadDraggingSounds(draggingSounds);
 };
 
 Player.prototype.update = function(delta) {
@@ -175,7 +176,7 @@ Player.prototype.update = function(delta) {
         Player.pullCorpse(this.pulling, this.position[0], this.position[1], this.PULL_DISTANCE);
         var moving = (this.velocity[0] || this.velocity[1]);
       if (moving) {
-          Player.dragSound.play();
+          this.dragSound.play();
       }
     } 
     Character.prototype.update.call(this, delta);
@@ -238,17 +239,16 @@ Player.pullCorpse = function(corpse, x, y, distance) {
     }
 };
 
-Player.loadDraggingSounds = function(soundData) {
-    Player.draggingAudioFiles = [];
+Player.prototype.loadDraggingSounds = function(soundData) {
+    this.draggingAudioFiles = [];
     soundData.forEach(soundData => {
-        Player.draggingAudioFiles.push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume));
+        this.draggingAudioFiles.push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume));
     })
-    for (const audio of Player.draggingAudioFiles) {
+    for (const audio of this.draggingAudioFiles) {
         audio.onended = () => {
-            Player.dragSound = getRandom(Player.draggingAudioFiles);
-            console.log(Player.dragSound)
+            this.dragSound = getRandom(this.draggingAudioFiles);
         }
 
     }
-    Player.dragSound = Player.draggingAudioFiles[0];
+    this.dragSound = this.draggingAudioFiles[0];
 }
