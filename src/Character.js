@@ -105,14 +105,6 @@ Character.prototype.loadMovementSounds = function (movementSounds) {
         this.movementAudioFiles.push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume, soundData.tileTypes));
     })
     for (const audio of this.movementAudioFiles) {
-        audio.isPlaying = function() {
-            return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2)
-        }
-        audio.trigger = function () {
-            if (!this.isPlaying()) {
-                this.play();
-            }
-        }
         audio.onended = () => {
             if (this.targetTile) {
                 this.movementSound = getRandomSound(this.movementAudioFiles, this.targetTile.type);

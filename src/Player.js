@@ -152,19 +152,19 @@ Player.prototype.update = function(delta) {
                         } else if (tile.type == TileTypes.GROUND) {
                             // Path
                             this.action = PlayerActions.PATH;
-                            this.digSound.play();
+                            this.digSound.trigger();
                             if (tile.decoImage) {
                                 SoundManager.play("obstacles", 0.25);
                             }
                         } else if (tile.type == TileTypes.PATH) {
                             // Dig
                             this.action = PlayerActions.DIG;
-                            this.digSound.play();
+                            this.digSound.trigger();
                             SoundManager.play("digging", 0.15);
                         } else if (tile.type == TileTypes.HOLE || tile.type == TileTypes.GRAVE) {
                             if (tile.type == TileTypes.HOLE || tile.reference && tile.reference.empty) {
                                 this.action = PlayerActions.FILL;
-                                this.digSound.play();
+                                this.digSound.trigger();
                             }
                         }
                     }
@@ -178,7 +178,7 @@ Player.prototype.update = function(delta) {
     } else if (this.ePressed && prev && this.action > 0 && !playerActions[this.action].move) {
         // During action, check if ready
         if (this.action === PlayerActions.DIG) {
-            this.digSound.play();
+            this.digSound.trigger();
         }
         var tile = this.targetTile;
         if (state.time >= this.actionStarted + this.actionDuration && tile) {
@@ -218,7 +218,7 @@ Player.prototype.update = function(delta) {
         Player.pullCorpse(this.pulling, this.position[0], this.position[1], this.PULL_DISTANCE);
         var moving = (this.velocity[0] || this.velocity[1]);
       if (moving) {
-          this.dragSound.play();
+          this.dragSound.trigger();
       }
     } 
     Character.prototype.update.call(this, delta);
