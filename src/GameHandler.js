@@ -66,6 +66,7 @@ function GameHandler(parentElement) {
     this.canvas.width = 320;
     this.canvas.height = 240;
     this.ctx = this.canvas.getContext("2d");
+    this.ctx.font = "10px Arial";
     parentElement.appendChild(this.canvas);
 
     lightSystem = new LightSystem(320, 240);
@@ -184,8 +185,6 @@ GameHandler.prototype.renderLoop = function() {
     lightSystem.setAmbientColor(getAmbientColor(state.dayTime % 1));
     lightSystem.clear();
     renderSorter.clear();
-
-    console.log("rendering everything");
     
     state.map.draw(this.ctx);
     state.graves.forEach(g => g.draw(this.ctx));
