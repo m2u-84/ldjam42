@@ -99,6 +99,7 @@ Player.prototype.update = function(delta) {
             // Check if dropped on grave
             if (this.targetTile && this.targetTile.type == TileTypes.GRAVE && this.targetTile.reference.empty) {
                 this.targetTile.reference.takeCorpse(this.pulling);
+                SoundManager.play("burial", 0.5);
             }
             // Abort pull action
             this.pulling = null;
