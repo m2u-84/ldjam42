@@ -69,3 +69,13 @@ function drawProgressBar(ctx, x, y, w, p, color) {
     ctx.fillStyle = color || "#f0b014";
     ctx.fillRect(x1, y1, w * p, h);
 }
+
+function getAngleDif(a1, a2) {
+    var dif = (a2 - a1) % (2 * Math.PI);
+    if (dif < -Math.PI) {
+        dif += 2*Math.PI;
+    } else if (dif > Math.PI) {
+        dif -= 2*Math.PI;
+    }
+    return dif;
+}

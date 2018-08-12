@@ -74,7 +74,10 @@ Player.prototype.update = function(delta) {
             this.pulling = null;
             this.action = PlayerActions.NONE;
         } else {
-            var corpse = Player.getNearestCorpse(this.targetPosition[0] + 0.5, this.targetPosition[1] + 0.5, 0.8);
+            // Pick corpse based on point in front of player (between player and target tile)
+            var pickx = 0.5 * (this.targetPosition[0] + 0.5 + this.position[0]);
+            var picky = 0.5 * (this.targetPosition[1] + 0.5 + this.position[1]);
+            var corpse = Player.getNearestCorpse(pickx, picky, 1);
             if (corpse) {
                 this.pulling = corpse;
                 this.action = PlayerActions.PULL;
