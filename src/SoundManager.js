@@ -13,17 +13,39 @@ SoundManager.load = function() {
     SoundManager.loadSound("digging", 5);
     SoundManager.loadSound("dragging", 5);
     SoundManager.loadSound("obstacles", 5);
+    SoundManager.loadSound("sighting", 5, "zombie");
 };
 
-SoundManager.loadSound = function(name, count) {
+SoundManager.loadSound = function(name, count, directory) {
     var sounds = [];
     for (var i = 1; i <= count; i++) {
-        var file = "voice/gravedigger/" + name + "/" + i + ".mp3";
+        var file = "voice/" + (directory || "gravedigger") + "/" + name + "/" + i + ".mp3";
         sounds[i - 1] = loader.loadAudio(file);
     }
     sounds.previous = null;
     SoundManager.sounds[name] = sounds;
 };
+
+SoundManager.loadSoundsWithNamedTrigger = function (sounds, triggerName) {
+    if (Array.isArray(sounds)) {
+        this[`${triggerName}Files`] = [];
+        sounds.forEach(sound => {
+            this[`${triggerName}Files`].push(loader.loadAudio(sound.src, sound.playbackRate, sound.volume, sound.tileTypes));
+        });
+        for (const audio of this[`${triggerName}Files`]) {
+            audio.onended = () => {
+                if (this.targetTile && audio.tileTypes != undefined) {
+                    this[triggerName] = getRandomSoundByTileType(this[`${triggerName}Files`], this.targetTile.type);
+                } else {
+                    this[triggerName] = getRandom(this[`${triggerName}Files`]);
+                }
+            }
+        }
+        this[triggerName] = this[`${triggerName}Files`][0];
+    } else {
+        this[triggerName] = loader.loadAudio(sounds.src, sounds.playbackRate, sounds.volume);
+    }
+}
 
 SoundManager.play = function(name, probability) {
     if (Math.random() > probability) { return; }

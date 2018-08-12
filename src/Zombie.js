@@ -29,8 +29,8 @@ Zombie.prototype.update = function(dt) {
             var dx = this.position[0] - state.player.position[0], dy = this.position[1] - state.player.position[1];
             if (dx * dx + dy * dy < 5) {
                 // Follow player
-                console.log("FOllowing");
                 this.following = state.player;
+                SoundManager.play("sighting", 0.4);
             } else {
                 if (this.targetPosition) {
                     // Already there?
