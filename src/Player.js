@@ -150,14 +150,7 @@ Player.prototype.draw = function(ctx) {
     if (this.action && playerActions[this.action].duration > 0) {
         var p = (state.time - this.actionStarted) / this.actionDuration;
         if (p >= 0 && p <= 1) {
-            y -= 40;
-            var w = 16;
-            var h = 3;
-            var x1 = x - w/2, y1 = y - h/2;
-            ctx.fillStyle = "black";
-            ctx.fillRect(x1 - 1, y1 - 1, w + 2, h + 2);
-            ctx.fillStyle = "#f0b014";
-            ctx.fillRect(x1, y1, w * p, h);
+            drawProgressBar(ctx, x, y, 16, p);
         }
     }
 };

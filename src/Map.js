@@ -22,7 +22,8 @@ Map.prototype.load = function() {
     this.defaultTile.decoImage = null;
 
     const playerPos = state.player.position;
-    const fencedZoneWidth = 8;
+    playerPos[1] -= 2;
+    const fencedZoneWidth = 9;
     const centerZoneOffset = Math.floor(fencedZoneWidth / 2) ;
 
     // create f3nc3™ around player
@@ -32,7 +33,7 @@ Map.prototype.load = function() {
         // Top side
         this.tiles[posY - 1][posX] = new Tile(posX, posY - 1, TileTypes.FENCE, this);
         // Bottom side, minus opening
-        if (x !== Math.floor(fencedZoneWidth / 2 - 1) && x !== Math.floor(fencedZoneWidth / 2)) {
+        if (x < Math.floor(fencedZoneWidth / 2 - 1) || x > Math.floor(fencedZoneWidth / 2) + 1) {
             this.tiles[posY + fencedZoneWidth][posX] = new Tile(posX, posY + fencedZoneWidth, TileTypes.FENCE, this);
         }
 
@@ -45,12 +46,17 @@ Map.prototype.load = function() {
     }
 
     // Close gap between st0neZ0ne and player area
-    for (var y = playerPos[1] - centerZoneOffset + fencedZoneWidth + 1; y < this.tilesY - 3; y++) {
+    var y1 = playerPos[1] - centerZoneOffset + fencedZoneWidth + 1;
+    for (var y = y1; y < this.tilesY - 3; y++) {
         // Left side
         this.set(playerPos[0] - 2, y, TileTypes.FENCE_SIDE);
         // Right side
-        this.set(playerPos[0] + 1, y, TileTypes.FENCE_SIDE);
+        this.set(playerPos[0] + 2, y, TileTypes.FENCE_SIDE);
+        // Path in the middle
+        this.set(playerPos[0], y, TileTypes.PATH);
     }
+    this.set(playerPos[0], y1 - 1, TileTypes.PATH);
+    this.set(playerPos[0], y1 - 2, TileTypes.PATH);
 
     // create st0neZ0ne™ with f3nc3™
     const entranceHeight = 3;
@@ -59,7 +65,7 @@ Map.prototype.load = function() {
             // fence
             if (y === this.tilesY - entranceHeight) {
                 // opening or stone
-                if (x !== Math.floor(this.tilesX / 2 - 1) && x !== Math.floor(this.tilesX / 2)) {
+                if (x < Math.floor(this.tilesX / 2 - 1) ||x > Math.floor(this.tilesX / 2) + 1) {
                     this.tiles[y][x] = new Tile(x, y, TileTypes.STONE_FENCE, this);
                 } else {
                     this.tiles[y][x] = new Tile(x, y, TileTypes.STONE, this);

@@ -75,10 +75,10 @@ function GameHandler(parentElement) {
     this.load().then(() => {
 
         // Create some corpses
-        // for (var i = 0; i < 5; i++) {
-        //     var corpse = new Corpse([Math.random() * 20, Math.random() * 20]);
-        //     state.corpses.push(corpse);
-        // }
+        for (var i = 0; i < 5; i++) {
+            var corpse = new Corpse([Math.random() * 20, 19]);
+            state.corpses.push(corpse);
+        }
 
         this.gameLoop();
         this.renderLoop();

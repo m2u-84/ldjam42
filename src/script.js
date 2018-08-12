@@ -49,3 +49,13 @@ function drawImage(ctx, img, x, y, w, h, relx, rely, mirrored, angle, frameIndex
     }
     ctx.restore();
 }
+
+function drawProgressBar(ctx, x, y, w, p, color) {
+    y -= 30;
+    var h = 3;
+    var x1 = x - w/2, y1 = y - h/2;
+    ctx.fillStyle = "black";
+    ctx.fillRect(x1 - 1, y1 - 1, w + 2, h + 2);
+    ctx.fillStyle = color || "#f0b014";
+    ctx.fillRect(x1, y1, w * p, h);
+}
