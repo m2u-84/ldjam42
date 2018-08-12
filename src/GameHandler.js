@@ -35,6 +35,8 @@ function GameHandler(parentElement) {
         cam: { x: 0, y: 0 },
         money: 1150,
         shopOpen: false,
+        startScreen: false,
+        pauseScreen: false,
         readyToShop: false,
         mousePos: [],
         mouseClick: false,
@@ -64,6 +66,7 @@ function GameHandler(parentElement) {
     this.canvas.width = 320;
     this.canvas.height = 240;
     this.ctx = this.canvas.getContext("2d");
+    this.ctx.font = "10px Arial";
     parentElement.appendChild(this.canvas);
 
     lightSystem = new LightSystem(320, 240);
@@ -86,7 +89,7 @@ function GameHandler(parentElement) {
     this.load().then(() => {
 
         // Create some corpses
-        for (var i = 0; i < 25; i++) {
+        for (var i = 0; i < 0; i++) {
             var corpse = new Corpse([Math.random() * 20, 30]);
             state.corpses.push(corpse);
         }
@@ -116,6 +119,7 @@ GameHandler.prototype.gameLoop = function() {
     // Time management
     var t = +Date.now();
     var dt = t - this.lastTime;
+    if (state.pauseScreen || state.startScreen) { dt = 0; }
     this.lastTime = t;
     this.currentTime += dt;
     state.time = this.currentTime;
@@ -124,36 +128,56 @@ GameHandler.prototype.gameLoop = function() {
     state.dt = dt;
     state.lastTime = this.lastTime;
 
-    // Update all classes and instances
-    for (var c of this.classes) {
-        // Static update
-        if (c.class.update) {
-            c.class.update(dt, this.currentTime);
-        }
-        // Instances
-        if (c.instances.length > 0 && c.instances[0].update) {
-            for (var i of c.instances) {
-                i.update(dt, this.currentTime);
+    if (state.startScreen) {
+        // TODO: draw start screen
+        this.startGame();
+    } else {
+        // Update all classes and instances
+        for (var c of this.classes) {
+            // Static update
+            if (c.class.update) {
+                c.class.update(dt, this.currentTime);
+            }
+            // Instances
+            if (c.instances.length > 0 && c.instances[0].update) {
+                for (var i of c.instances) {
+                    i.update(dt, this.currentTime);
+                }
             }
         }
+    
+        state.zombies.forEach(z => z.update(dt));
+        state.player.update(dt);
+        this.corpseHandler.update(dt);
     }
-
-    state.zombies.forEach(z => z.update(dt));
-    state.player.update(dt);
-    this.corpseHandler.update(dt);
-
 
     requestAnimationFrame(this.gameLoop.bind(this));
 };
+
+    GameHandler.prototype.startGame = function() {
+        this.startTime = +Date.now();
+        this.lastTime = +Date.now();
+        this.currentTime = 0;
+        state.dayTime = 0;
+        state.lastDayTime = 0;
+        state.startScreen = false;
+    };
 
 GameHandler.prototype.renderLoop = function() {
     // Clear stuff
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
     state.cam = {
         x: Math.round(-state.player.position[0] * state.map.tw + this.canvas.width / 2),
         y: Math.round(-state.player.position[1] * state.map.tw + this.canvas.height / 2)
+    }
+
+
+    if (state.startScreen) {
+        requestAnimationFrame(this.renderLoop.bind(this));
+        return;
     }
     this.ctx.translate(state.cam.x, state.cam.y);
 
@@ -162,20 +186,6 @@ GameHandler.prototype.renderLoop = function() {
     lightSystem.clear();
     renderSorter.clear();
     
-    // Render all classes and instances
-    /*
-    for (var c of this.classes) {
-        // Static update
-        if (c.class.draw) {
-            c.class.draw(this.ctx, this.currentTime);
-        }
-        // Instances
-        if (c.instances.length > 0 && c.instances[0].draw) {
-            for (var i of c.instances) {
-                i.draw(this.ctx, this.currentTime);
-            }
-        }
-    } */
     state.map.draw(this.ctx);
     state.graves.forEach(g => g.draw(this.ctx));
     state.corpses.forEach(c => c.draw(this.ctx));

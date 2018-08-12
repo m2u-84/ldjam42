@@ -36,6 +36,13 @@ Shop.update = function() {
     this.newClick = this.mouseClick && !this.prevClick;
 };
 
+Shop.load = function() {
+    Shop.buttons = [
+        loader.loadImage("img/misc/button small.png"),
+        loader.loadImage("img/misc/button large.png")
+    ];
+};
+
 Shop.prototype.draw = function(ctx) {
     // Fade out everything
     ctx.fillStyle = "rgba(0,0,0,0.5)";
@@ -108,16 +115,18 @@ Shop.prototype.draw = function(ctx) {
 };
 
 Shop.button = function(ctx, x, y, text, w, disabled) {
-    // Draw
-    ctx.fillStyle = "black";
+    var img = w < 100 ? Shop.buttons[0] : Shop.buttons[1];
     var h = 16;
     var x1 = Math.floor(x - w/2), y1 = Math.floor(y - h/2);
-    ctx.fillRect(x1, y1, w, h);
     // Inside?
     var mouse = state.mousePos;
     var hover = !disabled && (mouse[0] >= x1 && mouse[1] >= y1 && mouse[0] <= x1 + w && mouse[1] <= y1 + h);
-    ctx.fillStyle = hover ? "white": "gray";
-    ctx.fillRect(x1 + 1, y1 + 1, w - 2, h - 2);
+    /*
+    ctx.fillStyle = "black";
+    ctx.fillRect(x1, y1, w, h); */
+    // ctx.fillStyle = hover ? "white": "gray";
+    // ctx.fillRect(x1 + 1, y1 + 1, w - 2, h - 2);
+    ctx.drawImage(img, x1, y1, w, h);
     // Text
     ctx.fillStyle = hover ? "black" : "#111";
     ctx.textAlign = "center";
