@@ -13,6 +13,7 @@ function Grave(x1, y1, x2, y2) {
     this.tile2.reference = this;
     this.inverted = (x1 < x2);
     this.empty = true;
+    this.rotten = false;
     this.fillTime = 0;
     this.expirationTime = 0;
     // Center coordinate
@@ -25,11 +26,16 @@ Grave.load = function() {
     Grave.vSprite = loader.loadImage("img/grave/gravev.png");
     Grave.emptyhSprite = loader.loadImage("img/grave/emptygraveh.png");
     Grave.emptyvSprite = loader.loadImage("img/grave/emptygravev.png");
+    Grave.rottenhSprite = loader.loadImage("img/grave/graverottenh.png");
+    Grave.rottenvSprite = loader.loadImage("img/grave/graverottenv.png");
 };
 
 Grave.prototype.draw = function(ctx) {
     var img = this.empty ? ( (this.x1 == this.x2) ? Grave.emptyvSprite : Grave.emptyhSprite) : 
             (this.x1 == this.x2) ? Grave.vSprite : Grave.hSprite;
+    if (this.empty && this.rotten) {
+        img = (this.x1 == this.x2) ? Grave.rottenvSprite : Grave.rottenhSprite;
+    }
     var x = (this.x1 + this.x2 + 1) / 2 * state.map.tw;
     var y = (this.y1 + this.y2 + 1) / 2 * state.map.th;
     drawImage(ctx, img, x, y, null, null, 0.5, 0.5, this.inverted);
@@ -59,6 +65,7 @@ Grave.prototype.takeCorpse = function(corpse) {
 
 Grave.prototype.ejectCorpse = function() {
     this.empty = true;
+    this.rotten = true;
     // Spawn zombie?
     // TODO Spawn zombie randomly, if zombies have been unlocked
 };
