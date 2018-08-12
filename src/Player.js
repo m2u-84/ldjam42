@@ -65,6 +65,14 @@ Player.load = function() {
     Player.sprite = loader.loadImage("img/character/characteranimation2.png", 4);
 };
 
+Player.update = function() {
+    // Check time of day for new day
+    var threshold = 0.2;
+    if (state.dayTime % 1 >= threshold && state.lastDayTime % 1 < threshold) {
+        SoundManager.play("daybreak", 1);
+    }
+};
+
 Player.prototype.update = function(delta) {
     // Set Velocity based on State (inserted by keyHandler)
     var keys = state.keyStates;
@@ -140,10 +148,14 @@ Player.prototype.update = function(delta) {
                             // Path
                             this.action = PlayerActions.PATH;
                             this.digSound.play();
+                            if (tile.decoImage) {
+                                SoundManager.play("obstacles", 0.25);
+                            }
                         } else if (tile.type == TileTypes.PATH) {
                             // Dig
                             this.action = PlayerActions.DIG;
                             this.digSound.play();
+                            SoundManager.play("digging", 0.15);
                         } else if (tile.type == TileTypes.HOLE || tile.type == TileTypes.GRAVE) {
                             if (tile.type == TileTypes.HOLE || tile.reference && tile.reference.empty) {
                                 this.action = PlayerActions.FILL;

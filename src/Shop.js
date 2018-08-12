@@ -11,7 +11,7 @@ function Shop() {
         ["Boots", 150, "boots", "Get some good boots.\nMuch better than yours.\nTrust me."],
         ["Better Axe", 100, "axe2", "Get a better axe.\nNow!"],
         ["Super Axe", 500, "axe3", "The best of all axes."],
-        ["Cool Corpses", 250, "cooling", "Keep corpses cool,\nso they don't\ndecomposte prematurely."],
+        ["Cool Corpses", 250, "cooling", "Keep corpses cool,\nso they don't\ndecomposte\nprematurely."],
         ["Zombie Virus", 200, "zombies", "Some will rise from\nthe dead early.\nMore room for corpses!\nAnd mostly harmless."],
         ["Friendly Zombies", 800, "zombies2", "Zombies will respect\nyou now.\nYou know you need this."],
         ["Hypnosis", 400, "hypnosis", "Earn more money with\neverything via the\npower of being a\nhypnotist!"]

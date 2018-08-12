@@ -7,10 +7,12 @@ function SoundManager() {
 
 SoundManager.load = function() {
     SoundManager.sounds = {}
-    SoundManager.loadSound("attack", 5);
+    SoundManager.loadSound("attack", 5); // TODO
     SoundManager.loadSound("burial", 5);
-    SoundManager.loadSound("dragging", 5);
     SoundManager.loadSound("daybreak", 5);
+    SoundManager.loadSound("digging", 5);
+    SoundManager.loadSound("dragging", 5);
+    SoundManager.loadSound("obstacles", 5);
 };
 
 SoundManager.loadSound = function(name, count) {
