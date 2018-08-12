@@ -87,9 +87,11 @@ function Tile(x, y, tp, map) {
     }
 }
 
-Tile.prototype.draw = function(ctx) {
-    var x = (this.x + 0.5) * this.map.tw;
-    var y = (this.y + 0.5) * this.map.th;
+Tile.prototype.draw = function(ctx, tx, ty) {
+    if (tx == null) { tx = this.x; }
+    if (ty == null) { ty = this.y; }
+    var x = (tx + 0.5) * this.map.tw;
+    var y = (ty + 0.5) * this.map.th;
     if (this.sprite) {
         ctx.save();
         ctx.translate(x, y);

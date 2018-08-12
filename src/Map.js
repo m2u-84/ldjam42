@@ -18,6 +18,9 @@ Map.prototype.load = function() {
         }
     }
 
+    this.defaultTile = new Tile(x, y, TileTypes.GROUND, this);
+    this.defaultTile.decoImage = null;
+
     const playerPos = state.player.position;
     const fencedZoneWidth = 8;
     const centerZoneOffset = Math.floor(fencedZoneWidth / 2) ;
@@ -115,11 +118,22 @@ Map.prototype.draw = function(ctx) {
     for (var z = tileTypes.minZIndex; z <= tileTypes.maxZIndex; z++) {
         for (var tp of tileTypes) {
             if (tp.zIndex == z) {
-                for (var y = 0; y < this.tilesY; y++) {
-                    for (var x = 0; x < this.tilesX; x++) {
+                // Only render visible view, instead of whole map
+                var y1 = Math.floor(-state.cam.y / state.map.tw);
+                var x1 = Math.floor(-state.cam.x / state.map.th);
+                var y2 = y1 + 11;
+                var x2 = x1 + 15;
+                for (var y = y1; y < y2; y++) {
+                    for (var x = x1; x < x2; x++) {
                         var tile = this.getTile(x,y);
-                        if (tileTypes[tile.type] == tp) {
-                            tile.draw(ctx);
+                        if (tile) {
+                            // Actual tile
+                            if (tileTypes[tile.type] == tp) {
+                                tile.draw(ctx);
+                            }
+                        } else {
+                            // Outside map
+                            this.defaultTile.draw(ctx, x, y);
                         }
                     }
                 }
