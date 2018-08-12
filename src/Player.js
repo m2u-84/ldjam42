@@ -130,7 +130,7 @@ Player.update = function() {
     if (state.dayTime % 1 >= threshold && state.lastDayTime % 1 < threshold) {
         SoundManager.play("daybreak", 0.6);
     }
-    threshold = 0.7;
+    threshold = 0.71;
     if (state.dayTime % 1 >= threshold && state.lastDayTime % 1 < threshold) {
         SoundManager.play("nightbreak", 0.6);
     }

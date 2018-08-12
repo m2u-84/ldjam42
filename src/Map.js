@@ -7,6 +7,8 @@ function Map(tilesX, tilesY, tileWidth, tileHeight) {
     this.tileHeight = this.th = tileHeight;
 
     this.tiles = [];
+
+    this.expanded = [false, false, false];
 }
 
 Map.prototype.load = function() {
@@ -36,8 +38,9 @@ Map.prototype.load = function() {
         playerPos[0] - centerZoneOffset,
         playerPos[1] - centerZoneOffset,
         playerPos[0] + fencedZoneWidth - centerZoneOffset - 1,
-        playerPos[1] - centerZoneOffset + fencedZoneWidth 
+        playerPos[1] - centerZoneOffset + fencedZoneWidth - 1
     ];
+    this.fenceArea = fenceArea;
     const entranceHeight = 4;
     const stoneArea = [
         0,
@@ -47,7 +50,7 @@ Map.prototype.load = function() {
     ];
     const entranceArea = [
         playerPos[0] - 2,
-        fenceArea[3],
+        fenceArea[3] + 1,
         playerPos[0] + 2,
         stoneArea[1]
     ];
@@ -103,8 +106,8 @@ Map.prototype.load = function() {
     }
 
     // Entry Torch
-    this.set(playerPos[0] - 1, fenceArea[3], TileTypes.TORCH);
-    this.set(playerPos[0] + 1, fenceArea[3], TileTypes.TORCH);
+    this.set(playerPos[0] - 1, fenceArea[3] + 1, TileTypes.TORCH);
+    this.set(playerPos[0] + 1, fenceArea[3] + 1, TileTypes.TORCH);
 
     // Shop Area
     // First path to the right
@@ -146,6 +149,17 @@ Map.prototype.update = function() {
     var t = 0.692;
     if (state.dayTime % 1 >= t && state.lastDayTime % 1 < t) {
         this.nightbreakSound.play();
+    }
+
+    // Check updated unlocks
+    if (!this.expanded[0] && state.unlocks.west) {
+        this.enhanceFenceArea(0, 2);
+    }
+    if (!this.expanded[1] && state.unlocks.north) {
+        this.enhanceFenceArea(1, 2);
+    }
+    if (!this.expanded[2] && state.unlocks.east) {
+        this.enhanceFenceArea(2, 2);
     }
 };
 
@@ -266,6 +280,59 @@ Map.prototype.draw = function(ctx) {
             var tile = this.getTile(x,y);
             if (tile) {
                 tile.drawLight();
+            }
+        }
+    }
+};
+
+Map.prototype.enhanceFenceArea = function(leftTopRight, count) {
+    this.expanded[leftTopRight] = true;
+    var self = this;
+    switch (leftTopRight) {
+        case 0:
+            // Expand Left
+            this.fenceArea[0] -=count;
+            applyFence(this.fenceArea[0], this.fenceArea[1], this.fenceArea[0] + count, this.fenceArea[3], true, true, false, true);
+            break;
+        case 1:
+            // Expand Top
+            this.fenceArea[1] -= count;
+            applyFence(this.fenceArea[0], this.fenceArea[1], this.fenceArea[2], this.fenceArea[1] + count, true, true, true, false);
+            break;
+        case 2:
+            // Expand Right
+            this.fenceArea[2] += count;
+            applyFence(this.fenceArea[2] - count, this.fenceArea[1], this.fenceArea[2], this.fenceArea[3], false, true, true, true);
+            break;
+    }
+
+    function applyFence(x1, y1, x2, y2, l, t, r, b) {
+        // Clear inner
+        for (var y = y1; y <= y2; y++) {
+            for (var x = x1; x <= x2; x++) {
+                var tp = self.getTile(x, y).type;
+                if (tp == TileTypes.FENCE || tp == TileTypes.FENCE_SIDE) {
+                    self.set(x, y, TileTypes.GROUND);
+                }
+            }
+        }
+        // Add fences
+        if (l) {
+            addRow(x1 - 1, y1, 0, 1, y2 - y1 + 1, TileTypes.FENCE_SIDE);
+        }
+        if (t) {
+            addRow(x1, y1 - 1, 1, 0, x2 - x1 + 1, TileTypes.FENCE);
+        }
+        if (r) {
+            addRow(x2 + 1, y1, 0, 1, y2 - y1 + 1, TileTypes.FENCE_SIDE);
+        }
+        if (b) {
+            addRow(x1, y2 + 1, 1, 0, x2 - x1 + 1, TileTypes.FENCE);
+        }
+
+        function addRow(x, y, dx, dy, count, tp) {
+            for (var i = 0; i < count; i++) {
+                self.set(x + i * dx, y + i * dy, tp);
             }
         }
     }

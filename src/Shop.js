@@ -14,7 +14,10 @@ function Shop() {
         ["World Peace", 800, "peace", "Bring peace to the world.\nWill reduce dead bodies\nsomewhat. Maybe. Even\nin peace there's death,\nafter all. Don't be sad."],
         // ["Cool Corpses", 250, "cooling", "Keep corpses cool,\nso they don't\ndecomposte\nprematurely."],
         ["Friendly Zombies", 800, "zombies2", "Zombies will respect\nyou now. They speed\nyou up instead of\nslowing you down.\nYou know you need this."],
-        ["Hypnosis", 400, "hypnosis", "Earn more money with\neverything via the\npower of being a\nhypnotist! This is not\na scam."]
+        ["Hypnosis", 400, "hypnosis", "Earn more money with\neverything via the\npower of being a\nhypnotist! This is not\na scam."],
+        ["Grow East", 350, "east", "Expand.\nThe East is nice.\nBut is space really\nwhat you're lacking?"],
+        ["Grow West", 350, "west", "Expand.\West is where\nthe nice things are.\nEnjoy the weather,\nthe cocktails, and\nlong weekends!"],
+        ["Grow North", 500, "north", "Expand.\nSpace will still be\nrunning out later.\nBecome King in the\nNorth!"]
         // ["Zombie Virus", 200, "zombies", "Some will rise from\nthe dead early.\nMore room for corpses!\nAnd mostly harmless."],
     ].sort((a,b) => a[1] - b[1]);
     this.options.forEach(o => {
