@@ -59,7 +59,7 @@ Grave.prototype.takeCorpse = function(corpse) {
     this.empty = false;
     removeItem(state.corpses, corpse);
     this.fillTime = state.dayTime;
-    this.expirationTime = this.fillTime + 3;
+    this.expirationTime = this.fillTime + (state.unlocks.maggots ? 1.9 : 3.1);
     shop.awardMoney(50, this.cx, this.cy);
 };
 

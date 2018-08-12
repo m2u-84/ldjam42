@@ -4,16 +4,17 @@ function Shop() {
     // All things to buy in the shop, sorted by price
     // Title, price, attribute name (for state.unlocks), description
     this.options = [
-        ["Torches", 30, "torches", "Unlock the power of\nsetting sticks on fire\nand sticking them into\nthe ground."],
+        ["Torches", 30, "torches", "Unlock the power of\nsetting sticks on fire\nand sticking them into\nthe ground*.\n\n* disclaimer: this does\nnot actually work."],
         ["Better Shovel", 100, "shovel2", "Get a better shovel\nthat makes shoveling\nfeel like a day at\nthe beach."],
         ["Super Shovel", 500, "shovel3", "Get the Ultra\nShovel 9000 to\nshovel like there's\nno tomorrow."],
         ["Maggots", 300, "maggots", "Unleash the power\nof maggots. Graves\nwill take less time\nfor decomposition."],
-        ["Boots", 150, "boots", "Get some good boots.\nMuch better than yours.\nTrust me."],
+        ["Boots", 180, "boots", "Get some good boots.\nMuch better than yours.\nTrust me."],
         ["Better Axe", 100, "axe2", "Get a better axe.\nNow!"],
-        ["Super Axe", 500, "axe3", "The best of all axes."],
-        ["Cool Corpses", 250, "cooling", "Keep corpses cool,\nso they don't\ndecomposte\nprematurely."],
-        ["Friendly Zombies", 800, "zombies2", "Zombies will respect\nyou now.\nYou know you need this."],
-        ["Hypnosis", 400, "hypnosis", "Earn more money with\neverything via the\npower of being a\nhypnotist!"]
+        ["Super Axe", 500, "axe3", "You ever wanted to\nsay 'And my Axe!'?\nNow you can. This\naxe will do the job.\nIn fact it will do\nALL the jobs!"],
+        ["World Peace", 800, "peace", "Bring peace to the world.\nWill reduce dead bodies\nsomewhat. Maybe. Even\nin peace there's death,\nafter all. Don't be sad."],
+        // ["Cool Corpses", 250, "cooling", "Keep corpses cool,\nso they don't\ndecomposte\nprematurely."],
+        ["Friendly Zombies", 800, "zombies2", "Zombies will respect\nyou now. They speed\nyou up instead of\nslowing you down.\nYou know you need this."],
+        ["Hypnosis", 400, "hypnosis", "Earn more money with\neverything via the\npower of being a\nhypnotist! This is not\na scam."]
         // ["Zombie Virus", 200, "zombies", "Some will rise from\nthe dead early.\nMore room for corpses!\nAnd mostly harmless."],
     ].sort((a,b) => a[1] - b[1]);
     this.options.forEach(o => {
@@ -111,6 +112,7 @@ Shop.prototype.draw = function(ctx) {
         shop.removeMoney(article[1]);
         // Unlock officially
         state.unlocks[article[2]] = true;
+        SoundManager.play("purchase", 1);
     }
 
     // Back button
@@ -145,6 +147,9 @@ Shop.button = function(ctx, x, y, text, w, disabled) {
 };
 
 Shop.prototype.awardMoney = function(money, x, y) {
+    if (state.unlocks.hypnosis) {
+        money = Math.round(money * 1.2);
+    }
     state.money += money;
     // Show floating text
     var text = [money, x, y, state.time];

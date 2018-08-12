@@ -38,7 +38,7 @@ function GameHandler(parentElement) {
         graves: [],
         keyStates: keyHandler.keyStates,
         cam: { x: 0, y: 0 },
-        money: 50,
+        money: 1150,
         shopOpen: false,
         startScreen: true,
         pauseScreen: false,

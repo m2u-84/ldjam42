@@ -61,7 +61,7 @@ const cuttingTreeSounds = {
 const torchCrackle = {
     src: "sounds/torch_crackle_loop.wav",
     playbackRate: 1,
-    volume: 1,
+    volume: 0.3,
     loop: true
 }
 
@@ -75,8 +75,8 @@ const PlayerActions = {
     ATTACK: 6
 }
 
-var testSpeedWalkFactor = 2;
-var testSpeedFactor = 5;
+var testSpeedWalkFactor = 1;
+var testSpeedFactor = 1;
 var playerActions = [
     { duration: 0, move: true },
     { duration: 0, move: true },
@@ -221,6 +221,7 @@ Player.prototype.update = function(delta) {
         this.pulling = null;
         this.actionDuration = playerActions[this.action].duration;
         this.cutTreeSound.trigger();
+        SoundManager.play("attack", 0.05);
     }
     // E pressed?
     var prev = this.ePressed;
@@ -228,6 +229,7 @@ Player.prototype.update = function(delta) {
     if (this.ePressed && !prev) {
         this.actionStarted = state.time;
         // E was pressed just now, try to drag corpse
+        var durationFactor = 1;
         if (this.pulling) {
             // Check if dropped on grave
             if (this.targetTile && this.targetTile.type == TileTypes.GRAVE && this.targetTile.reference.empty) {
@@ -258,6 +260,8 @@ Player.prototype.update = function(delta) {
                             // Cut Tree
                             this.cutTreeSound.trigger();
                             this.action = PlayerActions.CUT;
+                            if (state.unlocks.axe2) { durationFactor = 0.7; }
+                            if (state.unlocks.axe3) { durationFactor = 0.3; }
                         } else if (tile.type == TileTypes.GROUND) {
                             // Path
                             this.action = PlayerActions.PATH;
@@ -265,25 +269,31 @@ Player.prototype.update = function(delta) {
                             if (tile.decoImage) {
                                 SoundManager.play("obstacles", 0.25);
                             }
+                            if (state.unlocks.shovel2) { durationFactor = 0.75; }
+                            if (state.unlocks.shovel3) { durationFactor = 0.5; }
                         } else if (tile.type == TileTypes.PATH) {
                             // Dig
                             this.action = PlayerActions.DIG;
                             this.digSound.trigger();
                             SoundManager.play("digging", 0.15);
+                            if (state.unlocks.shovel2) { durationFactor = 0.75; }
+                            if (state.unlocks.shovel3) { durationFactor = 0.5; }
                         } else if (tile.type == TileTypes.HOLE || tile.type == TileTypes.GRAVE) {
                             if (tile.type == TileTypes.HOLE || tile.reference && tile.reference.empty) {
                                 this.action = PlayerActions.FILL;
                                 this.digSound.trigger();
+                                if (state.unlocks.shovel2) { durationFactor = 0.75; }
+                                if (state.unlocks.shovel3) { durationFactor = 0.5; }
                             }
                         } else if (tile.type == TileTypes.FENCE || tile.type == TileTypes.FENCE_SIDE
                                     || tile.type == TileType.STONE_FENCE || tile.type == TileType.STONE_FENCE_SIDE) {
-                                        this.cutTreeSound.trigger();
-                                    }
+                            this.cutTreeSound.trigger();
+                        }
                     }
                 }
             }
         }
-        this.actionDuration = playerActions[this.action].duration;
+        this.actionDuration = playerActions[this.action].duration * durationFactor;
     } else if (!this.ePressed && this.action > 0 && !playerActions[this.action].move && this.action != PlayerActions.ATTACK) {
         // e released during blocking action -> abort action
         this.action = PlayerActions.NONE;
@@ -305,6 +315,7 @@ Player.prototype.update = function(delta) {
                 case PlayerActions.CUT:
                     state.map.set(tile.x, tile.y, TileTypes.GROUND);
                     this.treeFallingSound.trigger();
+                    SoundManager.play("treefall", 0.7);
                     break;
                 case PlayerActions.PATH:
                     if (tile.decoImage) {
@@ -348,8 +359,8 @@ Player.prototype.update = function(delta) {
     Character.prototype.update.call(this, delta);
 
     // Target tile
-    this.targetPosition = [ Math.floor(this.position[0]) + this.targetDirection[0],
-        Math.floor(this.position[1] + this.targetDirection[1]) ];
+    this.targetPosition = [ Math.floor(this.position[0] + this.targetDirection[0] * 0.7),
+        Math.floor(this.position[1] + this.targetDirection[1] * 0.7) ];
     this.targetTile = state.map.getTile(this.targetPosition[0], this.targetPosition[1]);
 };
 
@@ -457,5 +468,24 @@ Player.prototype.getZombieSpeedReduction = function() {
             }
         }
     });
-    return Math.pow(0.85, near);
+    var base = state.unlocks.zombies2 ? 1.25 : 0.85;
+    return Math.min(3, Math.max(0.2, Math.pow(base, near)));
+};
+
+Player.prototype.damageZombies = function() {
+    var pickx = 0.5 * (this.targetPosition[0] + 0.5 + this.position[0]);
+    var picky = 0.5 * (this.targetPosition[1] + 0.5 + this.position[1]);
+    var dmg = 2 + (state.unlocks.axe2 ? 1 : 0) + (state.unlocks.axe3 ? 4 : 0);
+    for (var i = state.zombies.length - 1; i >= 0; i--) {
+        var z = state.zombies[i];
+        var dx = z.position[0] - pickx, dy = z.position[1] - picky;
+        var d2 = dx * dx + dy * dy;
+        if (d2 < 1 * 1) {
+            dx = z.position[0] - this.position[0]; dy = z.position[1] - this.position[1];
+            var d = Math.sqrt(dx * dx + dy * dy);
+            z.velocity = [ dx/d, dy/d ].map(v => v * 0.03);
+            z.sleepUntil = state.time + 500;
+            z.damage(dmg);
+        }
+    }
 };

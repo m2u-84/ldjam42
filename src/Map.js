@@ -12,7 +12,7 @@ function Map(tilesX, tilesY, tileWidth, tileHeight) {
 Map.prototype.load = function() {
     // Sounds
     this.daybreakSound = loader.loadAudio("sounds/cock-kikeriki.mp3", 1, 0.5);
-    this.nightbreakSound = loader.loadAudio("sounds/church-bell.mp3", 1, 0.5);
+    this.nightbreakSound = loader.loadAudio("sounds/church-bell.mp3", 1, 1);
 
     // Set up tiles array
     for (var y = 0; y < this.tilesY; y++) {

@@ -7,7 +7,7 @@ function SoundManager() {
 
 SoundManager.load = function() {
     SoundManager.sounds = {}
-    SoundManager.loadSound("attack", 5); // TODO
+    SoundManager.loadSound("attack", 5);
     SoundManager.loadSound("burial", 5);
     SoundManager.loadSound("daybreak", 5);
     SoundManager.loadSound("digging", 5);
@@ -15,7 +15,11 @@ SoundManager.load = function() {
     SoundManager.loadSound("newbodies", 5);
     SoundManager.loadSound("nightbreak", 5);
     SoundManager.loadSound("obstacles", 5);
+    SoundManager.loadSound("purchase", 5);
+    SoundManager.loadSound("treefall", 5);
     SoundManager.loadSound("sighting", 5, "zombie");
+    SoundManager.loadSound("zattack", 5, "zombie");
+    SoundManager.loadSound("resurrection", 5, "zombie");
 };
 
 SoundManager.loadSound = function(name, count, directory) {

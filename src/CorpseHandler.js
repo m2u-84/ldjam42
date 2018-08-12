@@ -38,10 +38,11 @@ CorpseHandler.prototype.update = function(delta) {
     // Spawning-Time  -  Add new corpses
     if (this.lastDayTime <= 0.25 && relativeDayTime > 0.25) {
         this.truckSound.trigger();
-        const spawningAmount = state.initialSpawnAmount * (1 + Math.floor(state.dayTime) * state.spawnIncreaseRate);
+        let spawningAmount = state.initialSpawnAmount * (1 + Math.floor(state.dayTime) * state.spawnIncreaseRate);
+        if (state.unlocks.peace) { spawningAmount *= 0.7; }
         for (let i = 0; i < spawningAmount; i++) {
             const corpse = new Corpse([ 16, 45 ]);
-            corpse.finalDestination = [10 + Math.random() * 12, 30];
+            corpse.finalDestination = [10 + Math.random() * 12, 29 + Math.random() * 2];
             corpse.rotationAmount = Math.random() * 5 * Math.PI * 2; // Max 5 Rotationen
             corpse.spawningPosition = [ 16, 45 ];
             corpse.spawningTime = state.dayTime + i * 0.5 * (state.spawningGap + state.spawningGap * Math.random());
