@@ -184,12 +184,33 @@ Player.prototype.update = function(delta) {
     // enable / disable torch sounds based on radius around player
     const torchesInRadius = Player.getTilesInRadius(7, TileTypes.TORCH)
       .concat(Player.getTilesInRadius(7, TileTypes.COLLIDING_TORCH));
+    let fadeInTimer;
+    let fadeOutTimer;
     if (torchesInRadius.length > 0) {
         if (!this.torchCrackle.isPlaying()) {
+            this.torchCrackle.volume = 0;
+            // fade in
+            fadeInTimer = setInterval(() => {
+                if (this.torchCrackle.volume + 0.05 <= 1) {
+                    this.torchCrackle.volume += 0.05;
+                } else {
+                    clearInterval(fadeInTimer);
+                }
+            }, 16);
+            clearInterval(fadeOutTimer);
             this.torchCrackle.play();
         }
     } else {
-        this.torchCrackle.pause();
+        //fade out
+        clearInterval(fadeInTimer);
+        fadeOutTimer = setInterval(() => {
+            if (this.torchCrackle.volume - 0.008 >= 0) {
+                this.torchCrackle.volume -= 0.008;
+            } else {
+                clearInterval(fadeOutTimer);
+                this.torchCrackle.pause();
+            }
+        }, 16);
     }
     
     // F pressed?
