@@ -1,18 +1,17 @@
 function CorpseHandler() {
     this.lastDayTime = 0;
     this.unloadingCorpses = [];
-}
 
-
-
-
-CorpseHandler.prototype.update = function(delta) {
     const truck = {
-        src: "",
-        playbackRate: 0,
+        src: "sounds/truck.mp3",
+        playbackRate: 1,
         volume: 1
     }
     this.truckSound = loader.loadAudio(truck.src, truck.playbackRate, truck.volume);
+}
+
+CorpseHandler.prototype.update = function(delta) {
+
     let relativeDayTime = state.dayTime - Math.floor(state.dayTime);
     // Animate corpses that are being unloaded
     for (let i = 0; i < this.unloadingCorpses.length; i++) {
@@ -39,7 +38,7 @@ CorpseHandler.prototype.update = function(delta) {
             corpse.finalDestination = [10 + Math.random() * 12, 30];
             corpse.rotationAmount = Math.random() * 5 * Math.PI * 2; // Max 5 Rotationen
             corpse.spawningPosition = [ 16, 45 ];
-            corpse.spawningTime = state.dayTime;
+            corpse.spawningTime = state.dayTime + i * state.spawningGap;
             this.unloadingCorpses.push(corpse);
             state.corpses.push(corpse);
         }
