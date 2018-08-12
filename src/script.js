@@ -79,3 +79,22 @@ function getAngleDif(a1, a2) {
     }
     return dif;
 }
+
+var alphaValueMap = {};
+var alphaValueSpeed = 0.002;
+function fadeAlpha(id, target) {
+    if (alphaValueMap[id] == null) {
+        alphaValueMap[id] = 0.0;
+    }
+    if (alphaValueMap[id] != target) {
+        // Fade towards target by dt factor
+        if (alphaValueMap[id] < target) {
+            alphaValueMap[id] += alphaValueSpeed * state.dt;
+            if (alphaValueMap[id] > target) { alphaValueMap[id] = target; }
+        } else {
+            alphaValueMap[id] -= alphaValueSpeed * state.dt;
+            if (alphaValueMap[id] < target) { alphaValueMap[id] = target; }
+        }
+    }
+    return alphaValueMap[id];
+}
