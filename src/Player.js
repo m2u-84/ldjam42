@@ -1,3 +1,27 @@
+const draggingSounds =  [
+    {
+        src: "sounds/player_drag.wav",
+        playbackRate: 1.6,
+        volume: 1
+    },
+    // {
+    //     src: "sounds/player_drag2.wav",
+    //     playbackRate: 1.6,
+    //     volume: 1
+    // },
+    {
+        src: "sounds/player_drag3.wav",
+        playbackRate: 1.8,
+        volume: 1
+    },
+]
+
+const digSound = {
+        src: "sounds/player_dig.wav",
+        playbackRate: 1,
+        volume: 1
+    }
+
 const PlayerActions = {
     NONE: 0,
     PULL: 1,
@@ -14,13 +38,16 @@ var playerActions = [
     { duration: 1200 / 3, move: false }
 ];
 
-function Player(position, movementSounds) {
-    Character.call(this, position, movementSounds);
+function Player(position) {
+    Character.call(this, position);
     this.ePressed = false;
     this.pulling = null;
     this.targetDirection = [1, 0];
     this.targetPosition = [0, 0];
     this.targetTile = null;
+
+    this.loadDraggingSounds(draggingSounds);
+    this.digSound = loader.loadAudio(digSound.src, digSound.playbackRate, digSound.volume);
 
     // Actions such as digging or cutting a tree
     this.action = PlayerActions.NONE;
@@ -34,7 +61,6 @@ Player.prototype.PULL_DISTANCE = 0.7;
 
 Player.load = function() {
     Player.sprite = loader.loadImage("img/character/characteranimation2.png", 4);
-    Player.dragSound = document.getElementById("dragsound");
 };
 
 Player.prototype.update = function(delta) {
@@ -47,11 +73,13 @@ Player.prototype.update = function(delta) {
         var vy = ((keys.ArrowDown || keys.s ? 1 : 0) - (keys.ArrowUp || keys.w ? 1 : 0));
     }
 
-    // Normalize if both directions are set
+    // set velocity basedon underground
+    let velocity = (this.targetTile && this.targetTile.type === TileTypes.PATH) ? this.VELOCITY * 1.2 : this.VELOCITY; 
+    // Normalize
     if (vx || vy) {
         var length = Math.sqrt(vx * vx + vy * vy);
-        this.velocity[0] = vx * this.VELOCITY / length;
-        this.velocity[1] = vy * this.VELOCITY / length;
+        this.velocity[0] = vx * velocity / length;
+        this.velocity[1] = vy * velocity / length;
         if (this.velocity[0]) {
             this.targetDirection = [this.velocity[0] > 0 ? 1 : -1, 0];
         } else {
@@ -97,9 +125,11 @@ Player.prototype.update = function(delta) {
                         } else if (tile.type == TileTypes.GROUND) {
                             // Path
                             this.action = PlayerActions.PATH;
+                            this.digSound.play();
                         } else if (tile.type == TileTypes.PATH) {
                             // Dig
                             this.action = PlayerActions.DIG;
+                            this.digSound.play();
                         }
                     }
                 }
@@ -111,6 +141,9 @@ Player.prototype.update = function(delta) {
         this.action = PlayerActions.NONE;
     } else if (this.ePressed && prev && this.action > 0 && !playerActions[this.action].move) {
         // During action, check if ready
+        if (this.action === PlayerActions.DIG) {
+            this.digSound.play();
+        }
         var tile = this.targetTile;
         if (state.time >= this.actionStarted + this.actionDuration && tile) {
             // Conclude action
@@ -139,11 +172,10 @@ Player.prototype.update = function(delta) {
     if (this.pulling) {
         Player.pullCorpse(this.pulling, this.position[0], this.position[1], this.PULL_DISTANCE);
         var moving = (this.velocity[0] || this.velocity[1]);
-        Player.dragSound.volume = moving ? 1 : 0;
-    } else {
-        Player.dragSound.volume = 0;
-    }
-    
+      if (moving) {
+          this.dragSound.play();
+      }
+    } 
     Character.prototype.update.call(this, delta);
 
     // Target tile
@@ -203,3 +235,17 @@ Player.pullCorpse = function(corpse, x, y, distance) {
         corpse.setPosition( [x - dx * disf, y - dy * disf] );
     }
 };
+
+Player.prototype.loadDraggingSounds = function(soundData) {
+    this.draggingAudioFiles = [];
+    soundData.forEach(soundData => {
+        this.draggingAudioFiles.push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume));
+    })
+    for (const audio of this.draggingAudioFiles) {
+        audio.onended = () => {
+            this.dragSound = getRandom(this.draggingAudioFiles);
+        }
+
+    }
+    this.dragSound = this.draggingAudioFiles[0];
+}

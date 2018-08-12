@@ -80,6 +80,17 @@ function getAngleDif(a1, a2) {
     return dif;
 }
 
+function getRandomSound(sounds, tileType) {
+    if (!sounds || sounds.length < 1) { return null; }
+    let typeSounds = sounds.filter(sound => sound.tileTypes.includes(tileType));
+    if (typeSounds.length === 0) {
+        // fallback to normal ground
+        typeSounds = sounds.filter(sound => sound.tileTypes.includes(TileTypes.GROUND));
+    }
+    var index = Math.floor(Math.random() * typeSounds.length);
+    return typeSounds[index];
+}
+
 var alphaValueMap = {};
 var alphaValueSpeed = 0.002;
 function fadeAlpha(id, target) {

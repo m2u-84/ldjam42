@@ -19,7 +19,7 @@ Tile.load = function() {
         new TileType("Ground", ["img/ground/mud1.png", "img/ground/mud2.png", "img/ground/mud3.png"], false, true, -1,
             [ ["img/environment/grass.png", 0.5, 0.7], ["img/environment/stone.png", 0.5, 0.8], null, null, null, null,
             null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]),
-        new TileType("Hole", ["img/grave/hole.png"], true),
+        new TileType("Hole", ["img/ground/mud1.png"], true, true, 0, ["img/grave/hole.png", 0.5, 0.5]),
         new TileType("Grave", ["img/ground/grave.png"], true),
         // Deco Image: [src, centerX, centerY, frames, frameDelay]
         new TileType("Tree", ["img/ground/mud1.png"], true, false, 0, ["img/environment/tree.png", 0.5, 0.8, 2, 740]),

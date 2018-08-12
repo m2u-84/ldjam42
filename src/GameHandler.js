@@ -1,27 +1,3 @@
-
-const movementSounds = [
-    {
-        src: "sounds/step_dirt.wav",
-        playbackRate: 1,
-        volume: .5
-    },
-    {
-        src: "sounds/step_dirt2.wav",
-        playbackRate: 1,
-        volume: .5
-    },
-    {
-        src: "sounds/step_dirt3.wav",
-        playbackRate: 1,
-        volume: .5
-    },
-    {
-        src: "sounds/step_dirt4.wav",
-        playbackRate: 1,
-        volume: .5
-    }
-];
-
 function GameHandler(parentElement) {
     this.parentElement = parentElement;
 
@@ -47,7 +23,7 @@ function GameHandler(parentElement) {
         currentTime: 0,
         dt: 0,
         map: new Map(32, 32, 24, 24),
-        player: new Player([16.5,21.5], movementSounds),
+        player: new Player([16.5,21.5]),
         corpses: [],
         graves: [],
         keyStates: keyHandler.keyStates,

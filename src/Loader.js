@@ -43,7 +43,7 @@ Loader.prototype.loadImage = function(src, frameCount) {
     return img;
 };
 
-Loader.prototype.loadAudio = function(src, playbackRate, volume) {
+Loader.prototype.loadAudio = function(src, playbackRate, volume, tileTypes) {
     // this.count++;
     // try {
         // } catch (error) {
@@ -60,6 +60,9 @@ Loader.prototype.loadAudio = function(src, playbackRate, volume) {
     }
     if (volume != undefined) {
         sound.volume = volume;
+    }
+    if (tileTypes != undefined) {
+        sound.tileTypes = tileTypes;
     }
     return sound;
 }
