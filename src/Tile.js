@@ -113,7 +113,8 @@ Tile.prototype.drawLight = function() {
         var x = (this.x + 0.5) * this.map.tw;
         var y = (this.y + 0.5) * this.map.th;
         var alpha = 0.3 + 0.5 * this.tileType.light[2] * getFlicker(state.time * 0.00002 * (0.7 + 0.3 * this.randomizer) + this.randomizer, 1);
-        lightSystem.drawLight(LightSystem.defaultSoftLight, state.cam.x + x, state.cam.y + y, this.tileType.light[1], this.tileType.light[0], alpha);
+        var size = this.tileType.light[1] * (0.6 + 0.4 * getFlicker(state.time * 0.000027 * (0.8 + 0.2 * this.randomizer) + this.randomizer/2, 1));
+        lightSystem.drawLight(LightSystem.defaultSoftLight, state.cam.x + x, state.cam.y + y, size, this.tileType.light[0], alpha);
     }
 };
 
