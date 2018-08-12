@@ -58,6 +58,13 @@ const cuttingTreeSounds = {
     volume: 0.2
 };
 
+const torchCrackle = {
+    src: "sounds/torch_crackle_loop.wav",
+    playbackRate: 1,
+    volume: 1,
+    loop: true
+}
+
 const PlayerActions = {
     NONE: 0,
     PULL: 1,
@@ -91,6 +98,7 @@ function Player(position) {
     SoundManager.loadSoundsWithNamedTrigger.call(this, cuttingTreeSounds, "cutTreeSound");
     SoundManager.loadSoundsWithNamedTrigger.call(this, treeFallingSound, "treeFallingSound");
     SoundManager.loadSoundsWithNamedTrigger.call(this, movementSounds, "movementSound");
+    SoundManager.loadSoundsWithNamedTrigger.call(this, torchCrackle, "torchCrackle");
 
     // Actions such as digging or cutting a tree
     this.action = PlayerActions.NONE;
@@ -127,7 +135,7 @@ Player.prototype.update = function(delta) {
         var vy = ((keys.ArrowDown || keys.s ? 1 : 0) - (keys.ArrowUp || keys.w ? 1 : 0));
     }
 
-    // play movement soubnd
+    // play movement sound
     if (keys.w || keys.a || keys.d || keys.s || keys.ArrowDown || keys.ArrowLeft || keys.ArrowRight || keys.ArrowUp) {
         this.movementSound.trigger();
     }
@@ -156,6 +164,16 @@ Player.prototype.update = function(delta) {
         }
     } else {
         this.velocity[0] = this.velocity[1] = 0;
+    }
+
+    // enable / disable torch sounds based on radius around player
+    const torchesInRadius = getTilesInPlayerRadius(6, TileTypes.TORCH);
+    if (torchesInRadius.length > 0) {
+        if (!this.torchCrackle.isPlaying()) {
+            this.torchCrackle.play();
+        }
+    } else {
+        this.torchCrackle.pause();
     }
 
     // E pressed?

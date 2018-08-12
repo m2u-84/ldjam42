@@ -43,7 +43,7 @@ Loader.prototype.loadImage = function(src, frameCount) {
     return img;
 };
 
-Loader.prototype.loadAudio = function(src, playbackRate, volume, tileTypes) {
+Loader.prototype.loadAudio = function(src, playbackRate, volume, tileTypes, loop) {
     var sound = new Audio(src);
     if (playbackRate != undefined) {
         sound.playbackRate = playbackRate;
@@ -54,8 +54,15 @@ Loader.prototype.loadAudio = function(src, playbackRate, volume, tileTypes) {
     if (tileTypes != undefined) {
         sound.tileTypes = tileTypes;
     }
+    if (loop != undefined) {
+        sound.loop = loop;
+    }
     sound.isPlaying = function() {
         return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2)
+    }
+    sound.stop = function() {
+        this.pause();
+        this.currentTime = 0;
     }
     sound.trigger = function () {
         if (!this.isPlaying()) {

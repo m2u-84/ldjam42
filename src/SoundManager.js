@@ -30,7 +30,7 @@ SoundManager.loadSoundsWithNamedTrigger = function (sounds, triggerName) {
     if (Array.isArray(sounds)) {
         this[`${triggerName}Files`] = [];
         sounds.forEach(sound => {
-            this[`${triggerName}Files`].push(loader.loadAudio(sound.src, sound.playbackRate, sound.volume, sound.tileTypes));
+            this[`${triggerName}Files`].push(loader.loadAudio(sound.src, sound.playbackRate, sound.volume, sound.tileTypes, sound.loop));
         });
         for (const audio of this[`${triggerName}Files`]) {
             audio.onended = () => {
@@ -43,7 +43,7 @@ SoundManager.loadSoundsWithNamedTrigger = function (sounds, triggerName) {
         }
         this[triggerName] = this[`${triggerName}Files`][0];
     } else {
-        this[triggerName] = loader.loadAudio(sounds.src, sounds.playbackRate, sounds.volume);
+        this[triggerName] = loader.loadAudio(sounds.src, sounds.playbackRate, sounds.volume, sounds.tileTypes, sounds.loop);
     }
 }
 

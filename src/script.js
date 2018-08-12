@@ -109,3 +109,22 @@ function fadeAlpha(id, target) {
     }
     return alphaValueMap[id];
 }
+
+function getTilesInPlayerRadius(radius, tileType) {
+    let playerPos = state.player.position;
+    playerPos = playerPos.map(v => Math.floor(v));
+    let centerOffset = Math.floor(radius / 2); 
+    let tilesWithType = [];
+    state.map.tiles.forEach( yTile => {
+        yTile.forEach( tile => {
+            if (tile.type === tileType) {
+                tilesWithType.push(tile);
+            }
+        })
+    })
+    const tilesInRadius = tilesWithType.filter(tile => {
+        return tile.x >= playerPos[0] - centerOffset && tile.x <= playerPos[0] - centerOffset + radius
+            && tile.y >= playerPos[1] - centerOffset && tile.y <= playerPos[1] - centerOffset + radius
+    })
+    return tilesInRadius;
+}
