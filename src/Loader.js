@@ -44,16 +44,6 @@ Loader.prototype.loadImage = function(src, frameCount) {
 };
 
 Loader.prototype.loadAudio = function(src, playbackRate, volume, tileTypes) {
-    // this.count++;
-    // try {
-        // } catch (error) {
-            //     this.errors++;
-            //     this.total++;
-            //     this.update();
-            // }
-            // this.loaded++;
-            // this.total++;
-            // this.update();
     var sound = new Audio(src);
     if (playbackRate != undefined) {
         sound.playbackRate = playbackRate;

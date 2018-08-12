@@ -17,7 +17,8 @@ function GameHandler(parentElement) {
         Grave,
         LightSystem,
         Shop,
-        CorpseHandler
+        CorpseHandler,
+        SoundManager
     ].map(c => ({class: c, instances: []}));
 
     // Global game state which can be accessed by all game objects
@@ -30,11 +31,24 @@ function GameHandler(parentElement) {
         graves: [],
         keyStates: keyHandler.keyStates,
         cam: { x: 0, y: 0 },
-        money: 50,
+        money: 1150,
         shopOpen: false,
         readyToShop: false,
         mousePos: [],
-        mouseClick: false
+        mouseClick: false,
+        unlocks: {
+            torches: false, // TODO
+            shovel2: false, // TODO
+            shovel3: false, // TODO
+            axe2: false, // TODO
+            axe3: false, // TODO
+            maggots: false, // TODO
+            boots: false,
+            cooling: false, // TODO
+            zombies: false, // TODO
+            zombies2: false, // TODO
+            hypnosis: false // TODO
+        }
     };
     
     this.startTime = +Date.now();
@@ -68,8 +82,8 @@ function GameHandler(parentElement) {
     this.load().then(() => {
 
         // Create some corpses
-        for (var i = 0; i < 5; i++) {
-            var corpse = new Corpse([Math.random() * 20, 19]);
+        for (var i = 0; i < 25; i++) {
+            var corpse = new Corpse([Math.random() * 20, 30]);
             state.corpses.push(corpse);
         }
 
@@ -95,8 +109,10 @@ GameHandler.prototype.gameLoop = function() {
     this.lastTime = t;
     this.currentTime += dt;
     state.time = this.currentTime;
+    state.lastDayTime = state.dayTime;
     state.dayTime = state.time / 60000;
     state.dt = dt;
+    state.lastTime = this.lastTime;
 
     // Update all classes and instances
     for (var c of this.classes) {
@@ -114,6 +130,7 @@ GameHandler.prototype.gameLoop = function() {
 
     state.player.update(dt);
     this.corpseHandler.update(dt);
+
 
     requestAnimationFrame(this.gameLoop.bind(this));
 };
@@ -157,7 +174,10 @@ GameHandler.prototype.renderLoop = function() {
     // lightSystem.drawLight(null, 160 + 160 * Math.sin(state.time * 0.001), 120 + 120 * Math.sin(state.time * 0.00132), 130, "#3030ff", 0.6);
     lightSystem.renderToContext(this.ctx);
 
-    // HUD
+    // HUD (in world)
+    shop.drawFloatingTexts(this.ctx);
+
+    // HUD (screen)
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     // Corpse Count
     Corpse.displayCount(this.ctx, -4, this.canvas.height - 20, state.corpses.length);
@@ -167,7 +187,7 @@ GameHandler.prototype.renderLoop = function() {
     var alpha = fadeAlpha("shopInfoText", display ? 1 : 0);
     if (alpha > 0) {
         this.ctx.textAlign = "center";
-        var y = this.canvas.height * (0.8 + 0.03 * Math.sin(state.currentTime));
+        var y = this.canvas.height * (0.8 + 0.03 * Math.sin(state.time * 0.003));
         this.ctx.fillStyle = "white";
         this.ctx.globalAlpha = alpha;
         this.ctx.fillText("Press E to shop", this.canvas.width / 2, y);

@@ -2,7 +2,7 @@ const draggingSounds =  [
     {
         src: "sounds/player_drag.wav",
         playbackRate: 1.6,
-        volume: 1
+        volume: 0.6
     },
     // {
     //     src: "sounds/player_drag2.wav",
@@ -12,14 +12,14 @@ const draggingSounds =  [
     {
         src: "sounds/player_drag3.wav",
         playbackRate: 1.8,
-        volume: 1
+        volume: 0.6
     },
 ]
 
 const digSound = {
         src: "sounds/player_dig.wav",
         playbackRate: 1,
-        volume: 1
+        volume: 0.6
     }
 
 const PlayerActions = {
@@ -27,7 +27,8 @@ const PlayerActions = {
     PULL: 1,
     DIG: 2,
     CUT: 3,
-    PATH: 4
+    PATH: 4,
+    FILL: 5
 }
 
 var playerActions = [
@@ -35,7 +36,8 @@ var playerActions = [
     { duration: 0, move: true },
     { duration: 3000 / 3, move: false },
     { duration: 5000 / 3, move: false },
-    { duration: 1200 / 3, move: false }
+    { duration: 1200 / 3, move: false },
+    { duration: 5000 / 3, move: false }
 ];
 
 function Player(position) {
@@ -56,11 +58,19 @@ function Player(position) {
 }
 inherit(Player, Character);
 
-Player.prototype.VELOCITY = 0.004;
+Player.prototype.VELOCITY = 0.0027;
 Player.prototype.PULL_DISTANCE = 0.7;
 
 Player.load = function() {
     Player.sprite = loader.loadImage("img/character/characteranimation2.png", 4);
+};
+
+Player.update = function() {
+    // Check time of day for new day
+    var threshold = 0.2;
+    if (state.dayTime % 1 >= threshold && state.lastDayTime % 1 < threshold) {
+        SoundManager.play("daybreak", 1);
+    }
 };
 
 Player.prototype.update = function(delta) {
@@ -74,7 +84,17 @@ Player.prototype.update = function(delta) {
     }
 
     // set velocity basedon underground
-    let velocity = (this.targetTile && this.targetTile.type === TileTypes.PATH) ? this.VELOCITY * 1.2 : this.VELOCITY; 
+    let velocity = this.VELOCITY; 
+    if (this.tile) {
+        var tile = state.map.getTile(this.tile[0], this.tile[1]);
+        if (tile.type == TileTypes.PATH) {
+            velocity *= 1.3;
+        }
+    }
+    // also based on boots upgrade
+    if (state.unlocks.boots) {
+        velocity *= 1.5;
+    }
     // Normalize
     if (vx || vy) {
         var length = Math.sqrt(vx * vx + vy * vy);
@@ -99,6 +119,7 @@ Player.prototype.update = function(delta) {
             // Check if dropped on grave
             if (this.targetTile && this.targetTile.type == TileTypes.GRAVE && this.targetTile.reference.empty) {
                 this.targetTile.reference.takeCorpse(this.pulling);
+                SoundManager.play("burial", 0.5);
             }
             // Abort pull action
             this.pulling = null;
@@ -115,6 +136,7 @@ Player.prototype.update = function(delta) {
                 if (corpse) {
                     this.pulling = corpse;
                     this.action = PlayerActions.PULL;
+                    SoundManager.play("dragging", 0.4);
                 } else {
                     // Other action
                     var tile = this.targetTile;
@@ -126,10 +148,19 @@ Player.prototype.update = function(delta) {
                             // Path
                             this.action = PlayerActions.PATH;
                             this.digSound.play();
+                            if (tile.decoImage) {
+                                SoundManager.play("obstacles", 0.25);
+                            }
                         } else if (tile.type == TileTypes.PATH) {
                             // Dig
                             this.action = PlayerActions.DIG;
                             this.digSound.play();
+                            SoundManager.play("digging", 0.15);
+                        } else if (tile.type == TileTypes.HOLE || tile.type == TileTypes.GRAVE) {
+                            if (tile.type == TileTypes.HOLE || tile.reference && tile.reference.empty) {
+                                this.action = PlayerActions.FILL;
+                                this.digSound.play();
+                            }
                         }
                     }
                 }
@@ -161,6 +192,15 @@ Player.prototype.update = function(delta) {
                 case PlayerActions.DIG:
                     state.map.set(tile.x, tile.y, TileTypes.HOLE);
                     break;
+                case PlayerActions.FILL:
+                    if (tile.type == TileTypes.HOLE) {
+                        // Just set back to path
+                        state.map.set(tile.x, tile.y, TileTypes.PATH);
+                    } else {
+                        // Grave
+                        var grave = tile.reference;
+                        grave.remove();
+                    }
             }
             this.action = PlayerActions.NONE;
             this.actionStarted = state.time;
