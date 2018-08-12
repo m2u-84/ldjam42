@@ -128,11 +128,11 @@ Player.update = function() {
     if (state.dayTime % 1 >= threshold && state.lastDayTime % 1 < threshold) {
         SoundManager.play("daybreak", 0.6);
     }
-    var threshold = 0.7;
+    threshold = 0.7;
     if (state.dayTime % 1 >= threshold && state.lastDayTime % 1 < threshold) {
         SoundManager.play("nightbreak", 0.6);
     }
-    var threshold = 0.32;
+    threshold = 0.32;
     if (state.dayTime % 1 >= threshold && state.lastDayTime % 1 < threshold) {
         SoundManager.play("newbodies", 0.5);
     }
@@ -375,6 +375,7 @@ Player.prototype.draw = function(ctx) {
     if (this.action == PlayerActions.FILL) { sprite = Player.digSprite; }
     if (this.action == PlayerActions.DIG) { sprite = Player.digSprite; }
     if (this.action == PlayerActions.CUT) { sprite = Player.fightSprite; }
+    if (this.action == PlayerActions.ATTACK) { sprite = Player.fightSprite; }
     if (this.action == PlayerActions.PATH) {
         sprite = this.targetTile && this.targetTile.decoImage ? Player.fightSprite : Player.digSprite;
     }
@@ -384,7 +385,7 @@ Player.prototype.draw = function(ctx) {
         drawImageSorted(ctx, sprite, x, y, null, null, 0.5, 0.85, this.direction == 1, 0, this.getFrame(sprite));
     }
     // Progress of action
-    if (this.action && playerActions[this.action].duration > 0) {
+    if (this.action && playerActions[this.action].duration > 0 && this.action != PlayerActions.ATTACK) {
         var p = (state.time - this.actionStarted) / this.actionDuration;
         if (p >= 0 && p <= 1) {
             renderSorter.add(x, y + 1000, () => drawProgressBar(ctx, x, y, 16, p));
@@ -394,14 +395,17 @@ Player.prototype.draw = function(ctx) {
 
 Player.prototype.getFrame = function(sprite) {
     var frame = 0;
+    var tStart = this.action ? this.actionStarted : 0;
     if (!sprite || sprite == Player.sprite || sprite == Player.dragSprite) {
         var frame = 1;
         if (this.velocity[0] || this.velocity[1]) {
             // Running animation
-            frame = Math.floor(state.time / 260) % 4;
+            frame = Math.floor((state.time - tStart) / 260) % 4;
         }
+    } else if (sprite == Player.attackSprite) {
+        frame = Math.floor((state.time - tStart) / 100) % 4;
     } else {
-        frame = Math.floor(state.time / 150) % 4;
+        frame = Math.floor((state.time - tStart) / 150) % 4;
     }
     return frame;
 };
