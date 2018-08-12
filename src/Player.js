@@ -67,7 +67,6 @@ Player.prototype.update = function(delta) {
         // E was pressed just now, try to drag corpse
         if (this.pulling) {
             // Check if dropped on grave
-            console.log(this.targetTile);
             if (this.targetTile && this.targetTile.type == TileTypes.GRAVE && this.targetTile.reference.empty) {
                 this.targetTile.reference.takeCorpse(this.pulling);
             }

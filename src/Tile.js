@@ -28,7 +28,7 @@ Tile.load = function() {
         new TileType("FenceSide", [ "img/ground/mud1.png" ], true, false, 1, ["img/environment/fence side.png", 0.5, 0.9]),
         new TileType("StoneFence", [ "img/ground/stonefloor.png" ], true, false, 1, ["img/environment/fence.png", 0.5, 0.9]),
         new TileType("StoneFenceSide", [ "img/ground/stonefloor.png" ], true, false, 1, ["img/environment/fence side.png", 0.5, 0.9]),
-        new TileType("Torch", "img/ground/grave.png", true, false, 0, null, ["#f0c030", 200, 1])
+        new TileType("Torch", "img/ground/grave.png", true, false, 0, null, ["#f0c030", 140, 1])
     ];
     types.forEach(tp => tileTypes.push(tp));
 };
@@ -108,7 +108,7 @@ Tile.prototype.draw = function(ctx, tx, ty) {
     }
 
     if (this.tileType.light) {
-        var alpha = 0.8 * this.tileType.light[2] * getFlicker(state.time * 0.00002 * (0.7 + 0.3 * this.randomizer) + this.randomizer, 2);
+        var alpha = 0.3 + 0.5 * this.tileType.light[2] * getFlicker(state.time * 0.00002 * (0.7 + 0.3 * this.randomizer) + this.randomizer, 1);
         lightSystem.drawLight(LightSystem.defaultSoftLight, state.cam.x + x, state.cam.y + y, this.tileType.light[1], this.tileType.light[0], alpha);
     }
 };

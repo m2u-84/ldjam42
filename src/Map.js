@@ -79,9 +79,9 @@ Map.prototype.load = function() {
         }
     }
 
-    // for (var x = 2; x < 12; x += 4) {
-    //     this.set(x, 19 - x, TileTypes.TORCH);
-    // }
+    for (var x = 2; x < 28; x += 7) {
+        this.set(x, 30 - x, TileTypes.TORCH);
+    }
 };
 
 Map.prototype.set = function(x, y, tp) {
