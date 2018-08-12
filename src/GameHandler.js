@@ -29,11 +29,24 @@ function GameHandler(parentElement) {
         graves: [],
         keyStates: keyHandler.keyStates,
         cam: { x: 0, y: 0 },
-        money: 50,
+        money: 1150,
         shopOpen: false,
         readyToShop: false,
         mousePos: [],
-        mouseClick: false
+        mouseClick: false,
+        unlocks: {
+            torches: false, // TODO
+            shovel2: false, // TODO
+            shovel3: false, // TODO
+            axe2: false, // TODO
+            axe3: false, // TODO
+            maggots: false, // TODO
+            boots: false,
+            cooling: false, // TODO
+            zombies: false, // TODO
+            zombies2: false, // TODO
+            hypnosis: false // TODO
+        }
     };
     
     this.startTime = +Date.now();
@@ -94,8 +107,10 @@ GameHandler.prototype.gameLoop = function() {
     this.lastTime = t;
     this.currentTime += dt;
     state.time = this.currentTime;
+    state.lastDayTime = state.dayTime;
     state.dayTime = state.time / 60000;
     state.dt = dt;
+    state.lastTime = this.lastTime;
 
     // Update all classes and instances
     for (var c of this.classes) {
@@ -112,6 +127,7 @@ GameHandler.prototype.gameLoop = function() {
     }
 
     state.player.update(dt);
+
 
     requestAnimationFrame(this.gameLoop.bind(this));
 };

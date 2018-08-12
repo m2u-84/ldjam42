@@ -2,7 +2,7 @@ const draggingSounds =  [
     {
         src: "sounds/player_drag.wav",
         playbackRate: 1.6,
-        volume: 1
+        volume: 0.6
     },
     // {
     //     src: "sounds/player_drag2.wav",
@@ -12,14 +12,14 @@ const draggingSounds =  [
     {
         src: "sounds/player_drag3.wav",
         playbackRate: 1.8,
-        volume: 1
+        volume: 0.6
     },
 ]
 
 const digSound = {
         src: "sounds/player_dig.wav",
         playbackRate: 1,
-        volume: 1
+        volume: 0.6
     }
 
 const PlayerActions = {
@@ -58,7 +58,7 @@ function Player(position) {
 }
 inherit(Player, Character);
 
-Player.prototype.VELOCITY = 0.004;
+Player.prototype.VELOCITY = 0.0027;
 Player.prototype.PULL_DISTANCE = 0.7;
 
 Player.load = function() {
@@ -76,7 +76,17 @@ Player.prototype.update = function(delta) {
     }
 
     // set velocity basedon underground
-    let velocity = (this.targetTile && this.targetTile.type === TileTypes.PATH) ? this.VELOCITY * 1.2 : this.VELOCITY; 
+    let velocity = this.VELOCITY; 
+    if (this.tile) {
+        var tile = state.map.getTile(this.tile[0], this.tile[1]);
+        if (tile.type == TileTypes.PATH) {
+            velocity *= 1.3;
+        }
+    }
+    // also based on boots upgrade
+    if (state.unlocks.boots) {
+        velocity *= 1.5;
+    }
     // Normalize
     if (vx || vy) {
         var length = Math.sqrt(vx * vx + vy * vy);
@@ -118,6 +128,7 @@ Player.prototype.update = function(delta) {
                 if (corpse) {
                     this.pulling = corpse;
                     this.action = PlayerActions.PULL;
+                    SoundManager.play("dragging", 0.4);
                 } else {
                     // Other action
                     var tile = this.targetTile;
@@ -134,8 +145,10 @@ Player.prototype.update = function(delta) {
                             this.action = PlayerActions.DIG;
                             this.digSound.play();
                         } else if (tile.type == TileTypes.HOLE || tile.type == TileTypes.GRAVE) {
-                            this.action = PlayerActions.FILL;
-                            this.digSound.play();
+                            if (tile.type == TileTypes.HOLE || tile.reference && tile.reference.empty) {
+                                this.action = PlayerActions.FILL;
+                                this.digSound.play();
+                            }
                         }
                     }
                 }
