@@ -31,13 +31,15 @@ const PlayerActions = {
     FILL: 5
 }
 
+
+var testSpeedFactor = 1;
 var playerActions = [
     { duration: 0, move: true },
     { duration: 0, move: true },
-    { duration: 3000 / 3, move: false },
-    { duration: 5000 / 3, move: false },
-    { duration: 1200 / 3, move: false },
-    { duration: 5000 / 3, move: false }
+    { duration: 3000 * testSpeedFactor, move: false },
+    { duration: 5000 * testSpeedFactor, move: false },
+    { duration: 1200 * testSpeedFactor, move: false },
+    { duration: 5000 * testSpeedFactor, move: false }
 ];
 
 function Player(position) {
@@ -63,6 +65,9 @@ Player.prototype.PULL_DISTANCE = 0.7;
 
 Player.load = function() {
     Player.sprite = loader.loadImage("img/character/characteranimation2.png", 4);
+    Player.fightSprite = loader.loadImage("img/character/char fight.png", 4);
+    Player.dragSprite = loader.loadImage("img/character/char drag.png", 4);
+    Player.digSprite = loader.loadImage("img/character/char digging.png", 4);
 };
 
 Player.update = function() {
@@ -230,10 +235,17 @@ Player.prototype.draw = function(ctx) {
         this.targetTile.drawOutline(ctx);
     }
     // Self
-    if (Player.sprite) {
+    var sprite = Player.sprite;
+    if (this.action == PlayerActions.PULL) { sprite = Player.dragSprite; }
+    if (this.action == PlayerActions.DIG) { sprite = Player.digSprite; }
+    if (this.action == PlayerActions.CUT) { sprite = Player.fightSprite; }
+    if (this.action == PlayerActions.PATH) {
+        sprite = this.targetTile && this.targetTile.decoImage ? Player.fightSprite : Player.digSprite;
+    }
+    if (sprite) {
         var x = Math.round(this.position[0] * state.map.tw);
         var y = Math.round(this.position[1] * state.map.th);
-        drawImageSorted(ctx, Player.sprite, x, y, null, null, 0.5, 0.85, this.direction == 1, 0, this.getFrame());
+        drawImageSorted(ctx, sprite, x, y, null, null, 0.5, 0.85, this.direction == 1, 0, this.getFrame(sprite));
     }
     // Progress of action
     if (this.action && playerActions[this.action].duration > 0) {
@@ -244,11 +256,16 @@ Player.prototype.draw = function(ctx) {
     }
 };
 
-Player.prototype.getFrame = function() {
-    var frame = 1;
-    if (this.velocity[0] || this.velocity[1]) {
-        // Running animation
-        var frame = Math.floor(state.time / 260) % 4;
+Player.prototype.getFrame = function(sprite) {
+    var frame = 0;
+    if (!sprite || sprite == Player.sprite || sprite == Player.dragSprite) {
+        var frame = 1;
+        if (this.velocity[0] || this.velocity[1]) {
+            // Running animation
+            frame = Math.floor(state.time / 260) % 4;
+        }
+    } else {
+        frame = Math.floor(state.time / 150) % 4;
     }
     return frame;
 };
