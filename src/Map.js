@@ -51,7 +51,7 @@ Map.prototype.load = function() {
         playerPos[0] + 2,
         stoneArea[1]
     ];
-    const shopStart = [ entranceArea[2], entranceArea[3] - 1 ];
+    const shopStart = [ entranceArea[2] - 1, entranceArea[3] - 1 ];
 
     // create fence around player
     for (let x = 0; x < fencedZoneWidth; x++) {
@@ -116,11 +116,16 @@ Map.prototype.load = function() {
     this.shopTile = this.getTile(shopStart[0] + 2, shopStart[1]);
     this.set(shopStart[0] + 2, shopStart[1] - 1, TileTypes.SHOP);
     // Tree to the right
-    this.set(shopStart[0] + 4, shopStart[1], TileTypes.TREE);
-    this.set(shopStart[0] + 4, shopStart[1] - 1, TileTypes.TREE);
+    this.set(shopStart[0] + 5, shopStart[1], TileTypes.TREE);
+    this.set(shopStart[0] + 5, shopStart[1] - 1, TileTypes.TREE);
+    this.set(shopStart[0] + 3 , shopStart[1] - 2, TileTypes.TREE);
     // Invisible torches
     this.set(shopStart[0] + 1, shopStart[1] - 1, TileTypes.COLLIDING_TORCH);
     this.set(shopStart[0] + 3, shopStart[1] - 1, TileTypes.COLLIDING_TORCH);
+    // Full Fence
+    for (var y = shopStart[1] - 3; y <= shopStart[1]; y++) {
+        this.set(shopStart[0] + 4, y, TileTypes.FENCE_SIDE);
+    }
 
     // Owl
     state.owl = new Owl([shopStart[0] + 1.4, shopStart[1] - 2.4]);
