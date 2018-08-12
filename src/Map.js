@@ -80,7 +80,7 @@ Map.prototype.load = function() {
     }
 
     for (var x = 2; x < 28; x += 7) {
-        this.set(x, 30 - x, TileTypes.TORCH);
+        this.set(x, 31 - x, TileTypes.TORCH);
     }
 };
 
@@ -134,7 +134,7 @@ Map.prototype.findNeighbour = function(x, y, check, diagonal) {
 };
 
 Map.prototype.draw = function(ctx) {
-    // Draw based on zIndex of tile types
+    // Draw tiles based on zIndex of tile types (e.g. path always on top of grass)
     for (var z = tileTypes.minZIndex; z <= tileTypes.maxZIndex; z++) {
         for (var tp of tileTypes) {
             if (tp.zIndex == z) {
@@ -157,6 +157,23 @@ Map.prototype.draw = function(ctx) {
                         }
                     }
                 }
+            }
+        }
+    }
+    // Draw tile lights
+    x1 = Math.floor(-state.cam.x / state.map.th) - 5;
+    y1 = Math.floor(-state.cam.y / state.map.tw) - 5;
+    x2 = x1 + 15 + 10;
+    y2 = y1 + 11 + 11;
+    x1 = Math.max(x1, 0);
+    y1 = Math.max(y1, 0);
+    x2 = Math.min(x2, this.tilesX);
+    y2 = Math.min(y2, this.tilesY);
+    for (var y = y1; y < y2; y++) {
+        for (var x = x1; x < x2; x++) {
+            var tile = this.getTile(x,y);
+            if (tile) {
+                tile.drawLight();
             }
         }
     }

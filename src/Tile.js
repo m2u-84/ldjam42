@@ -106,8 +106,12 @@ Tile.prototype.draw = function(ctx, tx, ty) {
             drawImageSorted(ctx, deco[0], x, y, null, null, deco[1], deco[2], null, null, frame);
         }
     }
+};
 
+Tile.prototype.drawLight = function() {
     if (this.tileType.light) {
+        var x = (this.x + 0.5) * this.map.tw;
+        var y = (this.y + 0.5) * this.map.th;
         var alpha = 0.3 + 0.5 * this.tileType.light[2] * getFlicker(state.time * 0.00002 * (0.7 + 0.3 * this.randomizer) + this.randomizer, 1);
         lightSystem.drawLight(LightSystem.defaultSoftLight, state.cam.x + x, state.cam.y + y, this.tileType.light[1], this.tileType.light[0], alpha);
     }
