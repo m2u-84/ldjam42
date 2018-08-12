@@ -41,7 +41,8 @@ Player.prototype.update = function(delta) {
     // Set Velocity based on State (inserted by keyHandler)
     var keys = state.keyStates;
     var vx = 0, vy = 0;
-    if (playerActions[this.action].move) {
+    // Only move when no prohibiting action is active, and when player is not currently in shop
+    if (playerActions[this.action].move && !state.shopOpen) {
         var vx = ((keys.ArrowRight || keys.d ? 1 : 0) - (keys.ArrowLeft || keys.a ? 1 : 0));
         var vy = ((keys.ArrowDown || keys.s ? 1 : 0) - (keys.ArrowUp || keys.w ? 1 : 0));
     }
@@ -75,26 +76,31 @@ Player.prototype.update = function(delta) {
             this.pulling = null;
             this.action = PlayerActions.NONE;
         } else {
-            // Pick corpse based on point in front of player (between player and target tile)
-            var pickx = 0.5 * (this.targetPosition[0] + 0.5 + this.position[0]);
-            var picky = 0.5 * (this.targetPosition[1] + 0.5 + this.position[1]);
-            var corpse = Player.getNearestCorpse(pickx, picky, 1);
-            if (corpse) {
-                this.pulling = corpse;
-                this.action = PlayerActions.PULL;
+            // Open Shop?
+            if (state.readyToShop) {
+                state.shopOpen = true;
             } else {
-                // Other action
-                var tile = this.targetTile;
-                if (tile) {
-                    if (tile.type == TileTypes.TREE) {
-                        // Cut Tree
-                        this.action = PlayerActions.CUT;
-                    } else if (tile.type == TileTypes.GROUND) {
-                        // Path
-                        this.action = PlayerActions.PATH;
-                    } else if (tile.type == TileTypes.PATH) {
-                        // Dig
-                        this.action = PlayerActions.DIG;
+                // Pick corpse based on point in front of player (between player and target tile)
+                var pickx = 0.5 * (this.targetPosition[0] + 0.5 + this.position[0]);
+                var picky = 0.5 * (this.targetPosition[1] + 0.5 + this.position[1]);
+                var corpse = Player.getNearestCorpse(pickx, picky, 1);
+                if (corpse) {
+                    this.pulling = corpse;
+                    this.action = PlayerActions.PULL;
+                } else {
+                    // Other action
+                    var tile = this.targetTile;
+                    if (tile) {
+                        if (tile.type == TileTypes.TREE) {
+                            // Cut Tree
+                            this.action = PlayerActions.CUT;
+                        } else if (tile.type == TileTypes.GROUND) {
+                            // Path
+                            this.action = PlayerActions.PATH;
+                        } else if (tile.type == TileTypes.PATH) {
+                            // Dig
+                            this.action = PlayerActions.DIG;
+                        }
                     }
                 }
             }

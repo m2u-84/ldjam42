@@ -38,7 +38,8 @@ function GameHandler(parentElement) {
         Player,
         Corpse,
         Grave,
-        LightSystem
+        LightSystem,
+        Shop
     ].map(c => ({class: c, instances: []}));
     
     // Global game state which can be accessed by all game objects
@@ -50,7 +51,12 @@ function GameHandler(parentElement) {
         corpses: [],
         graves: [],
         keyStates: keyHandler.keyStates,
-        cam: { x: 0, y: 0 }
+        cam: { x: 0, y: 0 },
+        money: 50,
+        shopOpen: false,
+        readyToShop: false,
+        mousePos: [],
+        mouseClick: false
     };
     
     this.startTime = +Date.now();
@@ -67,11 +73,17 @@ function GameHandler(parentElement) {
     lightSystem = new LightSystem(320, 240);
     lightSystem.setAmbientColor("#404070");
 
+    shop = new Shop();
+
     musicManager = new MusicManager([
         document.getElementById("music1"),
         document.getElementById("music2"),
         document.getElementById("music3"),
-    ])
+    ]);
+
+    parentElement.addEventListener("mousemove", this.handleMouse.bind(this));
+    parentElement.addEventListener("mousedown", this.handleMouseDown.bind(this));
+    parentElement.addEventListener("mouseup", this.handleMouseUp.bind(this));
     
 
     // First load all the things, then start render and update loops
@@ -172,6 +184,7 @@ GameHandler.prototype.renderLoop = function() {
     Corpse.displayCount(this.ctx, -4, this.canvas.height - 20, state.corpses.length);
     // Shop Info
     var display = (state.map.getTile(state.player.tile[0], state.player.tile[1]) == state.map.shopTile);
+    state.readyToShop = display;
     var alpha = fadeAlpha("shopInfoText", display ? 1 : 0);
     if (alpha > 0) {
         this.ctx.textAlign = "center";
@@ -179,8 +192,23 @@ GameHandler.prototype.renderLoop = function() {
         this.ctx.fillStyle = "white";
         this.ctx.globalAlpha = alpha;
         this.ctx.fillText("Press E to shop", this.canvas.width / 2, y);
-        this.ctx.globalAlpha = 1;
     }
+    this.ctx.globalAlpha = 1;
+
+    // Shop
+    if (state.shopOpen) {
+        shop.draw(this.ctx);
+    }
+
+    // Money
+    alpha = fadeAlpha("moneyAlpha", display ? 5 : 0);
+    if (alpha > 0) {
+        this.ctx.fillStyle = "#f0c030";
+        this.ctx.textAlign = "left";
+        this.ctx.globalAlpha = alpha;
+        this.ctx.fillText(this.state.money + " Gold", 5, 15);
+    }
+    this.ctx.globalAlpha = 1;
 
     requestAnimationFrame(this.renderLoop.bind(this));
 };
@@ -211,3 +239,18 @@ function getAmbientColor(t) {
     return "rgb(" + Math.round(255 * (f * c2[0] + f1 * c1[0])) + "," + Math.round(255 * (f * c2[1] + f1 * c1[1]))
             + "," + Math.round(255 * (f * c2[2] + f1 * c1[2])) + ")"; 
 }
+
+
+GameHandler.prototype.handleMouse = function(e) {
+    var mx = (e.clientX - this.canvas.offsetLeft) * this.canvas.width / this.canvas.offsetWidth;
+    var my = (e.clientY - this.canvas.offsetTop + window.scrollY) * this.canvas.height / this.canvas.offsetHeight;
+    state.mousePos = [mx, my];
+};
+
+GameHandler.prototype.handleMouseDown = function(e) {
+    state.mouseClick = true;
+};
+
+GameHandler.prototype.handleMouseUp = function(e) {
+    state.mouseClick = false;
+};
