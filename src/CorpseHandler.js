@@ -2,7 +2,17 @@ function CorpseHandler() {
     this.lastDayTime = 0;
     this.unloadingCorpses = [];
 }
+
+
+
+
 CorpseHandler.prototype.update = function(delta) {
+    const truck = {
+        src: "",
+        playbackRate: 0,
+        volume: 1
+    }
+    this.truckSound = loader.loadAudio(truck.src, truck.playbackRate, truck.volume);
     let relativeDayTime = state.dayTime - Math.floor(state.dayTime);
     // Animate corpses that are being unloaded
     for (let i = 0; i < this.unloadingCorpses.length; i++) {
@@ -22,6 +32,7 @@ CorpseHandler.prototype.update = function(delta) {
     
     // Spawning-Time  -  Add new corpses
     if (this.lastDayTime <= 0.25 && relativeDayTime > 0.25) {
+        this.truckSound.trigger();
         const spawningAmount = state.initialSpawnAmount * (1 + Math.floor(state.dayTime) * state.spawnIncreaseRate);
         for (let i = 0; i < spawningAmount; i++) {
             const corpse = new Corpse([ 16, 45 ]);
@@ -33,7 +44,7 @@ CorpseHandler.prototype.update = function(delta) {
             state.corpses.push(corpse);
         }
     }
-
+    
     
     this.lastDayTime = relativeDayTime;
 }
