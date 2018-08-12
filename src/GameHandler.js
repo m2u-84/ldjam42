@@ -54,7 +54,9 @@ function GameHandler(parentElement) {
             hypnosis: false // TODO
         },
         initialSpawnAmount: 5,
-        spawnIncreaseRate: 0.3
+        spawnIncreaseRate: 0.3,
+        spawnAnimationTime: 0.035,
+        spawningGap: 0.005,
     };
     
     this.startTime = +Date.now();
