@@ -182,7 +182,8 @@ Player.prototype.update = function(delta) {
     }
 
     // enable / disable torch sounds based on radius around player
-    const torchesInRadius = Player.getTilesInRadius(7, TileTypes.TORCH);
+    const torchesInRadius = Player.getTilesInRadius(7, TileTypes.TORCH)
+      .concat(Player.getTilesInRadius(7, TileTypes.COLLIDING_TORCH));
     if (torchesInRadius.length > 0) {
         if (!this.torchCrackle.isPlaying()) {
             this.torchCrackle.play();
