@@ -65,11 +65,13 @@ Player.prototype.update = function(delta) {
         var vy = ((keys.ArrowDown || keys.s ? 1 : 0) - (keys.ArrowUp || keys.w ? 1 : 0));
     }
 
-    // Normalize if both directions are set
+    // set velocity basedon underground
+    let velocity = (this.targetTile && this.targetTile.type === TileTypes.PATH) ? this.VELOCITY * 1.2 : this.VELOCITY; 
+    // Normalize
     if (vx || vy) {
         var length = Math.sqrt(vx * vx + vy * vy);
-        this.velocity[0] = vx * this.VELOCITY / length;
-        this.velocity[1] = vy * this.VELOCITY / length;
+        this.velocity[0] = vx * velocity / length;
+        this.velocity[1] = vy * velocity / length;
         if (this.velocity[0]) {
             this.targetDirection = [this.velocity[0] > 0 ? 1 : -1, 0];
         } else {
