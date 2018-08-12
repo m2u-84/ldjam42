@@ -4,6 +4,7 @@ function GameHandler(parentElement) {
     loader = new Loader();
     keyHandler = new KeyHandler(window, ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "e", "w", "a", "s", "d"]);
     renderSorter = new RenderSorter();
+    this.corpseHandler = new CorpseHandler();
     
     this.classes = [
         // Player, Zombies, Corpses, Graves, ...
@@ -15,9 +16,10 @@ function GameHandler(parentElement) {
         Corpse,
         Grave,
         LightSystem,
-        Shop
+        Shop,
+        CorpseHandler
     ].map(c => ({class: c, instances: []}));
-    
+
     // Global game state which can be accessed by all game objects
     window.state = this.state = {
         currentTime: 0,
@@ -111,6 +113,7 @@ GameHandler.prototype.gameLoop = function() {
     }
 
     state.player.update(dt);
+    this.corpseHandler.update(dt);
 
     requestAnimationFrame(this.gameLoop.bind(this));
 };
