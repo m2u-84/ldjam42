@@ -98,6 +98,10 @@ Map.prototype.load = function() {
         }
     }
 
+    // Entry Torch
+    this.set(playerPos[0] - 1, fenceArea[3], TileTypes.TORCH);
+    this.set(playerPos[0] + 1, fenceArea[3], TileTypes.TORCH);
+
     // Shop Area
     // First path to the right
     for (var i = -1; i < 4; i++) {
@@ -106,8 +110,13 @@ Map.prototype.load = function() {
     // Then path to top
     // And Shop
     this.shopTile = this.getTile(shopStart[0] + 2, shopStart[1]);
+    this.set(shopStart[0] + 2, shopStart[1] - 1, TileTypes.SHOP);
     // Tree to the right
     this.set(shopStart[0] + 4, shopStart[1], TileTypes.TREE);
+    this.set(shopStart[0] + 4, shopStart[1] - 1, TileTypes.TREE);
+    // Invisible torches
+    this.set(shopStart[0] + 1, shopStart[1] - 1, TileTypes.TORCH);
+    this.set(shopStart[0] + 3, shopStart[1] - 1, TileTypes.TORCH);
 
     for (var x = 2; x < 28; x += 7) {
         this.set(x, 31 - x, TileTypes.TORCH);
