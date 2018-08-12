@@ -12,6 +12,8 @@ SoundManager.load = function() {
     SoundManager.loadSound("daybreak", 5);
     SoundManager.loadSound("digging", 5);
     SoundManager.loadSound("dragging", 5);
+    SoundManager.loadSound("newbodies", 5);
+    SoundManager.loadSound("nightbreak", 5);
     SoundManager.loadSound("obstacles", 5);
     SoundManager.loadSound("sighting", 5, "zombie");
 };

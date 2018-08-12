@@ -10,6 +10,10 @@ function Map(tilesX, tilesY, tileWidth, tileHeight) {
 }
 
 Map.prototype.load = function() {
+    // Sounds
+    this.daybreakSound = loader.loadAudio("sounds/cock-kikeriki.mp3", 1, 0.5);
+    this.nightbreakSound = loader.loadAudio("sounds/church-bell.mp3", 1, 0.5);
+
     // Set up tiles array
     for (var y = 0; y < this.tilesY; y++) {
         this.tiles[y] = [];
@@ -118,11 +122,26 @@ Map.prototype.load = function() {
     this.set(shopStart[0] + 1, shopStart[1] - 1, TileTypes.COLLIDING_TORCH);
     this.set(shopStart[0] + 3, shopStart[1] - 1, TileTypes.COLLIDING_TORCH);
 
+    // Owl
+    state.owl = new Owl([shopStart[0] + 1.4, shopStart[1] - 2.4]);
+
     for (var x = 2; x < 28; x += 7) {
         this.set(x, 31 - x, TileTypes.TORCH);
     }
 
     this.spawningZone = [ 0, entranceHeight ];
+};
+
+Map.prototype.update = function() {
+    // Sounds
+    var t = 0.192;
+    if (state.dayTime % 1 >= t && state.lastDayTime % 1 < t) {
+        this.daybreakSound.play();
+    }
+    var t = 0.692;
+    if (state.dayTime % 1 >= t && state.lastDayTime % 1 < t) {
+        this.nightbreakSound.play();
+    }
 };
 
 Map.prototype.set = function(x, y, tp) {
