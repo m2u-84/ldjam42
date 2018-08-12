@@ -43,19 +43,12 @@ Loader.prototype.loadImage = function(src, frameCount) {
     return img;
 };
 
-Loader.prototype.loadAudio = function(src, playbackRate, volume, tileTypes, loop) {
-    var sound = new Audio(src);
-    if (playbackRate != undefined) {
-        sound.playbackRate = playbackRate;
-    }
-    if (volume != undefined) {
-        sound.volume = volume;
-    }
-    if (tileTypes != undefined) {
-        sound.tileTypes = tileTypes;
-    }
-    if (loop != undefined) {
-        sound.loop = loop;
+Loader.prototype.loadAudio = function(soundData) {
+    var sound = new Audio(soundData.src);
+    for (let key in soundData) {
+        if (key != "src") {
+            sound[key] = soundData[key];
+        }
     }
     sound.isPlaying = function() {
         return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2)
@@ -67,6 +60,18 @@ Loader.prototype.loadAudio = function(src, playbackRate, volume, tileTypes, loop
     sound.trigger = function () {
         if (!this.isPlaying()) {
             this.play();
+        }
+    }
+    sound.setVolume = function(volume) {
+        if (this.minVolume && volume < this.minVolume) {
+            this.volume = this.minVolume;
+        }else if (this.maxVolume && volume > this.maxVolume) {
+            this.volume = this.maxVolume;
+        } else if (volume < 0) {
+            this.volume = 0;
+        }
+        else {
+            this.volume = volume;
         }
     }
     return sound;

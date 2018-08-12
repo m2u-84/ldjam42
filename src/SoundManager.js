@@ -26,17 +26,17 @@ SoundManager.loadSound = function(name, count, directory) {
     var sounds = [];
     for (var i = 1; i <= count; i++) {
         var file = "voice/" + (directory || "gravedigger") + "/" + name + "/" + i + ".mp3";
-        sounds[i - 1] = loader.loadAudio(file);
+        sounds[i - 1] = loader.loadAudio({src: file});
     }
     sounds.previous = null;
     SoundManager.sounds[name] = sounds;
 };
 
-SoundManager.loadSoundsWithNamedTrigger = function (sounds, triggerName) {
-    if (Array.isArray(sounds)) {
+SoundManager.loadSoundsWithNamedTrigger = function (soundOrSounds, triggerName) {
+    if (Array.isArray(soundOrSounds)) {
         this[`${triggerName}Files`] = [];
-        sounds.forEach(sound => {
-            this[`${triggerName}Files`].push(loader.loadAudio(sound.src, sound.playbackRate, sound.volume, sound.tileTypes, sound.loop));
+        soundOrSounds.forEach(sound => {
+            this[`${triggerName}Files`].push(loader.loadAudio(sound));
         });
         for (const audio of this[`${triggerName}Files`]) {
             audio.onended = () => {
@@ -49,7 +49,7 @@ SoundManager.loadSoundsWithNamedTrigger = function (sounds, triggerName) {
         }
         this[triggerName] = this[`${triggerName}Files`][0];
     } else {
-        this[triggerName] = loader.loadAudio(sounds.src, sounds.playbackRate, sounds.volume, sounds.tileTypes, sounds.loop);
+        this[triggerName] = loader.loadAudio(soundOrSounds);
     }
 }
 

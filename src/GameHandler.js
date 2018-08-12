@@ -128,7 +128,7 @@ GameHandler.prototype.gameLoop = function() {
     var t = +Date.now();
     var dt = t - this.lastTime;
 
-    if (state.pauseScreen || state.shopOpen) { dt = 0; }
+    if (state.startScreen || state.pauseScreen || state.shopOpen) { dt = 0; }
 
     this.lastTime = t;
     this.currentTime += dt;

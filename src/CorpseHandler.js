@@ -11,7 +11,7 @@ function CorpseHandler() {
         playbackRate: 1,
         volume: 1
     }
-    this.truckSound = loader.loadAudio(truck.src, truck.playbackRate, truck.volume);
+    this.truckSound = loader.loadAudio(truck);
 }
 
 CorpseHandler.prototype.update = function(delta) {
@@ -31,7 +31,7 @@ CorpseHandler.prototype.update = function(delta) {
         if (unloadingProgress === 1 ) {
             state.unloadingCorpses.splice(i, 1);
             this.thud2.volume = Math.random() * 0.8 + 0.2;
-            loader.loadAudio(this.thud2.src, this.thud2.playbackRate, this.thud2.volume).play();
+            loader.loadAudio(this.thud2).play();
         }
     }
     

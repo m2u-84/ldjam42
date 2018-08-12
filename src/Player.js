@@ -62,6 +62,8 @@ const torchCrackle = {
     src: "sounds/torch_crackle_loop.wav",
     playbackRate: 1,
     volume: 0.3,
+    minVolume: 0,
+    maxVolume: 0.5,
     loop: true
 }
 
@@ -182,37 +184,21 @@ Player.prototype.update = function(delta) {
     }
 
     // enable / disable torch sounds based on radius around player
-    const torchesInRadius = Player.getTilesInRadius(7, TileTypes.TORCH)
-      .concat(Player.getTilesInRadius(7, TileTypes.COLLIDING_TORCH));
-    let fadeInTimer;
-    let fadeOutTimer;
-    if (torchesInRadius.length > 0) {
+    const torchSoundRadius = 4;
+    const torchesInRadius = Player.getTilesInRadius(torchSoundRadius, TileTypes.TORCH).concat(Player.getTilesInRadius(torchSoundRadius, TileTypes.COLLIDING_TORCH));
+    const nearestTorch = Player.getNearestTile(torchesInRadius);
+    if (nearestTorch) {
+        const mapped = map(nearestTorch.distance, 0, torchSoundRadius, this.torchCrackle.minVolume, this.torchCrackle.maxVolume);
+        // the smaller the distance the louder the sound
+        const torchVolume = this.torchCrackle.maxVolume - mapped;
+        this.torchCrackle.setVolume(torchVolume);
         if (!this.torchCrackle.isPlaying()) {
-            this.torchCrackle.volume = 0;
-            // fade in
-            fadeInTimer = setInterval(() => {
-                if (this.torchCrackle.volume + 0.05 <= 1) {
-                    this.torchCrackle.volume += 0.05;
-                } else {
-                    clearInterval(fadeInTimer);
-                }
-            }, 16);
-            clearInterval(fadeOutTimer);
             this.torchCrackle.play();
         }
     } else {
-        //fade out
-        clearInterval(fadeInTimer);
-        fadeOutTimer = setInterval(() => {
-            if (this.torchCrackle.volume - 0.008 >= 0) {
-                this.torchCrackle.volume -= 0.008;
-            } else {
-                clearInterval(fadeOutTimer);
-                this.torchCrackle.pause();
-            }
-        }, 16);
+        this.torchCrackle.pause();
     }
-    
+
     // F pressed?
     if (keys.f && !this.action) {
         // Attack action
@@ -435,8 +421,7 @@ Player.pullCorpse = function(corpse, x, y, distance) {
 
 Player.getTilesInRadius = function (radius, tileType) {
     let playerPos = state.player.position;
-    playerPos = playerPos.map(v => Math.floor(v));
-    let centerOffset = Math.floor(radius / 2); 
+    let centerOffset = Math.floor(radius); 
     let tilesWithType = [];
     state.map.tiles.forEach( yTile => {
         yTile.forEach( tile => {
@@ -446,19 +431,46 @@ Player.getTilesInRadius = function (radius, tileType) {
         })
     })
     const tilesInRadius = tilesWithType.filter(tile => {
-        return tile.x >= playerPos[0] - centerOffset && tile.x <= playerPos[0] - centerOffset + radius
-            && tile.y >= playerPos[1] - centerOffset && tile.y <= playerPos[1] - centerOffset + radius
+        if ( tile.x >= playerPos[0] - centerOffset && tile.x <= playerPos[0] - centerOffset + radius * 2
+            && tile.y >= playerPos[1] - centerOffset && tile.y <= playerPos[1] - centerOffset + radius * 2) {
+                return true;
+            } else {
+                return false;
+            }
     })
     return tilesInRadius;
 }
 
 Player.getDistanceToTile = function (tile) {
     let playerPos = state.player.position;
-    playerPos = playerPos.map(v => Math.floor(v));
     const dx = tile.x - playerPos[0];
     const dy = tile.y - playerPos[1];
     const distance = Math.sqrt(dx * dx + dy * dy);
-    return distance;
+    return {
+        tile: tile,
+        distance: distance
+    };
+}
+
+Player.getNearestTile = function (tiles) {
+    if (tiles.length > 0) {
+        let t = Player.getDistanceToTile(tiles[0]);
+        let tile = t.tile;
+        let minDistance = t.distance;
+        if (tiles[1]) {
+            for (let x = 1; x < tiles.length; x++) {
+                let distanceToPlayer = Player.getDistanceToTile(tiles[x]).distance;
+                if (distanceToPlayer < minDistance) {
+                    tile = tiles[x];
+                    minDistance = distanceToPlayer;
+                }
+            }
+        }
+        return {
+            tile: tile,
+            distance: minDistance
+        };
+    }
 }
 
 Player.prototype.getZombieSpeedReduction = function() {
