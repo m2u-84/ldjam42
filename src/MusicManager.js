@@ -19,6 +19,7 @@ MusicManager.prototype.update = function() {
     }
 
     var factor = 0.5 + 0.5 * Math.cos(state.dayTime * 2 * Math.PI);
+    factor *= factor;
     // Cos interpolate for stronger cut
     for (var i = 0; i < 2; i++) { factor = 0.5 - 0.5 * Math.cos(Math.PI * factor); }
     // Apply factor to volumes

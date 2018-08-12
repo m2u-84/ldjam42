@@ -103,7 +103,7 @@ function GameHandler(parentElement) {
         }
 
         // Create zombies
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 0; i++) {
             var zombie = new Zombie([Math.random() * 20, Math.random() * 20]);
             state.zombies.push(zombie);
         }
@@ -200,6 +200,7 @@ GameHandler.prototype.renderLoop = function() {
     lightSystem.renderToContext(this.ctx);
 
     // HUD (in world)
+    state.graves.forEach(g => g.drawProgress(this.ctx));
     shop.drawFloatingTexts(this.ctx);
 
     // HUD (screen)
@@ -233,6 +234,10 @@ GameHandler.prototype.renderLoop = function() {
         this.ctx.fillText(this.state.money + " Gold", 5, 15);
     }
     this.ctx.globalAlpha = 1;
+    // Day
+    this.ctx.fillStyle = "white";
+    this.ctx.textAlign = "right";
+    this.ctx.fillText("Day " + Math.ceil(state.dayTime), this.canvas.width - 5, 12);
 
     if(state.startScreen){
         this.startScreen.draw(this.ctx);

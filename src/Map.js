@@ -143,7 +143,7 @@ Map.prototype.update = function() {
     if (state.dayTime % 1 >= t && state.lastDayTime % 1 < t) {
         this.daybreakSound.play();
     }
-    var t = 0.692;
+    var t = 0.092;
     if (state.dayTime % 1 >= t && state.lastDayTime % 1 < t) {
         this.nightbreakSound.play();
     }
