@@ -344,25 +344,3 @@ Player.pullCorpse = function(corpse, x, y, distance) {
         corpse.setPosition( [x - dx * disf, y - dy * disf] );
     }
 };
-
-// load a sound or sound array
-// Player.prototype.loadNamedSounds = function (soundData, soundName) {
-//     if (Array.isArray(soundData)) {
-//         this[`${soundName}Files`] = [];
-//         soundData.forEach(soundData => {
-//             this[`${soundName}Files`].push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume, soundData.tileTypes));
-//         });
-//         for (const audio of this[`${soundName}Files`]) {
-//             audio.onended = () => {
-//                 if (this.targetTile && audio.tileTypes != undefined) {
-//                     this[soundName] = getRandomSoundByTileType(this[`${soundName}Files`], this.targetTile.type);
-//                 } else {
-//                     this[soundName] = getRandom(this[`${soundName}Files`]);
-//                 }
-//             }
-//         }
-//         this[soundName] = this[`${soundName}Files`][0];
-//     } else {
-//         this[soundName] = loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume);
-//     }
-// }
