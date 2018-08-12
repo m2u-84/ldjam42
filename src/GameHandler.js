@@ -19,6 +19,8 @@ function GameHandler(parentElement) {
     
     // Global game state which can be accessed by all game objects
     window.state = this.state = {
+        currentTime: 0,
+        dt: 0,
         map: new Map(32, 32, 24, 24),
         player: new Player([16.5,21.5]),
         corpses: [],
@@ -80,6 +82,7 @@ GameHandler.prototype.gameLoop = function() {
     this.currentTime += dt;
     state.time = this.currentTime;
     state.dayTime = state.time / 60000;
+    state.dt = dt;
 
     // Update all classes and instances
     for (var c of this.classes) {
@@ -138,6 +141,22 @@ GameHandler.prototype.renderLoop = function() {
     lightSystem.drawLight(null, 160, 120, 200, "#ffffff", 0.6);
     // lightSystem.drawLight(null, 160 + 160 * Math.sin(state.time * 0.001), 120 + 120 * Math.sin(state.time * 0.00132), 130, "#3030ff", 0.6);
     lightSystem.renderToContext(this.ctx);
+
+    // HUD
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    // Corpse Count
+    Corpse.displayCount(this.ctx, -4, this.canvas.height - 20, state.corpses.length);
+    // Shop Info
+    var display = (state.map.getTile(state.player.tile[0], state.player.tile[1]) == state.map.shopTile);
+    var alpha = fadeAlpha("shopInfoText", display ? 1 : 0);
+    if (alpha > 0) {
+        this.ctx.textAlign = "center";
+        var y = this.canvas.height * (0.8 + 0.03 * Math.sin(state.currentTime));
+        this.ctx.fillStyle = "white";
+        this.ctx.globalAlpha = alpha;
+        this.ctx.fillText("Press E to shop", this.canvas.width / 2, y);
+        this.ctx.globalAlpha = 1;
+    }
 
     requestAnimationFrame(this.renderLoop.bind(this));
 };

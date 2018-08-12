@@ -28,6 +28,26 @@ Map.prototype.load = function() {
     playerPos[1] -= 2;
     const fencedZoneWidth = 9;
     const centerZoneOffset = Math.floor(fencedZoneWidth / 2) ;
+    const fenceArea = [
+        playerPos[0] - centerZoneOffset,
+        playerPos[1] - centerZoneOffset,
+        playerPos[0] + fencedZoneWidth - centerZoneOffset - 1,
+        playerPos[1] - centerZoneOffset + fencedZoneWidth 
+    ];
+    const entranceHeight = 4;
+    const stoneArea = [
+        0,
+        this.tilesY - entranceHeight,
+        this.tilesX,
+        this.tilesY
+    ];
+    const entranceArea = [
+        playerPos[0] - 2,
+        fenceArea[3],
+        playerPos[0] + 2,
+        stoneArea[1]
+    ];
+    const shopStart = [ entranceArea[2], entranceArea[3] - 1 ];
 
     // create f3nc3™ around player
     for (let x = 0; x < fencedZoneWidth; x++) {
@@ -49,7 +69,6 @@ Map.prototype.load = function() {
     }
 
     // Close gap between st0neZ0ne and player area
-    const entranceHeight = 4;
     var y1 = playerPos[1] - centerZoneOffset + fencedZoneWidth + 1;
     for (var y = y1; y < this.tilesY - entranceHeight; y++) {
         // Left side
@@ -62,7 +81,7 @@ Map.prototype.load = function() {
     this.set(playerPos[0], y1 - 1, TileTypes.PATH);
     this.set(playerPos[0], y1 - 2, TileTypes.PATH);
 
-    // create st0neZ0ne™ with f3nc3™
+    // create st0neZ0ne with f3nc3
     for (let y = this.tilesY - entranceHeight; y < this.tilesY; y++) {
         for (let x = 0; x < this.tilesX; x++) {
             // fence
@@ -78,6 +97,26 @@ Map.prototype.load = function() {
             }
         }
     }
+
+    // Entry Torch
+    this.set(playerPos[0] - 1, fenceArea[3], TileTypes.TORCH);
+    this.set(playerPos[0] + 1, fenceArea[3], TileTypes.TORCH);
+
+    // Shop Area
+    // First path to the right
+    for (var i = -1; i < 4; i++) {
+        this.set(shopStart[0] + i, shopStart[1], TileTypes.PATH);
+    }
+    // Then path to top
+    // And Shop
+    this.shopTile = this.getTile(shopStart[0] + 2, shopStart[1]);
+    this.set(shopStart[0] + 2, shopStart[1] - 1, TileTypes.SHOP);
+    // Tree to the right
+    this.set(shopStart[0] + 4, shopStart[1], TileTypes.TREE);
+    this.set(shopStart[0] + 4, shopStart[1] - 1, TileTypes.TREE);
+    // Invisible torches
+    this.set(shopStart[0] + 1, shopStart[1] - 1, TileTypes.TORCH);
+    this.set(shopStart[0] + 3, shopStart[1] - 1, TileTypes.TORCH);
 
     for (var x = 2; x < 28; x += 7) {
         this.set(x, 31 - x, TileTypes.TORCH);

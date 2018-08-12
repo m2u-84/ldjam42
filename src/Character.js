@@ -62,7 +62,7 @@ Character.prototype.update = function (delta) {
     // Compute new position based on delta and velocity
     var nx = this.position[0] + this.velocity[0] * delta;
     var ny = this.position[1] + this.velocity[1] * delta;
-    this.position = this.resolveCollision(nx, ny);
+    this.setPosition(this.resolveCollision(nx, ny));
 
     // play movement sounds
     var keys = state.keyStates;
@@ -107,7 +107,6 @@ Character.prototype.loadMovementSounds = function (movementSounds) {
     for (const audio of this.movementAudioFiles) {
         audio.onended = () => {
             this.movementSound = getRandomSound(this.movementAudioFiles, this.targetTile.type);
-            console.log(this.movementSound);
         }
 
     }
