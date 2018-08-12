@@ -29,6 +29,7 @@ function GameHandler(parentElement) {
         map: new Map(32, 32, 24, 24),
         player: new Player([16.5,21.5]),
         corpses: [],
+        unloadingCorpses: [],
         zombies: [],
         graves: [],
         keyStates: keyHandler.keyStates,
@@ -204,7 +205,7 @@ GameHandler.prototype.renderLoop = function() {
     // HUD (screen)
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     // Corpse Count
-    Corpse.displayCount(this.ctx, -4, this.canvas.height - 20, state.corpses.length);
+    Corpse.displayCount(this.ctx, -4, this.canvas.height - 20, state.corpses.length - state.unloadingCorpses.length);
     // Shop Info
     var display = (state.map.getTile(state.player.tile[0], state.player.tile[1]) == state.map.shopTile);
     state.readyToShop = display;
