@@ -6,6 +6,11 @@ function CorpseHandler() {
         playbackRate: 1,
         volume: 1
     }
+    this.thud2 = {
+        src: "sounds/thud2.wav",
+        playbackRate: 1,
+        volume: 1
+    }
     this.truckSound = loader.loadAudio(truck.src, truck.playbackRate, truck.volume);
 }
 
@@ -25,6 +30,8 @@ CorpseHandler.prototype.update = function(delta) {
         corpseToAnimate.angle = unloadingProgress * corpseToAnimate.rotationAmount;
         if (unloadingProgress === 1 ) {
             state.unloadingCorpses.splice(i, 1);
+            this.thud2.volume = Math.random() * 0.8 + 0.2;
+            loader.loadAudio(this.thud2.src, this.thud2.playbackRate, this.thud2.volume).play();
         }
     }
     
@@ -37,7 +44,7 @@ CorpseHandler.prototype.update = function(delta) {
             corpse.finalDestination = [10 + Math.random() * 12, 30];
             corpse.rotationAmount = Math.random() * 5 * Math.PI * 2; // Max 5 Rotationen
             corpse.spawningPosition = [ 16, 45 ];
-            corpse.spawningTime = state.dayTime + i * state.spawningGap;
+            corpse.spawningTime = state.dayTime + i * 0.5 * (state.spawningGap + state.spawningGap * Math.random());
             state.unloadingCorpses.push(corpse);
             state.corpses.push(corpse);
         }
