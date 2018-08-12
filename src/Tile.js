@@ -30,7 +30,7 @@ Tile.load = function() {
         new TileType("StoneFence", [ "img/ground/stonefloor.png" ], true, false, 1, ["img/environment/fence.png", 0.5, 0.9]),
         new TileType("StoneFenceSide", [ "img/ground/stonefloor.png" ], true, false, 1, ["img/environment/fence side.png", 0.5, 0.9]),
         new TileType("Torch", "img/ground/mud3.png", true, false, 0, ["img/environment/torch.png", 0.5, 1.3, 3, 150], ["#f0c030", 140, 1]),
-        new TileType("Shop", "img/ground/path.png", true, false, null, ["img/environment/shop.png", 0.5, 0.8])
+        new TileType("Shop", "img/ground/path.png", true, false, null, ["img/environment/shop.png", 0.5, 0.93])
     ];
     types.forEach(tp => tileTypes.push(tp));
 };

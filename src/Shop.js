@@ -1,7 +1,14 @@
 
 
 function Shop() {
-    this.test = 1;
+    // All things to buy in the shop, sorted by price
+    // Title, price, attribute name (for state.unlocks), description
+    this.options = [
+        ["Torches", 30, "torches", "Unlock the power of setting sticks on fire and sticking them into the ground."],
+        ["Better Shovel", 100, "shovel2", "Get a better shovel that makes shoveling feel like a day at the beach."],
+        ["Super Shovel", 500, "shovel3", "Get the Ultra Shovel 9000 to shovel like there's no tomorrow."],
+        ["Maggots", 300, "maggots", "Unleash the power of maggots. Graves will take less time for decomposition."]
+    ].sort((a,b) => a[1] - b[1]);
 }
 
 Shop.prototype.draw = function(ctx) {
