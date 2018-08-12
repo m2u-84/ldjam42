@@ -61,3 +61,22 @@ Corpse.displayCount = function(ctx, x, y, count) {
     }
     ctx.restore();
 };
+
+Corpse.displayCount2 = function(ctx, x, y, corpses) {
+    if (corpses.length <= 0) { return; }
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, x, y);
+    ctx.scale(0.75, 0.75);
+    let row = 0;
+    let column = 0;
+    for (let corpse of corpses) {
+        if (column < 38) {
+            ctx.drawImage(corpse.sprite, 11 * column, row * (-30));
+            column += 1;
+        } else {
+            row += 1;
+            column = 0;
+        }
+    }
+    ctx.restore();
+};
