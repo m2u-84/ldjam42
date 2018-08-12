@@ -4,10 +4,11 @@ function Zombie(position) {
     this.targetPosition = position.slice();
     this.following = null;
     this.nextTargetSearch = 0;
+    this.hp = 6;
 }
 inherit(Zombie, Character);
 
-Zombie.prototype.VELOCITY = 0.001;
+Zombie.prototype.VELOCITY = 0.0007;
 
 Zombie.update = function() {
     Zombie.sprite = loader.loadImage("img/character/zombieSprite.png", 4);
@@ -72,5 +73,5 @@ Zombie.prototype.draw = function(ctx) {
 };
 
 Zombie.prototype.getFrame = function(spr) {
-    return Math.floor(state.time / 320) % 4
+    return Math.floor(state.time / 380) % 4
 };

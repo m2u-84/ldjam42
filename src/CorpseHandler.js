@@ -4,7 +4,7 @@ function CorpseHandler() {
     const truck = {
         src: "sounds/truck.mp3",
         playbackRate: 1,
-        volume: 1
+        volume: 0.2
     }
     this.thud2 = {
         src: "sounds/thud2.wav",
