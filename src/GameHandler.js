@@ -15,7 +15,8 @@ function GameHandler(parentElement) {
         Corpse,
         Grave,
         LightSystem,
-        Shop
+        Shop,
+        SoundManager
     ].map(c => ({class: c, instances: []}));
     
     // Global game state which can be accessed by all game objects
@@ -66,8 +67,8 @@ function GameHandler(parentElement) {
     this.load().then(() => {
 
         // Create some corpses
-        for (var i = 0; i < 5; i++) {
-            var corpse = new Corpse([Math.random() * 20, 19]);
+        for (var i = 0; i < 25; i++) {
+            var corpse = new Corpse([Math.random() * 20, 30]);
             state.corpses.push(corpse);
         }
 

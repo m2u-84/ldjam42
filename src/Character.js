@@ -106,7 +106,9 @@ Character.prototype.loadMovementSounds = function (movementSounds) {
     })
     for (const audio of this.movementAudioFiles) {
         audio.onended = () => {
-            this.movementSound = getRandomSound(this.movementAudioFiles, this.targetTile.type);
+            if (this.targetTile) {
+                this.movementSound = getRandomSound(this.movementAudioFiles, this.targetTile.type);
+            }
         }
 
     }
