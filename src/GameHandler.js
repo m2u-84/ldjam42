@@ -22,7 +22,6 @@ function GameHandler(parentElement) {
         CorpseHandler,
         SoundManager,
         Zombie,
-        HEAD,
         StartScreen,
         Owl
     ].map(c => ({class: c, instances: []}));
