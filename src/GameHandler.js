@@ -27,6 +27,7 @@ function GameHandler(parentElement) {
 
     loader = new Loader();
     keyHandler = new KeyHandler(window, ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "e", "w", "a", "s", "d"]);
+    renderSorter = new RenderSorter();
     
     this.classes = [
         // Player, Zombies, Corpses, Graves, ...
@@ -137,6 +138,7 @@ GameHandler.prototype.renderLoop = function() {
 
     lightSystem.setAmbientColor(getAmbientColor(state.dayTime % 1));
     lightSystem.clear();
+    renderSorter.clear();
     
     // Render all classes and instances
     /*
@@ -156,6 +158,7 @@ GameHandler.prototype.renderLoop = function() {
     state.graves.forEach(g => g.draw(this.ctx));
     state.corpses.forEach(c => c.draw(this.ctx));
     state.player.draw(this.ctx);
+    renderSorter.render();
     lightSystem.drawLight(null, 160, 120, 200, "#ffffff", 0.6);
     // lightSystem.drawLight(null, 160 + 160 * Math.sin(state.time * 0.001), 120 + 120 * Math.sin(state.time * 0.00132), 130, "#3030ff", 0.6);
     lightSystem.renderToContext(this.ctx);

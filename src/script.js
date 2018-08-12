@@ -23,6 +23,16 @@ function removeItem(array, item) {
     return index;
 }
 
+/**
+ * Use this function if you don't want to render an image immediately, but apply depth sorting, e.g.
+ * for player character, trees, fences and so on. These will be rendered collectively afterwards,
+ * after being sorted by their y coordinate.
+ */
+function drawImageSorted(ctx, img, x, y, w, h, relx, rely, mirrored, angle, frameIndex) {
+    renderSorter.add(x, y,
+        () => drawImage(ctx, img, x, y, w, h, relx, rely, mirrored, angle, frameIndex));
+}
+
 function drawImage(ctx, img, x, y, w, h, relx, rely, mirrored, angle, frameIndex) {
     if (relx == null) { relx = 0.5; }
     if (rely == null) { rely = 1.0; }

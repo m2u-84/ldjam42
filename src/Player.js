@@ -144,13 +144,13 @@ Player.prototype.draw = function(ctx) {
     if (Player.sprite) {
         var x = Math.round(this.position[0] * state.map.tw);
         var y = Math.round(this.position[1] * state.map.th);
-        drawImage(ctx, Player.sprite, x, y, null, null, 0.5, 0.85, this.direction == 1, 0, this.getFrame());
+        drawImageSorted(ctx, Player.sprite, x, y, null, null, 0.5, 0.85, this.direction == 1, 0, this.getFrame());
     }
     // Progress of action
     if (this.action && playerActions[this.action].duration > 0) {
         var p = (state.time - this.actionStarted) / this.actionDuration;
         if (p >= 0 && p <= 1) {
-            drawProgressBar(ctx, x, y, 16, p);
+            renderSorter.add(x, y + 1000, () => drawProgressBar(ctx, x, y, 16, p));
         }
     }
 };

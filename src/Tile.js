@@ -103,7 +103,7 @@ Tile.prototype.draw = function(ctx, tx, ty) {
             var deco = this.decoImage;
             var frame = null;
             if (deco[4]) { frame = Math.floor(this.randomizer * deco[3] + state.time / deco[4]) % deco[3]; }
-            drawImage(ctx, deco[0], x, y, null, null, deco[1], deco[2], null, null, frame);
+            drawImageSorted(ctx, deco[0], x, y, null, null, deco[1], deco[2], null, null, frame);
         }
     }
 
