@@ -51,7 +51,7 @@ function GameHandler(parentElement) {
         },
         initialSpawnAmount: 5,
         spawnIncreaseRate: 0.3,
-        spawnAnimationTime: 0.05,
+        spawnAnimationTime: 0.02,
     };
     
     this.startTime = +Date.now();
