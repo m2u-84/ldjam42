@@ -34,6 +34,7 @@ Player.prototype.PULL_DISTANCE = 0.7;
 
 Player.load = function() {
     Player.sprite = loader.loadImage("img/character/characteranimation2.png", 4);
+    Player.dragSound = document.getElementById("dragsound");
 };
 
 Player.prototype.update = function(delta) {
@@ -127,6 +128,10 @@ Player.prototype.update = function(delta) {
     // Pulling corpse
     if (this.pulling) {
         Player.pullCorpse(this.pulling, this.position[0], this.position[1], this.PULL_DISTANCE);
+        var moving = (this.velocity[0] || this.velocity[1]);
+        Player.dragSound.volume = moving ? 1 : 0;
+    } else {
+        Player.dragSound.volume = 0;
     }
     
     Character.prototype.update.call(this, delta);
