@@ -57,7 +57,6 @@ Character.prototype.loadMovementSounds = function (movementSounds) {
     })
     for (const audio of this.movementAudioFiles) {
         audio.onended = () => {
-            const newSound = getRandom(this.movementAudioFiles);
             this.movementSound = getRandom(this.movementAudioFiles);
         }
 

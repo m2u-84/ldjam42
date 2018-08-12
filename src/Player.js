@@ -1,3 +1,44 @@
+const movementSounds = [
+    {
+        src: "sounds/step_dirt.wav",
+        playbackRate: 1,
+        volume: .35
+    },
+    {
+        src: "sounds/step_dirt2.wav",
+        playbackRate: 1,
+        volume: .35
+    },
+    {
+        src: "sounds/step_dirt3.wav",
+        playbackRate: 1,
+        volume: .35
+    },
+    {
+        src: "sounds/step_dirt4.wav",
+        playbackRate: 1,
+        volume: .35
+    }
+];
+
+const draggingSounds =  [
+    {
+        src: "sounds/player_drag.wav",
+        playbackRate: 1.8,
+        volume: 1
+    },
+    // {
+    //     src: "sounds/player_drag2.wav",
+    //     playbackRate: 1.6,
+    //     volume: 1
+    // },
+    {
+        src: "sounds/player_drag3.wav",
+        playbackRate: 2,
+        volume: 1
+    },
+]
+
 const PlayerActions = {
     NONE: 0,
     PULL: 1,
@@ -14,7 +55,7 @@ var playerActions = [
     { duration: 1200 / 3, move: false }
 ];
 
-function Player(position, movementSounds) {
+function Player(position) {
     Character.call(this, position, movementSounds);
     this.ePressed = false;
     this.pulling = null;
@@ -34,7 +75,7 @@ Player.prototype.PULL_DISTANCE = 0.7;
 
 Player.load = function() {
     Player.sprite = loader.loadImage("img/character/characteranimation2.png", 4);
-    Player.dragSound = document.getElementById("dragsound");
+    Player.loadDraggingSounds(draggingSounds);
 };
 
 Player.prototype.update = function(delta) {
@@ -129,11 +170,10 @@ Player.prototype.update = function(delta) {
     if (this.pulling) {
         Player.pullCorpse(this.pulling, this.position[0], this.position[1], this.PULL_DISTANCE);
         var moving = (this.velocity[0] || this.velocity[1]);
-        Player.dragSound.volume = moving ? 1 : 0;
-    } else {
-        Player.dragSound.volume = 0;
-    }
-    
+      if (moving) {
+          Player.dragSound.play();
+      }
+    } 
     Character.prototype.update.call(this, delta);
 
     // Target tile
@@ -193,3 +233,18 @@ Player.pullCorpse = function(corpse, x, y, distance) {
         corpse.setPosition( [x - dx * disf, y - dy * disf] );
     }
 };
+
+Player.loadDraggingSounds = function(soundData) {
+    Player.draggingAudioFiles = [];
+    soundData.forEach(soundData => {
+        Player.draggingAudioFiles.push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume));
+    })
+    for (const audio of Player.draggingAudioFiles) {
+        audio.onended = () => {
+            Player.dragSound = getRandom(Player.draggingAudioFiles);
+            console.log(Player.dragSound)
+        }
+
+    }
+    Player.dragSound = Player.draggingAudioFiles[0];
+}
