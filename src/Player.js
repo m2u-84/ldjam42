@@ -113,7 +113,11 @@ Player.prototype.update = function(delta) {
                     state.map.set(tile.x, tile.y, TileTypes.GROUND);
                     break;
                 case PlayerActions.PATH:
-                    state.map.set(tile.x, tile.y, TileTypes.PATH);
+                    if (tile.decoImage) {
+                        tile.decoImage = null;
+                    } else {
+                        state.map.set(tile.x, tile.y, TileTypes.PATH);
+                    }
                     break;
                 case PlayerActions.DIG:
                     state.map.set(tile.x, tile.y, TileTypes.HOLE);
