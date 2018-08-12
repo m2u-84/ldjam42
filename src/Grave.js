@@ -54,6 +54,7 @@ Grave.prototype.takeCorpse = function(corpse) {
     removeItem(state.corpses, corpse);
     this.fillTime = state.dayTime;
     this.expirationTime = this.fillTime + 3;
+    shop.awardMoney(50, this.cx, this.cy);
 };
 
 Grave.prototype.ejectCorpse = function() {

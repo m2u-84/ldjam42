@@ -155,7 +155,10 @@ GameHandler.prototype.renderLoop = function() {
     // lightSystem.drawLight(null, 160 + 160 * Math.sin(state.time * 0.001), 120 + 120 * Math.sin(state.time * 0.00132), 130, "#3030ff", 0.6);
     lightSystem.renderToContext(this.ctx);
 
-    // HUD
+    // HUD (in world)
+    shop.drawFloatingTexts(this.ctx);
+
+    // HUD (screen)
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     // Corpse Count
     Corpse.displayCount(this.ctx, -4, this.canvas.height - 20, state.corpses.length);
@@ -165,7 +168,7 @@ GameHandler.prototype.renderLoop = function() {
     var alpha = fadeAlpha("shopInfoText", display ? 1 : 0);
     if (alpha > 0) {
         this.ctx.textAlign = "center";
-        var y = this.canvas.height * (0.8 + 0.03 * Math.sin(state.currentTime));
+        var y = this.canvas.height * (0.8 + 0.03 * Math.sin(state.time * 0.003));
         this.ctx.fillStyle = "white";
         this.ctx.globalAlpha = alpha;
         this.ctx.fillText("Press E to shop", this.canvas.width / 2, y);

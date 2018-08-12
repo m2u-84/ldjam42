@@ -1,7 +1,7 @@
 
 
 function SoundManager() {
-    this.test = 0;
+
 }
 
 
