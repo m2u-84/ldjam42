@@ -64,8 +64,10 @@ Grave.prototype.ejectCorpse = function() {
 };
 
 Grave.prototype.remove = function() {
-    // Reset tiles
-    state.map.set(this.x1, this.y1, TileTypes.PATH);
-    state.map.set(this.x2, this.y2, TileTypes.PATH);
-    removeItem(state.graves, this);
+    if (this.empty) {
+        // Reset tiles
+        state.map.set(this.x1, this.y1, TileTypes.PATH);
+        state.map.set(this.x2, this.y2, TileTypes.PATH);
+        removeItem(state.graves, this);
+    }
 };
