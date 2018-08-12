@@ -57,6 +57,18 @@ Grave.prototype.drawProgress = function(ctx) {
             if (state.dayTime % 1 >= 0.195 && state.lastDayTime % 1 < 0.195) {
                 shop.awardMoney(5, this.cx, this.cy);
             }
+
+            // Randomly spawn zombies
+            if (state.dayTime % 0.01 < state.lastDayTime % 0.01 && state.dayTime > 0.8) {
+                if (Math.random() < 0.02 + 0.3) {
+                    // Spawn zombie
+                    this.ejectCorpse();
+                    var zx = this.cx, zy = this.cy;
+                    var zombie = new Zombie([zx, zy]);
+                    state.zombies.push(zombie);
+                    SoundManager.play("resurrection", 1);
+                }
+            }
         } else {
             // is done! empty grave, although this is draw and not update function (but this is a game jam so it's alright)
             this.ejectCorpse();
