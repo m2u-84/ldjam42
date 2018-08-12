@@ -48,7 +48,9 @@ function GameHandler(parentElement) {
             zombies: false, // TODO
             zombies2: false, // TODO
             hypnosis: false // TODO
-        }
+        },
+        initialSpawnAmount: 5,
+        spawnIncreaseRate: 0.3
     };
     
     this.startTime = +Date.now();
