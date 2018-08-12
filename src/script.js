@@ -40,9 +40,9 @@ function drawImage(ctx, img, x, y, w, h, relx, rely, mirrored, angle, frameIndex
         var frameWidth = img.width / img.frameCount;
     }
     ctx.save();
-    ctx.translate(x, y);
-    x = -relx * (frameWidth || img.width);
-    y = -rely * (frameWidth || img.height);
+    ctx.translate(Math.round(x), Math.round(y));
+    x = Math.round(-relx * (frameWidth || img.width));
+    y = Math.round(-rely * (frameWidth || img.height));
     if (mirrored) {
         ctx.scale(-1, 1);
     }

@@ -5,6 +5,8 @@ function Zombie(position) {
     this.following = null;
     this.nextTargetSearch = 0;
     this.hp = 6;
+    this.sleepUntil = 0;
+    this.followOffset = [0, 0];
 }
 inherit(Zombie, Character);
 
@@ -20,17 +22,26 @@ Zombie.prototype.update = function(dt) {
         this.targetPosition = null;
         this.nextTargetSearch = state.dayTime + Math.random() * 0.1;
         this.velocity = [ 0, 0 ];
-    } else {
+    } else if (state.time > this.sleepUntil) {
         // Follow player?
         if (this.following) {
             // walk towards player
-            this.velocity = [ this.following.position[0] - this.position[0], this.following.position[1] - this.position[1] ];
+            var dx = this.following.position[0] - this.position[0] + this.followOffset[0];
+            var dy = this.following.position[1] - this.position[1] + this.followOffset[1];
+            this.velocity = [ dx, dy ];
+            // stand around for a bit when player found
+            if (dx * dx + dy * dy < 0.01) {
+                this.sleepUntil = state.time + 500 + Math.random() * 1500;
+                this.velocity = [ 0, 0 ];
+                this.followOffset = [Math.random() - Math.random(), Math.random() - Math.random()].map(v => 0.7 * v);
+            }
         } else {
             // Found player?
             var dx = this.position[0] - state.player.position[0], dy = this.position[1] - state.player.position[1];
             if (dx * dx + dy * dy < 5) {
                 // Follow player
                 this.following = state.player;
+                this.followOffset = [Math.random() - Math.random(), Math.random() - Math.random()].map(v => 0.7 * v);
                 SoundManager.play("sighting", 0.4);
             } else {
                 if (this.targetPosition) {
