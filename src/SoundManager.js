@@ -4,6 +4,7 @@ function SoundManager() {
 
 }
 
+SoundManager.previous = null;
 
 SoundManager.load = function() {
     SoundManager.sounds = {}
@@ -29,6 +30,7 @@ SoundManager.loadSound = function(name, count, directory) {
         sounds[i - 1] = loader.loadAudio({src: file});
     }
     sounds.previous = null;
+    sounds.player = (directory == null);
     SoundManager.sounds[name] = sounds;
 };
 
@@ -56,6 +58,14 @@ SoundManager.loadSoundsWithNamedTrigger = function (soundOrSounds, triggerName) 
 SoundManager.play = function(name, probability) {
     if (Math.random() > probability) { return; }
     var sounds = SoundManager.sounds[name];
+    if (sounds.player) {
+        if (SoundManager.previous != null) {
+            if (!SoundManager.previous.paused) {
+                // Skip when player's still talking
+                return;
+            }
+        }
+    }
     var sound = getRandom(sounds);
     if (sounds.length > 1) {
         while (sound == sounds.previous) {
@@ -65,5 +75,8 @@ SoundManager.play = function(name, probability) {
     }
     if (sound) {
         sound.play();
+        if (sounds.player) {
+            SoundManager.previous = sound;
+        }
     }
 };

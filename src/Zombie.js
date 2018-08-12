@@ -7,6 +7,7 @@ function Zombie(position) {
     this.hp = 6;
     this.sleepUntil = 0;
     this.followOffset = [0, 0];
+    this.spawnTime = state.time;
 }
 inherit(Zombie, Character);
 
@@ -42,7 +43,10 @@ Zombie.prototype.update = function(dt) {
                 // Follow player
                 this.following = state.player;
                 this.followOffset = [Math.random() - Math.random(), Math.random() - Math.random()].map(v => 0.7 * v);
-                SoundManager.play("sighting", 0.4);
+                // Only comment when spawn time is long enough in the past, otherwise spawnign zombies might speak twice at once
+                if (state.time - this.spawnTime > 5000) {
+                    SoundManager.play("sighting", 0.4);
+                }
             } else {
                 if (this.targetPosition) {
                     // Already there?
