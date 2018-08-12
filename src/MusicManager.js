@@ -22,7 +22,9 @@ MusicManager.prototype.update = function() {
     // Cos interpolate for stronger cut
     for (var i = 0; i < 2; i++) { factor = 0.5 - 0.5 * Math.cos(Math.PI * factor); }
     // Apply factor to volumes
-    document.getElementById("nightmusic").volume = AMBIENT_VOLUME * factor;
+    var ambient = document.getElementById("nightmusic");
+    ambient.volume = AMBIENT_VOLUME * factor;
+    if (!ambient.playing) { ambient.play(); }
     this.audios[this.playing].volume = MUSIC_VOLUME * (1 - factor);
 };
 

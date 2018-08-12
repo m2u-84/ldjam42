@@ -33,7 +33,7 @@ function GameHandler(parentElement) {
         graves: [],
         keyStates: keyHandler.keyStates,
         cam: { x: 0, y: 0 },
-        money: 1150,
+        money: 50,
         shopOpen: false,
         startScreen: false,
         pauseScreen: false,
@@ -54,7 +54,9 @@ function GameHandler(parentElement) {
             hypnosis: false // TODO
         },
         initialSpawnAmount: 5,
-        spawnIncreaseRate: 0.3
+        spawnIncreaseRate: 0.3,
+        spawnAnimationTime: 0.035,
+        spawningGap: 0.005,
     };
     
     this.startTime = +Date.now();
