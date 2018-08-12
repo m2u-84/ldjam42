@@ -47,6 +47,8 @@ function Character(position) {
     Entity.call(this, position);
     this.velocity = [0, 0];
     this.direction = 1;
+    this.collided = false;
+    this.stuck = false;
 
     this.width = 0.5;
     this.height = 0.3;
@@ -59,6 +61,8 @@ function Character(position) {
 inherit(Character, Entity);
 
 Character.prototype.update = function (delta) {
+    this.collided = false;
+    this.stuck = false;
     // Compute new position based on delta and velocity
     var nx = this.position[0] + this.velocity[0] * delta;
     var ny = this.position[1] + this.velocity[1] * delta;
@@ -67,7 +71,7 @@ Character.prototype.update = function (delta) {
     // play movement sounds
     var keys = state.keyStates;
     if (keys.w || keys.a || keys.d || keys.s || keys.ArrowDown || keys.ArrowLeft || keys.ArrowRight || keys.ArrowUp) {
-        this.movementSound.play();
+        this.movementSound.trigger();
     }
 
     // Update direction
@@ -78,9 +82,11 @@ Character.prototype.update = function (delta) {
 Character.prototype.resolveCollision = function (x, y) {
     // Check x direction
     if (this.checkCollision(x, this.position[1])) {
+        this.collided = true;
         x = this.position[0];
     }
     if (this.checkCollision(x, y)) {
+        if (this.collided) { this.stuck = true; } else { this.collided = true; }
         y = this.position[1];
     }
     // Player stuck?
@@ -107,7 +113,7 @@ Character.prototype.loadMovementSounds = function (movementSounds) {
     for (const audio of this.movementAudioFiles) {
         audio.onended = () => {
             if (this.targetTile) {
-                this.movementSound = getRandomSound(this.movementAudioFiles, this.targetTile.type);
+                this.movementSound = getRandomSoundByTileType(this.movementAudioFiles, this.targetTile.type);
             }
         }
     }

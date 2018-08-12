@@ -11,16 +11,35 @@ const draggingSounds =  [
     // },
     {
         src: "sounds/player_drag3.wav",
-        playbackRate: 1.8,
+        playbackRate: 2.3,
         volume: 0.6
-    },
+    }
 ]
 
 const digSound = {
-        src: "sounds/player_dig.wav",
+    src: "sounds/player_dig.wav",
+    playbackRate: 1,
+    volume: 0.2
+}
+
+const treeFallingSound = {
+    src: "sounds/tree_falling.wav",
+    playbackRate: 1,
+    volume: 0.5
+}
+
+const cuttingTreeSounds = [
+    // {
+    //     src: "sounds/player_cut_tree.wav",
+    //     playbackRate: 1,
+    //     volume: 0.2
+    // },
+    {
+        src: "sounds/player_cut_tree2.wav",
         playbackRate: 1,
-        volume: 0.6
-    }
+        volume: 0.2
+    },
+]
 
 const PlayerActions = {
     NONE: 0,
@@ -31,15 +50,15 @@ const PlayerActions = {
     FILL: 5
 }
 
-
-var testSpeedFactor = 1;
+var testSpeedWalkFactor = 2;
+var testSpeedFactor = 5;
 var playerActions = [
     { duration: 0, move: true },
     { duration: 0, move: true },
-    { duration: 3000 * testSpeedFactor, move: false },
-    { duration: 5000 * testSpeedFactor, move: false },
-    { duration: 1200 * testSpeedFactor, move: false },
-    { duration: 5000 * testSpeedFactor, move: false }
+    { duration: 3000 / testSpeedFactor, move: false },
+    { duration: 5000 / testSpeedFactor, move: false },
+    { duration: 1200 / testSpeedFactor, move: false },
+    { duration: 5000 / testSpeedFactor, move: false }
 ];
 
 function Player(position) {
@@ -50,8 +69,10 @@ function Player(position) {
     this.targetPosition = [0, 0];
     this.targetTile = null;
 
-    this.loadDraggingSounds(draggingSounds);
-    this.digSound = loader.loadAudio(digSound.src, digSound.playbackRate, digSound.volume);
+    this.loadNamedSounds(draggingSounds, "dragSound");
+    this.loadNamedSounds(digSound, "digSound");
+    this.loadNamedSounds(cuttingTreeSounds, "cutTreeSound");
+    this.loadNamedSounds(treeFallingSound, "treeFallingSound");
 
     // Actions such as digging or cutting a tree
     this.action = PlayerActions.NONE;
@@ -60,7 +81,7 @@ function Player(position) {
 }
 inherit(Player, Character);
 
-Player.prototype.VELOCITY = 0.0027;
+Player.prototype.VELOCITY = 0.0027 * testSpeedWalkFactor;
 Player.prototype.PULL_DISTANCE = 0.7;
 
 Player.load = function() {
@@ -148,23 +169,24 @@ Player.prototype.update = function(delta) {
                     if (tile) {
                         if (tile.type == TileTypes.TREE) {
                             // Cut Tree
+                            this.cutTreeSound.trigger();
                             this.action = PlayerActions.CUT;
                         } else if (tile.type == TileTypes.GROUND) {
                             // Path
                             this.action = PlayerActions.PATH;
-                            this.digSound.play();
+                            this.digSound.trigger();
                             if (tile.decoImage) {
                                 SoundManager.play("obstacles", 0.25);
                             }
                         } else if (tile.type == TileTypes.PATH) {
                             // Dig
                             this.action = PlayerActions.DIG;
-                            this.digSound.play();
+                            this.digSound.trigger();
                             SoundManager.play("digging", 0.15);
                         } else if (tile.type == TileTypes.HOLE || tile.type == TileTypes.GRAVE) {
                             if (tile.type == TileTypes.HOLE || tile.reference && tile.reference.empty) {
                                 this.action = PlayerActions.FILL;
-                                this.digSound.play();
+                                this.digSound.trigger();
                             }
                         }
                     }
@@ -178,7 +200,10 @@ Player.prototype.update = function(delta) {
     } else if (this.ePressed && prev && this.action > 0 && !playerActions[this.action].move) {
         // During action, check if ready
         if (this.action === PlayerActions.DIG) {
-            this.digSound.play();
+            this.digSound.trigger();
+        }
+        if (this.action === PlayerActions.CUT) {
+            this.cutTreeSound.trigger();
         }
         var tile = this.targetTile;
         if (state.time >= this.actionStarted + this.actionDuration && tile) {
@@ -186,6 +211,7 @@ Player.prototype.update = function(delta) {
             switch (this.action) {
                 case PlayerActions.CUT:
                     state.map.set(tile.x, tile.y, TileTypes.GROUND);
+                    this.treeFallingSound.trigger();
                     break;
                 case PlayerActions.PATH:
                     if (tile.decoImage) {
@@ -218,7 +244,7 @@ Player.prototype.update = function(delta) {
         Player.pullCorpse(this.pulling, this.position[0], this.position[1], this.PULL_DISTANCE);
         var moving = (this.velocity[0] || this.velocity[1]);
       if (moving) {
-          this.dragSound.play();
+          this.dragSound.trigger();
       }
     } 
     Character.prototype.update.call(this, delta);
@@ -293,16 +319,20 @@ Player.pullCorpse = function(corpse, x, y, distance) {
     }
 };
 
-Player.prototype.loadDraggingSounds = function(soundData) {
-    this.draggingAudioFiles = [];
-    soundData.forEach(soundData => {
-        this.draggingAudioFiles.push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume));
-    })
-    for (const audio of this.draggingAudioFiles) {
-        audio.onended = () => {
-            this.dragSound = getRandom(this.draggingAudioFiles);
+// load a sound or sound array
+Player.prototype.loadNamedSounds = function (soundData, soundName) {
+    if (Array.isArray(soundData)) {
+        this[`${soundName}Files`] = [];
+        soundData.forEach(soundData => {
+            this[`${soundName}Files`].push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume));
+        });
+        for (const audio of this[`${soundName}Files`]) {
+            audio.onended = () => {
+                this[soundName] = getRandom(this[`${soundName}Files`]);
+            }
         }
-
+        this[soundName] = this[`${soundName}Files`][0];
+    } else {
+        this[soundName] = loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume);
     }
-    this.dragSound = this.draggingAudioFiles[0];
 }

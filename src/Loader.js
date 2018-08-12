@@ -54,6 +54,14 @@ Loader.prototype.loadAudio = function(src, playbackRate, volume, tileTypes) {
     if (tileTypes != undefined) {
         sound.tileTypes = tileTypes;
     }
+    sound.isPlaying = function() {
+        return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2)
+    }
+    sound.trigger = function () {
+        if (!this.isPlaying()) {
+            this.play();
+        }
+    }
     return sound;
 }
 

@@ -18,7 +18,8 @@ function GameHandler(parentElement) {
         LightSystem,
         Shop,
         CorpseHandler,
-        SoundManager
+        SoundManager,
+        Zombie
     ].map(c => ({class: c, instances: []}));
 
     // Global game state which can be accessed by all game objects
@@ -28,6 +29,7 @@ function GameHandler(parentElement) {
         map: new Map(32, 32, 24, 24),
         player: new Player([16.5,21.5]),
         corpses: [],
+        zombies: [],
         graves: [],
         keyStates: keyHandler.keyStates,
         cam: { x: 0, y: 0 },
@@ -90,6 +92,12 @@ function GameHandler(parentElement) {
             state.corpses.push(corpse);
         }
 
+        // Create zombies
+        for (var i = 0; i < 10; i++) {
+            var zombie = new Zombie([Math.random() * 20, Math.random() * 20]);
+            state.zombies.push(zombie);
+        }
+
         this.gameLoop();
         this.renderLoop();
     });
@@ -131,6 +139,7 @@ GameHandler.prototype.gameLoop = function() {
         }
     }
 
+    state.zombies.forEach(z => z.update(dt));
     state.player.update(dt);
     this.corpseHandler.update(dt);
 
@@ -171,6 +180,7 @@ GameHandler.prototype.renderLoop = function() {
     state.map.draw(this.ctx);
     state.graves.forEach(g => g.draw(this.ctx));
     state.corpses.forEach(c => c.draw(this.ctx));
+    state.zombies.forEach(z => z.draw(this.ctx));
     state.player.draw(this.ctx);
     renderSorter.render();
     lightSystem.drawLight(null, 160, 120, 200, "#ffffff", 0.6);
@@ -217,6 +227,7 @@ GameHandler.prototype.renderLoop = function() {
 
 var ambientColors = [
     [0.1, 0.1, 0.5],
+    [0.1, 0.1, 0.5],
     [0.25, 0.25, 0.5],
     [0.5, 0.42, 0.52],
     [1.0, 0.8, 0.55],
@@ -226,7 +237,6 @@ var ambientColors = [
     [0.5, 0.5, 0.45],
     [0.25, 0.25, 0.5],
     [0.15, 0.15, 0.5],
-    [0.1, 0.1, 0.5],
     [0.1, 0.1, 0.5]
 ];
 function getAmbientColor(t) {
