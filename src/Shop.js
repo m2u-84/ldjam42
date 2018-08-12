@@ -72,8 +72,7 @@ Shop.prototype.draw = function(ctx) {
         // Button
         var s = (this.open == id ? ">" : "") + article[0];
         if (!article[4]) { s += " (" + article[1] + ")" };
-        var vx = bx + (this.open == id ? 8 : 0);
-        if (Shop.button(ctx, vx, by + 24 * (i + 1), s, bw, this.open == id || article[1] > state.money)) {
+        if (Shop.button(ctx, bx, by + 24 * (i + 1), s, bw, article[1] > state.money, this.open == id)) {
             this.open = id;
         }
     }
@@ -121,7 +120,7 @@ Shop.prototype.draw = function(ctx) {
     }
 };
 
-Shop.button = function(ctx, x, y, text, w, disabled) {
+Shop.button = function(ctx, x, y, text, w, disabled, pressed) {
     var h = 20;
     var x1 = Math.floor(x - w/2), y1 = Math.floor(y - h/2);
     // Inside?
@@ -135,7 +134,8 @@ Shop.button = function(ctx, x, y, text, w, disabled) {
     ctx.fillRect(x1, y1, w, h); */
     // ctx.fillStyle = hover ? "white": "gray";
     // ctx.fillRect(x1 + 1, y1 + 1, w - 2, h - 2);
-    ctx.drawImage(img, x1, y1, w, h);
+    drawImage(ctx, img, x1 + w/2, y1 + h/2, w, h, 0.5, 0.5, false, pressed ? Math.PI : 0);
+    // ctx.drawImage(img, x1, y1, w, h);
     // Text
     ctx.fillStyle = hover ? "black" : "rgba(0,0,0,0.75)";
     ctx.textAlign = "center";
