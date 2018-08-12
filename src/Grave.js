@@ -62,3 +62,10 @@ Grave.prototype.ejectCorpse = function() {
     // Spawn zombie?
     // TODO Spawn zombie randomly, if zombies have been unlocked
 };
+
+Grave.prototype.remove = function() {
+    // Reset tiles
+    state.map.set(this.x1, this.y1, TileTypes.PATH);
+    state.map.set(this.x2, this.y2, TileTypes.PATH);
+    removeItem(state.graves, this);
+};
