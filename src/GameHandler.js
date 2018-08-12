@@ -163,6 +163,10 @@ GameHandler.prototype.renderLoop = function() {
     // lightSystem.drawLight(null, 160 + 160 * Math.sin(state.time * 0.001), 120 + 120 * Math.sin(state.time * 0.00132), 130, "#3030ff", 0.6);
     lightSystem.renderToContext(this.ctx);
 
+    // HUD
+    // Corpse Count
+    Corpse.displayCount(this.ctx, -4, this.canvas.height - 20, state.corpses.length);
+
     requestAnimationFrame(this.renderLoop.bind(this));
 };
 

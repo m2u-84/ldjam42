@@ -41,4 +41,15 @@ Corpse.prototype.setPosition = function(pos) {
     }
     // Actual change position
     Entity.prototype.setPosition.call(this, pos);
-}
+};
+
+Corpse.displayCount = function(ctx, x, y, count) {
+    if (count <= 0) { return; }
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, x, y);
+    ctx.scale(0.75, 0.75);
+    for (var i = 0; i < count; i++) {
+        ctx.drawImage(Corpse.sprites[1], 11 * i, 0);
+    }
+    ctx.restore();
+};
