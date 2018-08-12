@@ -1,48 +1,3 @@
-const movementSounds = [
-    {
-        src: "sounds/step_dirt.wav",
-        playbackRate: 1,
-        volume: .15,
-        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
-    },
-    {
-        src: "sounds/step_dirt2.wav",
-        playbackRate: 1,
-        volume: .15,
-        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
-    },
-    {
-        src: "sounds/step_dirt3.wav",
-        playbackRate: 1,
-        volume: .15,
-        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
-    },
-    {
-        src: "sounds/step_dirt4.wav",
-        playbackRate: 1,
-        volume: .15,
-        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
-    },
-    {
-        src: "sounds/step_stone.wav",
-        playbackRate: .8,
-        volume: .3,
-        tileTypes: [TileTypes.STONE]
-    },
-    // {
-    //     src: "sounds/step_stone2.wav",
-    //     playbackRate: .8,
-    //     volume: .6,
-    //     tileTypes: [TileTypes.STONE]
-    // },
-    {
-        src: "sounds/step_stone3.wav",
-        playbackRate: .8,
-        volume: .6,
-        tileTypes: [TileTypes.STONE]
-    }
-];
-
 function Character(position) {
     Entity.call(this, position);
     this.velocity = [0, 0];
@@ -52,10 +7,6 @@ function Character(position) {
 
     this.width = 0.5;
     this.height = 0.3;
-
-    if (movementSounds) {
-       this.loadMovementSounds(movementSounds);
-    }
 }
 
 inherit(Character, Entity);
@@ -67,12 +18,6 @@ Character.prototype.update = function (delta) {
     var nx = this.position[0] + this.velocity[0] * delta;
     var ny = this.position[1] + this.velocity[1] * delta;
     this.setPosition(this.resolveCollision(nx, ny));
-
-    // play movement sounds
-    var keys = state.keyStates;
-    if (keys.w || keys.a || keys.d || keys.s || keys.ArrowDown || keys.ArrowLeft || keys.ArrowRight || keys.ArrowUp) {
-        this.movementSound.trigger();
-    }
 
     // Update direction
     if (this.velocity[0] > 0) { this.direction = 1; }
@@ -103,19 +48,4 @@ Character.prototype.checkCollision = function (x, y) {
     var y2 = y1 + this.height;
     return state.map.getCollision(x1, y1) || state.map.getCollision(x2, y1) ||
         state.map.getCollision(x1, y2) || state.map.getCollision(x2, y2);
-};
-
-Character.prototype.loadMovementSounds = function (movementSounds) {
-    this.movementAudioFiles = [];
-    movementSounds.forEach(soundData => {
-        this.movementAudioFiles.push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume, soundData.tileTypes));
-    })
-    for (const audio of this.movementAudioFiles) {
-        audio.onended = () => {
-            if (this.targetTile) {
-                this.movementSound = getRandomSoundByTileType(this.movementAudioFiles, this.targetTile.type);
-            }
-        }
-    }
-    this.movementSound = this.movementAudioFiles[0];
 };

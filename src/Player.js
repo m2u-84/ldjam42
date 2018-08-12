@@ -1,20 +1,44 @@
-const draggingSounds =  [
-    {
+const movementSounds = [{
+        src: "sounds/step_dirt.wav",
+        playbackRate: 1,
+        volume: .15,
+        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
+    }, {
+        src: "sounds/step_dirt2.wav",
+        playbackRate: 1,
+        volume: .15,
+        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
+    }, {
+        src: "sounds/step_dirt3.wav",
+        playbackRate: 1,
+        volume: .15,
+        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
+    }, {
+        src: "sounds/step_dirt4.wav",
+        playbackRate: 1,
+        volume: .15,
+        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
+    }, {
+        src: "sounds/step_stone.wav",
+        playbackRate: .8,
+        volume: .3,
+        tileTypes: [TileTypes.STONE]
+    }, {
+        src: "sounds/step_stone3.wav",
+        playbackRate: .8,
+        volume: .6,
+        tileTypes: [TileTypes.STONE]
+}];
+
+const draggingSounds =  [{
         src: "sounds/player_drag.wav",
         playbackRate: 1.6,
         volume: 0.6
-    },
-    // {
-    //     src: "sounds/player_drag2.wav",
-    //     playbackRate: 1.6,
-    //     volume: 1
-    // },
-    {
+    }, {
         src: "sounds/player_drag3.wav",
         playbackRate: 2.3,
         volume: 0.6
-    }
-]
+}]
 
 const digSound = {
     src: "sounds/player_dig.wav",
@@ -28,18 +52,11 @@ const treeFallingSound = {
     volume: 0.5
 }
 
-const cuttingTreeSounds = [
-    // {
-    //     src: "sounds/player_cut_tree.wav",
-    //     playbackRate: 1,
-    //     volume: 0.2
-    // },
-    {
-        src: "sounds/player_cut_tree2.wav",
-        playbackRate: 1,
-        volume: 0.2
-    },
-]
+const cuttingTreeSounds = {
+    src: "sounds/player_cut_tree2.wav",
+    playbackRate: 1,
+    volume: 0.2
+};
 
 const PlayerActions = {
     NONE: 0,
@@ -73,6 +90,7 @@ function Player(position) {
     this.loadNamedSounds(digSound, "digSound");
     this.loadNamedSounds(cuttingTreeSounds, "cutTreeSound");
     this.loadNamedSounds(treeFallingSound, "treeFallingSound");
+    this.loadNamedSounds(movementSounds, "movementSound");
 
     // Actions such as digging or cutting a tree
     this.action = PlayerActions.NONE;
@@ -107,6 +125,11 @@ Player.prototype.update = function(delta) {
     if (playerActions[this.action].move && !state.shopOpen) {
         var vx = ((keys.ArrowRight || keys.d ? 1 : 0) - (keys.ArrowLeft || keys.a ? 1 : 0));
         var vy = ((keys.ArrowDown || keys.s ? 1 : 0) - (keys.ArrowUp || keys.w ? 1 : 0));
+    }
+
+    // play movement soubnd
+    if (keys.w || keys.a || keys.d || keys.s || keys.ArrowDown || keys.ArrowLeft || keys.ArrowRight || keys.ArrowUp) {
+        this.movementSound.trigger();
     }
 
     // set velocity basedon underground
@@ -188,7 +211,10 @@ Player.prototype.update = function(delta) {
                                 this.action = PlayerActions.FILL;
                                 this.digSound.trigger();
                             }
-                        }
+                        } else if (tile.type == TileTypes.FENCE || tile.type == TileTypes.FENCE_SIDE
+                                    || tile.type == TileType.STONE_FENCE || tile.type == TileType.STONE_FENCE_SIDE) {
+                                        this.cutTreeSound.trigger();
+                                    }
                     }
                 }
             }
@@ -324,11 +350,15 @@ Player.prototype.loadNamedSounds = function (soundData, soundName) {
     if (Array.isArray(soundData)) {
         this[`${soundName}Files`] = [];
         soundData.forEach(soundData => {
-            this[`${soundName}Files`].push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume));
+            this[`${soundName}Files`].push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume, soundData.tileTypes));
         });
         for (const audio of this[`${soundName}Files`]) {
             audio.onended = () => {
-                this[soundName] = getRandom(this[`${soundName}Files`]);
+                if (this.targetTile && audio.tileTypes != undefined) {
+                    this[soundName] = getRandomSoundByTileType(this[`${soundName}Files`], this.targetTile.type);
+                } else {
+                    this[soundName] = getRandom(this[`${soundName}Files`]);
+                }
             }
         }
         this[soundName] = this[`${soundName}Files`][0];
