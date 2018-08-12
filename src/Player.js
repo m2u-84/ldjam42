@@ -31,15 +31,15 @@ const PlayerActions = {
     FILL: 5
 }
 
-
-var testSpeedFactor = 1;
+var testSpeedWalkFactor = 2;
+var testSpeedFactor = 5;
 var playerActions = [
     { duration: 0, move: true },
     { duration: 0, move: true },
-    { duration: 3000 * testSpeedFactor, move: false },
-    { duration: 5000 * testSpeedFactor, move: false },
-    { duration: 1200 * testSpeedFactor, move: false },
-    { duration: 5000 * testSpeedFactor, move: false }
+    { duration: 3000 / testSpeedFactor, move: false },
+    { duration: 5000 / testSpeedFactor, move: false },
+    { duration: 1200 / testSpeedFactor, move: false },
+    { duration: 5000 / testSpeedFactor, move: false }
 ];
 
 function Player(position) {
@@ -60,7 +60,7 @@ function Player(position) {
 }
 inherit(Player, Character);
 
-Player.prototype.VELOCITY = 0.0027;
+Player.prototype.VELOCITY = 0.0027 * testSpeedWalkFactor;
 Player.prototype.PULL_DISTANCE = 0.7;
 
 Player.load = function() {
