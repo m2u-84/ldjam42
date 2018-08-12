@@ -4,7 +4,7 @@ function StartScreen() {
 }
 
 StartScreen.load = function() {
-  StartScreen.title = loader.loadImage("img/title.png");
+  StartScreen.title = loader.loadImage("img/menus/title-screen.jpg");
   StartScreen.button = loader.loadImage("img/misc/button large.png");
 }
 
@@ -21,9 +21,9 @@ StartScreen.prototype.draw = function(ctx) {
 
   var img = StartScreen.title;
   var button = StartScreen.button;
-  ctx.drawImage(img, 120, 80, 80, 60);
-  ctx.drawImage(button, 95, 180, 128, 16);
+  ctx.drawImage(img, 0, 0, 320, 240);
+  ctx.drawImage(button, 95, 200, 128, 16);
   ctx.textAlign = "center";
-  ctx.fillText("Press any Key to start", 158, 191);
+  ctx.fillText("Press any key to start!", 158, 211);
 
 }
