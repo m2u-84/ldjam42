@@ -58,13 +58,21 @@ const cuttingTreeSounds = {
     volume: 0.2
 };
 
+const torchCrackle = {
+    src: "sounds/torch_crackle_loop.wav",
+    playbackRate: 1,
+    volume: 1,
+    loop: true
+}
+
 const PlayerActions = {
     NONE: 0,
     PULL: 1,
     DIG: 2,
     CUT: 3,
     PATH: 4,
-    FILL: 5
+    FILL: 5,
+    ATTACK: 6
 }
 
 var testSpeedWalkFactor = 2;
@@ -75,7 +83,8 @@ var playerActions = [
     { duration: 3000 / testSpeedFactor, move: false },
     { duration: 5000 / testSpeedFactor, move: false },
     { duration: 1200 / testSpeedFactor, move: false },
-    { duration: 5000 / testSpeedFactor, move: false }
+    { duration: 5000 / testSpeedFactor, move: false },
+    { duration: 450, move: false }
 ];
 
 function Player(position) {
@@ -86,11 +95,15 @@ function Player(position) {
     this.targetPosition = [0, 0];
     this.targetTile = null;
 
+    this.width = 0.4;
+    this.height = 0.2;
+
     SoundManager.loadSoundsWithNamedTrigger.call(this, draggingSounds, "dragSound");
     SoundManager.loadSoundsWithNamedTrigger.call(this, digSound, "digSound");
     SoundManager.loadSoundsWithNamedTrigger.call(this, cuttingTreeSounds, "cutTreeSound");
     SoundManager.loadSoundsWithNamedTrigger.call(this, treeFallingSound, "treeFallingSound");
     SoundManager.loadSoundsWithNamedTrigger.call(this, movementSounds, "movementSound");
+    SoundManager.loadSoundsWithNamedTrigger.call(this, torchCrackle, "torchCrackle");
 
     // Actions such as digging or cutting a tree
     this.action = PlayerActions.NONE;
@@ -113,7 +126,15 @@ Player.update = function() {
     // Check time of day for new day
     var threshold = 0.2;
     if (state.dayTime % 1 >= threshold && state.lastDayTime % 1 < threshold) {
-        SoundManager.play("daybreak", 1);
+        SoundManager.play("daybreak", 0.6);
+    }
+    var threshold = 0.7;
+    if (state.dayTime % 1 >= threshold && state.lastDayTime % 1 < threshold) {
+        SoundManager.play("nightbreak", 0.6);
+    }
+    var threshold = 0.32;
+    if (state.dayTime % 1 >= threshold && state.lastDayTime % 1 < threshold) {
+        SoundManager.play("newbodies", 0.5);
     }
 };
 
@@ -127,7 +148,7 @@ Player.prototype.update = function(delta) {
         var vy = ((keys.ArrowDown || keys.s ? 1 : 0) - (keys.ArrowUp || keys.w ? 1 : 0));
     }
 
-    // play movement soubnd
+    // play movement sound
     if (keys.w || keys.a || keys.d || keys.s || keys.ArrowDown || keys.ArrowLeft || keys.ArrowRight || keys.ArrowUp) {
         this.movementSound.trigger();
     }
@@ -144,6 +165,8 @@ Player.prototype.update = function(delta) {
     if (state.unlocks.boots) {
         velocity *= 1.5;
     }
+    // Reduce based on zombies nearby
+    velocity *= this.getZombieSpeedReduction();
     // Normalize
     if (vx || vy) {
         var length = Math.sqrt(vx * vx + vy * vy);
@@ -158,6 +181,25 @@ Player.prototype.update = function(delta) {
         this.velocity[0] = this.velocity[1] = 0;
     }
 
+    // enable / disable torch sounds based on radius around player
+    const torchesInRadius = Player.getTilesInRadius(7, TileTypes.TORCH);
+    if (torchesInRadius.length > 0) {
+        if (!this.torchCrackle.isPlaying()) {
+            this.torchCrackle.play();
+        }
+    } else {
+        this.torchCrackle.pause();
+    }
+    
+    // F pressed?
+    if (keys.f && !this.action) {
+        // Attack action
+        this.action = PlayerActions.ATTACK;
+        this.actionStarted = state.time;
+        this.pulling = null;
+        this.actionDuration = playerActions[this.action].duration;
+        this.cutTreeSound.trigger();
+    }
     // E pressed?
     var prev = this.ePressed;
     this.ePressed = keys.e;
@@ -220,10 +262,10 @@ Player.prototype.update = function(delta) {
             }
         }
         this.actionDuration = playerActions[this.action].duration;
-    } else if (!this.ePressed && this.action > 0 && !playerActions[this.action].move) {
+    } else if (!this.ePressed && this.action > 0 && !playerActions[this.action].move && this.action != PlayerActions.ATTACK) {
         // e released during blocking action -> abort action
         this.action = PlayerActions.NONE;
-    } else if (this.ePressed && prev && this.action > 0 && !playerActions[this.action].move) {
+    } else if (this.action > 0 && !playerActions[this.action].move) {
         // During action, check if ready
         if (this.action === PlayerActions.DIG) {
             this.digSound.trigger();
@@ -258,6 +300,11 @@ Player.prototype.update = function(delta) {
                         var grave = tile.reference;
                         grave.remove();
                     }
+                    break;
+                case PlayerActions.ATTACK:
+                    // Damage all zombies in range
+                    this.damageZombies();
+                    break;
             }
             this.action = PlayerActions.NONE;
             this.actionStarted = state.time;
@@ -344,4 +391,46 @@ Player.pullCorpse = function(corpse, x, y, distance) {
         var disf = distance / dis;
         corpse.setPosition( [x - dx * disf, y - dy * disf] );
     }
+};
+
+Player.getTilesInRadius = function (radius, tileType) {
+    let playerPos = state.player.position;
+    playerPos = playerPos.map(v => Math.floor(v));
+    let centerOffset = Math.floor(radius / 2); 
+    let tilesWithType = [];
+    state.map.tiles.forEach( yTile => {
+        yTile.forEach( tile => {
+            if (tile.type === tileType) {
+                tilesWithType.push(tile);
+            }
+        })
+    })
+    const tilesInRadius = tilesWithType.filter(tile => {
+        return tile.x >= playerPos[0] - centerOffset && tile.x <= playerPos[0] - centerOffset + radius
+            && tile.y >= playerPos[1] - centerOffset && tile.y <= playerPos[1] - centerOffset + radius
+    })
+    return tilesInRadius;
+}
+
+Player.getDistanceToTile = function (tile) {
+    let playerPos = state.player.position;
+    playerPos = playerPos.map(v => Math.floor(v));
+    const dx = tile.x - playerPos[0];
+    const dy = tile.y - playerPos[1];
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    return distance;
+}
+
+Player.prototype.getZombieSpeedReduction = function() {
+    var near = 0;
+    state.zombies.forEach(z => {
+        if (z.following == this) {
+            var dx = z.position[0] - this.position[0], dy = z.position[1] - this.position[1];
+            var d2 = dx * dx + dy * dy;
+            if (d2 < 1 * 1) {
+                near++;
+            }
+        }
+    });
+    return Math.pow(0.85, near);
 };

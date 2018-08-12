@@ -12,9 +12,9 @@ function Shop() {
         ["Better Axe", 100, "axe2", "Get a better axe.\nNow!"],
         ["Super Axe", 500, "axe3", "The best of all axes."],
         ["Cool Corpses", 250, "cooling", "Keep corpses cool,\nso they don't\ndecomposte\nprematurely."],
-        ["Zombie Virus", 200, "zombies", "Some will rise from\nthe dead early.\nMore room for corpses!\nAnd mostly harmless."],
         ["Friendly Zombies", 800, "zombies2", "Zombies will respect\nyou now.\nYou know you need this."],
         ["Hypnosis", 400, "hypnosis", "Earn more money with\neverything via the\npower of being a\nhypnotist!"]
+        // ["Zombie Virus", 200, "zombies", "Some will rise from\nthe dead early.\nMore room for corpses!\nAnd mostly harmless."],
     ].sort((a,b) => a[1] - b[1]);
     this.options.forEach(o => {
         o[3] = o[3].split("\n");
@@ -43,6 +43,7 @@ Shop.load = function() {
         loader.loadImage("img/misc/button large.png"),
         loader.loadImage("img/misc/button large shadow.png")
     ];
+    Shop.background = loader.loadImage("img/misc/background shop.png");
 };
 
 Shop.prototype.draw = function(ctx) {
@@ -53,10 +54,12 @@ Shop.prototype.draw = function(ctx) {
     // Background
     var w = 280, h = 200;
     var x = (ctx.canvas.width - w) / 2, y = (ctx.canvas.height - h) / 2;
+    /*
     ctx.strokeStyle = "black";
     ctx.fillStyle = "#503421";
     ctx.fillRect(x, y, w, h);
-    ctx.strokeRect(x, y, w, h);
+    ctx.strokeRect(x, y, w, h); */
+    ctx.drawImage(Shop.background, x, y, w, h);
 
     // Left: Titles of things to buy
     var first = this.perPage * this.page;

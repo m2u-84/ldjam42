@@ -2,9 +2,11 @@ function GameHandler(parentElement) {
     this.parentElement = parentElement;
 
     loader = new Loader();
-    keyHandler = new KeyHandler(window, ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "e", "w", "a", "s", "d"]);
+    keyHandler = new KeyHandler(window, ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "e", "w", "a", "s", "d",
+        "f"]);
     renderSorter = new RenderSorter();
     this.corpseHandler = new CorpseHandler();
+    this.startScreen = new StartScreen();
     
     this.classes = [
         // Player, Zombies, Corpses, Graves, ...
@@ -19,7 +21,9 @@ function GameHandler(parentElement) {
         Shop,
         CorpseHandler,
         SoundManager,
-        Zombie
+        Zombie,
+        StartScreen,
+        Owl
     ].map(c => ({class: c, instances: []}));
 
     // Global game state which can be accessed by all game objects
@@ -36,7 +40,7 @@ function GameHandler(parentElement) {
         cam: { x: 0, y: 0 },
         money: 50,
         shopOpen: false,
-        startScreen: false,
+        startScreen: true,
         pauseScreen: false,
         readyToShop: false,
         mousePos: [],
@@ -58,6 +62,7 @@ function GameHandler(parentElement) {
         spawnIncreaseRate: 0.3,
         spawnAnimationTime: 0.035,
         spawningGap: 0.005,
+        owl: null
     };
     
     this.startTime = +Date.now();
@@ -122,37 +127,35 @@ GameHandler.prototype.gameLoop = function() {
     // Time management
     var t = +Date.now();
     var dt = t - this.lastTime;
-    if (state.pauseScreen || state.startScreen) { dt = 0; }
+
+    if (state.pauseScreen || state.shopOpen) { dt = 0; }
+
     this.lastTime = t;
     this.currentTime += dt;
     state.time = this.currentTime;
     state.lastDayTime = state.dayTime;
-    state.dayTime = state.time / 60000;
+    state.dayTime = state.time / 120000;
     state.dt = dt;
     state.lastTime = this.lastTime;
 
-    if (state.startScreen) {
-        // TODO: draw start screen
-        this.startGame();
-    } else {
-        // Update all classes and instances
-        for (var c of this.classes) {
-            // Static update
-            if (c.class.update) {
-                c.class.update(dt, this.currentTime);
-            }
-            // Instances
-            if (c.instances.length > 0 && c.instances[0].update) {
-                for (var i of c.instances) {
-                    i.update(dt, this.currentTime);
-                }
+    // Update all classes and instances
+    for (var c of this.classes) {
+        // Static update
+        if (c.class.update) {
+            c.class.update(dt, this.currentTime);
+        }
+        // Instances
+        if (c.instances.length > 0 && c.instances[0].update) {
+            for (var i of c.instances) {
+                i.update(dt, this.currentTime);
             }
         }
+    }
     
+        state.map.update();
         state.zombies.forEach(z => z.update(dt));
         state.player.update(dt);
         this.corpseHandler.update(dt);
-    }
 
     requestAnimationFrame(this.gameLoop.bind(this));
 };
@@ -177,11 +180,6 @@ GameHandler.prototype.renderLoop = function() {
         y: Math.round(-state.player.position[1] * state.map.tw + this.canvas.height / 2)
     }
 
-
-    if (state.startScreen) {
-        requestAnimationFrame(this.renderLoop.bind(this));
-        return;
-    }
     this.ctx.translate(state.cam.x, state.cam.y);
 
 
@@ -195,6 +193,8 @@ GameHandler.prototype.renderLoop = function() {
     state.zombies.forEach(z => z.draw(this.ctx));
     state.player.draw(this.ctx);
     renderSorter.render();
+    if (state.owl) state.owl.draw(this.ctx);
+
     lightSystem.drawLight(null, 160, 120, 200, "#ffffff", 0.6);
     // lightSystem.drawLight(null, 160 + 160 * Math.sin(state.time * 0.001), 120 + 120 * Math.sin(state.time * 0.00132), 130, "#3030ff", 0.6);
     lightSystem.renderToContext(this.ctx);
@@ -234,6 +234,11 @@ GameHandler.prototype.renderLoop = function() {
     }
     this.ctx.globalAlpha = 1;
 
+    if(state.startScreen){
+        this.startScreen.draw(this.ctx);
+        window.onkeydown = function(e) { state.startScreen = false }
+    }
+    
     requestAnimationFrame(this.renderLoop.bind(this));
 };
 
