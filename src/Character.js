@@ -38,6 +38,10 @@ Character.prototype.resolveCollision = function (x, y) {
     if (this.checkCollision(x, y)) {
         y = this.position[1];
     }
+    // Player stuck?
+    if (this.checkCollision(x, y)) {
+        return state.map.findClosestFreePosition(x, y, this.width, this.height);
+    }
     return [x, y];
 };
 

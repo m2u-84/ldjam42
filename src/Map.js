@@ -111,6 +111,18 @@ Map.prototype.getCollision = function(x, y) {
     return (!tile || tile.getCollision())
 };
 
+Map.prototype.getBoxCollision = function(x, y, w, h) {
+    var x1 = Math.floor(x - w/2), y1 = Math.floor(y - h/2), x2 = Math.floor(x + w/2), y2 = Math.floor(y + h/2);
+    for (var ty = y1; ty <= y2; ty++) {
+        for (var tx = x1; tx <= x2; tx++) {
+            if (this.getCollision(tx, ty)) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
 Map.prototype.get = function(x, y) {
     return this.getTile(x, y).type;
 };
@@ -131,6 +143,21 @@ Map.prototype.findNeighbour = function(x, y, check, diagonal) {
         }
     }
     return null;
+};
+
+Map.prototype.findClosestFreePosition = function(x, y, w, h) {
+    for (var dis = 0.1; dis < 2; dis += 0.1) {
+        // Check 8 directions
+        for (var a = 0; a < 8; a++) {
+            var angle = 2 * Math.PI * a / 8;
+            var cx = x + dis * Math.sin(angle), cy = y + dis * Math.cos(angle);
+            if ((w || h) ? !this.getBoxCollision(cx, cy, w, h) : (!this.getCollision(cx, cy))) {
+                return [cx, cy];
+            }
+        }
+    }
+    // Nothing found, meh!
+    return [x, y];
 };
 
 Map.prototype.draw = function(ctx) {
