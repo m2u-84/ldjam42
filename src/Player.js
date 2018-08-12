@@ -27,7 +27,8 @@ const PlayerActions = {
     PULL: 1,
     DIG: 2,
     CUT: 3,
-    PATH: 4
+    PATH: 4,
+    FILL: 5
 }
 
 var playerActions = [
@@ -35,7 +36,8 @@ var playerActions = [
     { duration: 0, move: true },
     { duration: 3000 / 3, move: false },
     { duration: 5000 / 3, move: false },
-    { duration: 1200 / 3, move: false }
+    { duration: 1200 / 3, move: false },
+    { duration: 5000 / 3, move: false }
 ];
 
 function Player(position) {
@@ -131,6 +133,9 @@ Player.prototype.update = function(delta) {
                             // Dig
                             this.action = PlayerActions.DIG;
                             this.digSound.play();
+                        } else if (tile.type == TileTypes.HOLE || tile.type == TileTypes.GRAVE) {
+                            this.action = PlayerActions.FILL;
+                            this.digSound.play();
                         }
                     }
                 }
@@ -162,6 +167,15 @@ Player.prototype.update = function(delta) {
                 case PlayerActions.DIG:
                     state.map.set(tile.x, tile.y, TileTypes.HOLE);
                     break;
+                case PlayerActions.FILL:
+                    if (tile.type == TileTypes.HOLE) {
+                        // Just set back to path
+                        state.map.set(tile.x, tile.y, TileTypes.PATH);
+                    } else {
+                        // Grave
+                        var grave = tile.reference;
+                        grave.remove();
+                    }
             }
             this.action = PlayerActions.NONE;
             this.actionStarted = state.time;

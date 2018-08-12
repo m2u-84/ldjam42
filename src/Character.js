@@ -110,7 +110,6 @@ Character.prototype.loadMovementSounds = function (movementSounds) {
                 this.movementSound = getRandomSound(this.movementAudioFiles, this.targetTile.type);
             }
         }
-
     }
     this.movementSound = this.movementAudioFiles[0];
-}
+};

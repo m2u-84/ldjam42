@@ -9,6 +9,8 @@ function Shop() {
         ["Super Shovel", 500, "shovel3", "Get the Ultra Shovel 9000 to shovel like there's no tomorrow."],
         ["Maggots", 300, "maggots", "Unleash the power of maggots. Graves will take less time for decomposition."]
     ].sort((a,b) => a[1] - b[1]);
+
+    this.floatingTexts = [];
 }
 
 Shop.prototype.draw = function(ctx) {
@@ -47,4 +49,33 @@ Shop.button = function(ctx, x, y, text, w) {
     ctx.fillText(text, x, y + 5);
     // Click?
     return hover && state.mouseClick;
+};
+
+Shop.prototype.awardMoney = function(money, x, y) {
+    state.money += money;
+    // Show floating text
+    var text = [money, x, y, state.time];
+    this.floatingTexts.push(text);
+    alphaValueMap["moneyAlpha"] = 5;
+};
+
+Shop.prototype.drawFloatingTexts = function(ctx) {
+    for (var i =  this.floatingTexts.length - 1; i >= 0; i--) {
+        var text = this.floatingTexts[i];
+        var value = text[0], x = text[1] * state.map.tw, y = text[2] * state.map.th, spawnTime = text[3];
+        var tdif = state.time - spawnTime;
+        if (tdif < 2000) {
+            ctx.globalAlpha = 1;
+        } else if (tdif < 3000) {
+            ctx.globalAlpha = 1 - (tdif - 2000) / 1000;
+        } else {
+            this.floatingTexts.splice(i, 1);
+            continue;
+        }
+        ctx.fillStyle = value > 0 ? "#f0c030" : "#ff3010";
+        var s = value > 0 ? "+" + value : "-" + value;
+        var yoff = tdif / 200;
+        ctx.fillText(s, x, y - 5 - yoff);
+    }
+    ctx.globalAlpha = 1;
 };
