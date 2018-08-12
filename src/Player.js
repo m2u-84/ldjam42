@@ -95,6 +95,9 @@ function Player(position) {
     this.targetPosition = [0, 0];
     this.targetTile = null;
 
+    this.width = 0.4;
+    this.height = 0.2;
+
     SoundManager.loadSoundsWithNamedTrigger.call(this, draggingSounds, "dragSound");
     SoundManager.loadSoundsWithNamedTrigger.call(this, digSound, "digSound");
     SoundManager.loadSoundsWithNamedTrigger.call(this, cuttingTreeSounds, "cutTreeSound");
@@ -162,6 +165,8 @@ Player.prototype.update = function(delta) {
     if (state.unlocks.boots) {
         velocity *= 1.5;
     }
+    // Reduce based on zombies nearby
+    velocity *= this.getZombieSpeedReduction();
     // Normalize
     if (vx || vy) {
         var length = Math.sqrt(vx * vx + vy * vy);
@@ -415,3 +420,17 @@ Player.getDistanceToTile = function (tile) {
     const distance = Math.sqrt(dx * dx + dy * dy);
     return distance;
 }
+
+Player.prototype.getZombieSpeedReduction = function() {
+    var near = 0;
+    state.zombies.forEach(z => {
+        if (z.following == this) {
+            var dx = z.position[0] - this.position[0], dy = z.position[1] - this.position[1];
+            var d2 = dx * dx + dy * dy;
+            if (d2 < 1 * 1) {
+                near++;
+            }
+        }
+    });
+    return Math.pow(0.85, near);
+};
