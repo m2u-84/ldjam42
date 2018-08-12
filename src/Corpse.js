@@ -18,3 +18,38 @@ Corpse.prototype.draw = function(ctx) {
             null, null, 0.5, 0.5, false, this.angle);
 };
 
+Corpse.prototype.setPosition = function(pos) {
+    if (this.position) {
+        var prevx = this.position[0], prevy = this.position[1];
+        var newx = pos[0], newy = pos[1];
+        // When corpse is pulled, apply angle to adjust to pull direction
+        if (newx != prevx || newy != prevy) {
+            var dx = newx - prevx, dy = newy - prevy;
+            var dis = Math.sqrt(dx * dx + dy * dy);
+            var targetAngle = Math.atan2(dy, dx) + Math.PI / 2;
+            // Allow to rotate either way, head first or feet first
+            var dif = getAngleDif(this.angle, targetAngle);
+            if (Math.abs(dif) > Math.PI / 2) {
+                targetAngle = this.angle + (dif > 0 ? (dif - Math.PI) : (dif + Math.PI));
+            } else {
+                targetAngle = this.angle + dif;
+            }
+            // Update factor depending on how far character is pulled
+            var f = Math.min(dis / (dis + 0.05), 0.1);
+            this.angle = f * targetAngle + (1 - f) * this.angle;
+        }
+    }
+    // Actual change position
+    Entity.prototype.setPosition.call(this, pos);
+};
+
+Corpse.displayCount = function(ctx, x, y, count) {
+    if (count <= 0) { return; }
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, x, y);
+    ctx.scale(0.75, 0.75);
+    for (var i = 0; i < count; i++) {
+        ctx.drawImage(Corpse.sprites[1], 11 * i, 0);
+    }
+    ctx.restore();
+};

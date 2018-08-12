@@ -1,32 +1,9 @@
-
-const movementSounds = [
-    {
-        src: "sounds/step_dirt.wav",
-        playbackRate: 1,
-        volume: .5
-    },
-    {
-        src: "sounds/step_dirt2.wav",
-        playbackRate: 1,
-        volume: .5
-    },
-    {
-        src: "sounds/step_dirt3.wav",
-        playbackRate: 1,
-        volume: .5
-    },
-    {
-        src: "sounds/step_dirt4.wav",
-        playbackRate: 1,
-        volume: .5
-    }
-];
-
 function GameHandler(parentElement) {
     this.parentElement = parentElement;
 
     loader = new Loader();
     keyHandler = new KeyHandler(window, ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "e", "w", "a", "s", "d"]);
+    renderSorter = new RenderSorter();
     
     this.classes = [
         // Player, Zombies, Corpses, Graves, ...
@@ -37,17 +14,25 @@ function GameHandler(parentElement) {
         Player,
         Corpse,
         Grave,
-        LightSystem
+        LightSystem,
+        Shop
     ].map(c => ({class: c, instances: []}));
     
     // Global game state which can be accessed by all game objects
     window.state = this.state = {
-        map: new Map(20, 20, 24, 24),
-        player: new Player([10, 10], movementSounds),
+        currentTime: 0,
+        dt: 0,
+        map: new Map(32, 32, 24, 24),
+        player: new Player([16.5,21.5]),
         corpses: [],
         graves: [],
         keyStates: keyHandler.keyStates,
-        cam: { x: 0, y: 0 }
+        cam: { x: 0, y: 0 },
+        money: 50,
+        shopOpen: false,
+        readyToShop: false,
+        mousePos: [],
+        mouseClick: false
     };
     
     this.startTime = +Date.now();
@@ -64,21 +49,27 @@ function GameHandler(parentElement) {
     lightSystem = new LightSystem(320, 240);
     lightSystem.setAmbientColor("#404070");
 
+    shop = new Shop();
+
     musicManager = new MusicManager([
         document.getElementById("music1"),
         document.getElementById("music2"),
         document.getElementById("music3"),
-    ])
+    ]);
+
+    parentElement.addEventListener("mousemove", this.handleMouse.bind(this));
+    parentElement.addEventListener("mousedown", this.handleMouseDown.bind(this));
+    parentElement.addEventListener("mouseup", this.handleMouseUp.bind(this));
     
 
     // First load all the things, then start render and update loops
     this.load().then(() => {
 
         // Create some corpses
-        // for (var i = 0; i < 5; i++) {
-        //     var corpse = new Corpse([Math.random() * 20, Math.random() * 20]);
-        //     state.corpses.push(corpse);
-        // }
+        for (var i = 0; i < 5; i++) {
+            var corpse = new Corpse([Math.random() * 20, 19]);
+            state.corpses.push(corpse);
+        }
 
         this.gameLoop();
         this.renderLoop();
@@ -103,6 +94,7 @@ GameHandler.prototype.gameLoop = function() {
     this.currentTime += dt;
     state.time = this.currentTime;
     state.dayTime = state.time / 60000;
+    state.dt = dt;
 
     // Update all classes and instances
     for (var c of this.classes) {
@@ -137,6 +129,7 @@ GameHandler.prototype.renderLoop = function() {
 
     lightSystem.setAmbientColor(getAmbientColor(state.dayTime % 1));
     lightSystem.clear();
+    renderSorter.clear();
     
     // Render all classes and instances
     /*
@@ -156,23 +149,59 @@ GameHandler.prototype.renderLoop = function() {
     state.graves.forEach(g => g.draw(this.ctx));
     state.corpses.forEach(c => c.draw(this.ctx));
     state.player.draw(this.ctx);
+    renderSorter.render();
     lightSystem.drawLight(null, 160, 120, 200, "#ffffff", 0.6);
     // lightSystem.drawLight(null, 160 + 160 * Math.sin(state.time * 0.001), 120 + 120 * Math.sin(state.time * 0.00132), 130, "#3030ff", 0.6);
     lightSystem.renderToContext(this.ctx);
+
+    // HUD
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    // Corpse Count
+    Corpse.displayCount(this.ctx, -4, this.canvas.height - 20, state.corpses.length);
+    // Shop Info
+    var display = (state.map.getTile(state.player.tile[0], state.player.tile[1]) == state.map.shopTile);
+    state.readyToShop = display;
+    var alpha = fadeAlpha("shopInfoText", display ? 1 : 0);
+    if (alpha > 0) {
+        this.ctx.textAlign = "center";
+        var y = this.canvas.height * (0.8 + 0.03 * Math.sin(state.currentTime));
+        this.ctx.fillStyle = "white";
+        this.ctx.globalAlpha = alpha;
+        this.ctx.fillText("Press E to shop", this.canvas.width / 2, y);
+    }
+    this.ctx.globalAlpha = 1;
+
+    // Shop
+    if (state.shopOpen) {
+        shop.draw(this.ctx);
+    }
+
+    // Money
+    alpha = fadeAlpha("moneyAlpha", display ? 5 : 0);
+    if (alpha > 0) {
+        this.ctx.fillStyle = "#f0c030";
+        this.ctx.textAlign = "left";
+        this.ctx.globalAlpha = alpha;
+        this.ctx.fillText(this.state.money + " Gold", 5, 15);
+    }
+    this.ctx.globalAlpha = 1;
 
     requestAnimationFrame(this.renderLoop.bind(this));
 };
 
 var ambientColors = [
+    [0.1, 0.1, 0.5],
     [0.25, 0.25, 0.5],
-    [0.35, 0.35, 0.5],
+    [0.5, 0.42, 0.52],
     [1.0, 0.8, 0.55],
     [1.0, 1.0, 1.0],
     [1.0, 1.0, 1.0],
     [0.8, 0.55, 0.4],
     [0.5, 0.5, 0.45],
     [0.25, 0.25, 0.5],
-    [0.25, 0.25, 0.5]
+    [0.15, 0.15, 0.5],
+    [0.1, 0.1, 0.5],
+    [0.1, 0.1, 0.5]
 ];
 function getAmbientColor(t) {
     var colors = ambientColors.length;
@@ -186,3 +215,18 @@ function getAmbientColor(t) {
     return "rgb(" + Math.round(255 * (f * c2[0] + f1 * c1[0])) + "," + Math.round(255 * (f * c2[1] + f1 * c1[1]))
             + "," + Math.round(255 * (f * c2[2] + f1 * c1[2])) + ")"; 
 }
+
+
+GameHandler.prototype.handleMouse = function(e) {
+    var mx = (e.clientX - this.canvas.offsetLeft) * this.canvas.width / this.canvas.offsetWidth;
+    var my = (e.clientY - this.canvas.offsetTop + window.scrollY) * this.canvas.height / this.canvas.offsetHeight;
+    state.mousePos = [mx, my];
+};
+
+GameHandler.prototype.handleMouseDown = function(e) {
+    state.mouseClick = true;
+};
+
+GameHandler.prototype.handleMouseUp = function(e) {
+    state.mouseClick = false;
+};

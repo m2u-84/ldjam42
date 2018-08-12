@@ -1,3 +1,27 @@
+const draggingSounds =  [
+    {
+        src: "sounds/player_drag.wav",
+        playbackRate: 1.6,
+        volume: 1
+    },
+    // {
+    //     src: "sounds/player_drag2.wav",
+    //     playbackRate: 1.6,
+    //     volume: 1
+    // },
+    {
+        src: "sounds/player_drag3.wav",
+        playbackRate: 1.8,
+        volume: 1
+    },
+]
+
+const digSound = {
+        src: "sounds/player_dig.wav",
+        playbackRate: 1,
+        volume: 1
+    }
+
 const PlayerActions = {
     NONE: 0,
     PULL: 1,
@@ -14,13 +38,16 @@ var playerActions = [
     { duration: 1200 / 3, move: false }
 ];
 
-function Player(position, movementSounds) {
-    Character.call(this, position, movementSounds);
+function Player(position) {
+    Character.call(this, position);
     this.ePressed = false;
     this.pulling = null;
     this.targetDirection = [1, 0];
     this.targetPosition = [0, 0];
     this.targetTile = null;
+
+    this.loadDraggingSounds(draggingSounds);
+    this.digSound = loader.loadAudio(digSound.src, digSound.playbackRate, digSound.volume);
 
     // Actions such as digging or cutting a tree
     this.action = PlayerActions.NONE;
@@ -40,16 +67,19 @@ Player.prototype.update = function(delta) {
     // Set Velocity based on State (inserted by keyHandler)
     var keys = state.keyStates;
     var vx = 0, vy = 0;
-    if (playerActions[this.action].move) {
+    // Only move when no prohibiting action is active, and when player is not currently in shop
+    if (playerActions[this.action].move && !state.shopOpen) {
         var vx = ((keys.ArrowRight || keys.d ? 1 : 0) - (keys.ArrowLeft || keys.a ? 1 : 0));
         var vy = ((keys.ArrowDown || keys.s ? 1 : 0) - (keys.ArrowUp || keys.w ? 1 : 0));
     }
 
-    // Normalize if both directions are set
+    // set velocity basedon underground
+    let velocity = (this.targetTile && this.targetTile.type === TileTypes.PATH) ? this.VELOCITY * 1.2 : this.VELOCITY; 
+    // Normalize
     if (vx || vy) {
         var length = Math.sqrt(vx * vx + vy * vy);
-        this.velocity[0] = vx * this.VELOCITY / length;
-        this.velocity[1] = vy * this.VELOCITY / length;
+        this.velocity[0] = vx * velocity / length;
+        this.velocity[1] = vy * velocity / length;
         if (this.velocity[0]) {
             this.targetDirection = [this.velocity[0] > 0 ? 1 : -1, 0];
         } else {
@@ -67,7 +97,6 @@ Player.prototype.update = function(delta) {
         // E was pressed just now, try to drag corpse
         if (this.pulling) {
             // Check if dropped on grave
-            console.log(this.targetTile);
             if (this.targetTile && this.targetTile.type == TileTypes.GRAVE && this.targetTile.reference.empty) {
                 this.targetTile.reference.takeCorpse(this.pulling);
             }
@@ -75,23 +104,33 @@ Player.prototype.update = function(delta) {
             this.pulling = null;
             this.action = PlayerActions.NONE;
         } else {
-            var corpse = Player.getNearestCorpse(this.targetPosition[0] + 0.5, this.targetPosition[1] + 0.5, 0.8);
-            if (corpse) {
-                this.pulling = corpse;
-                this.action = PlayerActions.PULL;
+            // Open Shop?
+            if (state.readyToShop) {
+                state.shopOpen = true;
             } else {
-                // Other action
-                var tile = this.targetTile;
-                if (tile) {
-                    if (tile.type == TileTypes.TREE) {
-                        // Cut Tree
-                        this.action = PlayerActions.CUT;
-                    } else if (tile.type == TileTypes.GROUND) {
-                        // Path
-                        this.action = PlayerActions.PATH;
-                    } else if (tile.type == TileTypes.PATH) {
-                        // Dig
-                        this.action = PlayerActions.DIG;
+                // Pick corpse based on point in front of player (between player and target tile)
+                var pickx = 0.5 * (this.targetPosition[0] + 0.5 + this.position[0]);
+                var picky = 0.5 * (this.targetPosition[1] + 0.5 + this.position[1]);
+                var corpse = Player.getNearestCorpse(pickx, picky, 1);
+                if (corpse) {
+                    this.pulling = corpse;
+                    this.action = PlayerActions.PULL;
+                } else {
+                    // Other action
+                    var tile = this.targetTile;
+                    if (tile) {
+                        if (tile.type == TileTypes.TREE) {
+                            // Cut Tree
+                            this.action = PlayerActions.CUT;
+                        } else if (tile.type == TileTypes.GROUND) {
+                            // Path
+                            this.action = PlayerActions.PATH;
+                            this.digSound.play();
+                        } else if (tile.type == TileTypes.PATH) {
+                            // Dig
+                            this.action = PlayerActions.DIG;
+                            this.digSound.play();
+                        }
                     }
                 }
             }
@@ -102,6 +141,9 @@ Player.prototype.update = function(delta) {
         this.action = PlayerActions.NONE;
     } else if (this.ePressed && prev && this.action > 0 && !playerActions[this.action].move) {
         // During action, check if ready
+        if (this.action === PlayerActions.DIG) {
+            this.digSound.play();
+        }
         var tile = this.targetTile;
         if (state.time >= this.actionStarted + this.actionDuration && tile) {
             // Conclude action
@@ -110,7 +152,11 @@ Player.prototype.update = function(delta) {
                     state.map.set(tile.x, tile.y, TileTypes.GROUND);
                     break;
                 case PlayerActions.PATH:
-                    state.map.set(tile.x, tile.y, TileTypes.PATH);
+                    if (tile.decoImage) {
+                        tile.decoImage = null;
+                    } else {
+                        state.map.set(tile.x, tile.y, TileTypes.PATH);
+                    }
                     break;
                 case PlayerActions.DIG:
                     state.map.set(tile.x, tile.y, TileTypes.HOLE);
@@ -125,8 +171,11 @@ Player.prototype.update = function(delta) {
     // Pulling corpse
     if (this.pulling) {
         Player.pullCorpse(this.pulling, this.position[0], this.position[1], this.PULL_DISTANCE);
-    }
-    
+        var moving = (this.velocity[0] || this.velocity[1]);
+      if (moving) {
+          this.dragSound.play();
+      }
+    } 
     Character.prototype.update.call(this, delta);
 
     // Target tile
@@ -144,20 +193,13 @@ Player.prototype.draw = function(ctx) {
     if (Player.sprite) {
         var x = Math.round(this.position[0] * state.map.tw);
         var y = Math.round(this.position[1] * state.map.th);
-        drawImage(ctx, Player.sprite, x, y, null, null, 0.5, 0.85, this.direction == 1, 0, this.getFrame());
+        drawImageSorted(ctx, Player.sprite, x, y, null, null, 0.5, 0.85, this.direction == 1, 0, this.getFrame());
     }
     // Progress of action
     if (this.action && playerActions[this.action].duration > 0) {
         var p = (state.time - this.actionStarted) / this.actionDuration;
         if (p >= 0 && p <= 1) {
-            y -= 40;
-            var w = 16;
-            var h = 3;
-            var x1 = x - w/2, y1 = y - h/2;
-            ctx.fillStyle = "black";
-            ctx.fillRect(x1 - 1, y1 - 1, w + 2, h + 2);
-            ctx.fillStyle = "#f0b014";
-            ctx.fillRect(x1, y1, w * p, h);
+            renderSorter.add(x, y + 1000, () => drawProgressBar(ctx, x, y, 16, p));
         }
     }
 };
@@ -193,3 +235,17 @@ Player.pullCorpse = function(corpse, x, y, distance) {
         corpse.setPosition( [x - dx * disf, y - dy * disf] );
     }
 };
+
+Player.prototype.loadDraggingSounds = function(soundData) {
+    this.draggingAudioFiles = [];
+    soundData.forEach(soundData => {
+        this.draggingAudioFiles.push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume));
+    })
+    for (const audio of this.draggingAudioFiles) {
+        audio.onended = () => {
+            this.dragSound = getRandom(this.draggingAudioFiles);
+        }
+
+    }
+    this.dragSound = this.draggingAudioFiles[0];
+}

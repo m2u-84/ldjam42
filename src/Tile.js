@@ -10,7 +10,8 @@ const TileTypes = {
     FENCE_SIDE: 7,
     STONE_FENCE: 8,
     STONE_FENCE_SIDE: 9,
-    TORCH: 10
+    TORCH: 10,
+    SHOP: 11,
 }
 
 Tile.load = function() {
@@ -18,17 +19,18 @@ Tile.load = function() {
         new TileType("Ground", ["img/ground/mud1.png", "img/ground/mud2.png", "img/ground/mud3.png"], false, true, -1,
             [ ["img/environment/grass.png", 0.5, 0.7], ["img/environment/stone.png", 0.5, 0.8], null, null, null, null,
             null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]),
-        new TileType("Hole", ["img/grave/hole.png"], true),
+        new TileType("Hole", ["img/ground/mud1.png"], true, true, 0, ["img/grave/hole.png", 0.5, 0.5]),
         new TileType("Grave", ["img/ground/grave.png"], true),
         // Deco Image: [src, centerX, centerY, frames, frameDelay]
         new TileType("Tree", ["img/ground/mud1.png"], true, false, 0, ["img/environment/tree.png", 0.5, 0.8, 2, 740]),
         new TileType("Path", [ "img/ground/path.png" ], false, true, 1),
         new TileType("Stone", [ "img/ground/stonefloor.png" ], false, true, 1),
-        new TileType("Fence", [ "img/ground/mud1.png" ], true, false, 1, ["img/environment/fence.png", 0.5, 0.8]),
-        new TileType("FenceSide", [ "img/ground/mud1.png" ], true, false, 1, ["img/environment/fence side.png", 0.5, 0.8]),
-        new TileType("StoneFence", [ "img/ground/stonefloor.png" ], true, false, 1, ["img/environment/fence.png", 0.5, 0.8]),
-        new TileType("StoneFenceSide", [ "img/ground/stonefloor.png" ], true, false, 1, ["img/environment/fence side.png", 0.5, 0.8]),
-        new TileType("Torch", "img/ground/grave.png", true, false, 0, null, ["#f0c030", 200, 1])
+        new TileType("Fence", [ "img/ground/mud1.png" ], true, false, 1, ["img/environment/fence.png", 0.5, 0.9]),
+        new TileType("FenceSide", [ "img/ground/mud1.png" ], true, false, 1, ["img/environment/fence side.png", 0.5, 0.9]),
+        new TileType("StoneFence", [ "img/ground/stonefloor.png" ], true, false, 1, ["img/environment/fence.png", 0.5, 0.9]),
+        new TileType("StoneFenceSide", [ "img/ground/stonefloor.png" ], true, false, 1, ["img/environment/fence side.png", 0.5, 0.9]),
+        new TileType("Torch", "img/ground/mud3.png", true, false, 0, ["img/environment/torch.png", 0.5, 1.3, 3, 150], ["#f0c030", 140, 1]),
+        new TileType("Shop", "img/ground/path.png", true, false, null, ["img/environment/shop.png", 0.5, 0.8])
     ];
     types.forEach(tp => tileTypes.push(tp));
 };
@@ -87,9 +89,11 @@ function Tile(x, y, tp, map) {
     }
 }
 
-Tile.prototype.draw = function(ctx) {
-    var x = (this.x + 0.5) * this.map.tw;
-    var y = (this.y + 0.5) * this.map.th;
+Tile.prototype.draw = function(ctx, tx, ty) {
+    if (tx == null) { tx = this.x; }
+    if (ty == null) { ty = this.y; }
+    var x = (tx + 0.5) * this.map.tw;
+    var y = (ty + 0.5) * this.map.th;
     if (this.sprite) {
         ctx.save();
         ctx.translate(x, y);
@@ -101,13 +105,18 @@ Tile.prototype.draw = function(ctx) {
             var deco = this.decoImage;
             var frame = null;
             if (deco[4]) { frame = Math.floor(this.randomizer * deco[3] + state.time / deco[4]) % deco[3]; }
-            drawImage(ctx, deco[0], x, y, null, null, deco[1], deco[2], null, null, frame);
+            drawImageSorted(ctx, deco[0], x, y, null, null, deco[1], deco[2], null, null, frame);
         }
     }
+};
 
+Tile.prototype.drawLight = function() {
     if (this.tileType.light) {
-        var alpha = 0.8 * this.tileType.light[2] * getFlicker(state.time * 0.00002 * (0.7 + 0.3 * this.randomizer) + this.randomizer, 2);
-        lightSystem.drawLight(LightSystem.defaultSoftLight, state.cam.x + x, state.cam.y + y, this.tileType.light[1], this.tileType.light[0], alpha);
+        var x = (this.x + 0.5) * this.map.tw;
+        var y = (this.y + 0.5) * this.map.th;
+        var alpha = 0.3 + 0.5 * this.tileType.light[2] * getFlicker(state.time * 0.00002 * (0.7 + 0.3 * this.randomizer) + this.randomizer, 1);
+        var size = this.tileType.light[1] * (0.6 + 0.4 * getFlicker(state.time * 0.000027 * (0.8 + 0.2 * this.randomizer) + this.randomizer/2, 1));
+        lightSystem.drawLight(LightSystem.defaultSoftLight, state.cam.x + x, state.cam.y + y, size, this.tileType.light[0], alpha);
     }
 };
 

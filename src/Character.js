@@ -1,4 +1,49 @@
-function Character(position, movementSoundsData) {
+const movementSounds = [
+    {
+        src: "sounds/step_dirt.wav",
+        playbackRate: 1,
+        volume: .35,
+        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
+    },
+    {
+        src: "sounds/step_dirt2.wav",
+        playbackRate: 1,
+        volume: .35,
+        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
+    },
+    {
+        src: "sounds/step_dirt3.wav",
+        playbackRate: 1,
+        volume: .35,
+        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
+    },
+    {
+        src: "sounds/step_dirt4.wav",
+        playbackRate: 1,
+        volume: .35,
+        tileTypes: [TileTypes.GROUND, TileTypes.PATH]
+    },
+    {
+        src: "sounds/step_stone.wav",
+        playbackRate: .8,
+        volume: .6,
+        tileTypes: [TileTypes.STONE]
+    },
+    // {
+    //     src: "sounds/step_stone2.wav",
+    //     playbackRate: .8,
+    //     volume: .6,
+    //     tileTypes: [TileTypes.STONE]
+    // },
+    {
+        src: "sounds/step_stone3.wav",
+        playbackRate: .8,
+        volume: .6,
+        tileTypes: [TileTypes.STONE]
+    }
+];
+
+function Character(position) {
     Entity.call(this, position);
     this.velocity = [0, 0];
     this.direction = 1;
@@ -6,8 +51,8 @@ function Character(position, movementSoundsData) {
     this.width = 0.5;
     this.height = 0.3;
 
-    if (movementSoundsData) {
-       this.loadMovementSounds(movementSoundsData);
+    if (movementSounds) {
+       this.loadMovementSounds(movementSounds);
     }
 }
 
@@ -17,7 +62,7 @@ Character.prototype.update = function (delta) {
     // Compute new position based on delta and velocity
     var nx = this.position[0] + this.velocity[0] * delta;
     var ny = this.position[1] + this.velocity[1] * delta;
-    this.position = this.resolveCollision(nx, ny);
+    this.setPosition(this.resolveCollision(nx, ny));
 
     // play movement sounds
     var keys = state.keyStates;
@@ -38,6 +83,10 @@ Character.prototype.resolveCollision = function (x, y) {
     if (this.checkCollision(x, y)) {
         y = this.position[1];
     }
+    // Player stuck?
+    if (this.checkCollision(x, y)) {
+        return state.map.findClosestFreePosition(x, y, this.width, this.height);
+    }
     return [x, y];
 };
 
@@ -53,12 +102,11 @@ Character.prototype.checkCollision = function (x, y) {
 Character.prototype.loadMovementSounds = function (movementSounds) {
     this.movementAudioFiles = [];
     movementSounds.forEach(soundData => {
-        this.movementAudioFiles.push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume));
+        this.movementAudioFiles.push(loader.loadAudio(soundData.src, soundData.playbackRate, soundData.volume, soundData.tileTypes));
     })
     for (const audio of this.movementAudioFiles) {
         audio.onended = () => {
-            const newSound = getRandom(this.movementAudioFiles);
-            this.movementSound = getRandom(this.movementAudioFiles);
+            this.movementSound = getRandomSound(this.movementAudioFiles, this.targetTile.type);
         }
 
     }

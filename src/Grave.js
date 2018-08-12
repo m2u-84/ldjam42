@@ -13,6 +13,11 @@ function Grave(x1, y1, x2, y2) {
     this.tile2.reference = this;
     this.inverted = (x1 < x2);
     this.empty = true;
+    this.fillTime = 0;
+    this.expirationTime = 0;
+    // Center coordinate
+    this.cx = (x1 + x2) / 2;
+    this.cy = (y1 + y2) / 2;
 }
 
 Grave.load = function() {
@@ -28,9 +33,31 @@ Grave.prototype.draw = function(ctx) {
     var x = (this.x1 + this.x2 + 1) / 2 * state.map.tw;
     var y = (this.y1 + this.y2 + 1) / 2 * state.map.th;
     drawImage(ctx, img, x, y, null, null, 0.5, 0.5, this.inverted);
+
+    // Progress
+    if (!this.empty) {
+        if (state.dayTime <= this.expirationTime) {
+            // only in range of player
+            if (Math.abs(this.cx - state.player.position[0]) <= 3 && Math.abs(this.cy - state.player.position[1]) <= 3) {
+                var p = (state.dayTime - this.fillTime) / (this.expirationTime - this.fillTime);
+                drawProgressBar(ctx, x, y, 32, p, "#8080a0");
+            }
+        } else {
+            // is done! empty grave, although this is draw and not update function (but this is a game jam so it's alright)
+            this.ejectCorpse();
+        }
+    }
 };
 
 Grave.prototype.takeCorpse = function(corpse) {
     this.empty = false;
     removeItem(state.corpses, corpse);
+    this.fillTime = state.dayTime;
+    this.expirationTime = this.fillTime + 3;
+};
+
+Grave.prototype.ejectCorpse = function() {
+    this.empty = true;
+    // Spawn zombie?
+    // TODO Spawn zombie randomly, if zombies have been unlocked
 };
