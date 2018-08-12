@@ -177,7 +177,7 @@ Player.prototype.update = function(delta) {
     }
 
     // enable / disable torch sounds based on radius around player
-    const torchesInRadius = getTilesInPlayerRadius(6, TileTypes.TORCH);
+    const torchesInRadius = Player.getTilesInRadius(7, TileTypes.TORCH);
     if (torchesInRadius.length > 0) {
         if (!this.torchCrackle.isPlaying()) {
             this.torchCrackle.play();
@@ -185,7 +185,7 @@ Player.prototype.update = function(delta) {
     } else {
         this.torchCrackle.pause();
     }
-
+    
     // F pressed?
     if (keys.f && !this.action) {
         // Attack action
@@ -387,3 +387,31 @@ Player.pullCorpse = function(corpse, x, y, distance) {
         corpse.setPosition( [x - dx * disf, y - dy * disf] );
     }
 };
+
+Player.getTilesInRadius = function (radius, tileType) {
+    let playerPos = state.player.position;
+    playerPos = playerPos.map(v => Math.floor(v));
+    let centerOffset = Math.floor(radius / 2); 
+    let tilesWithType = [];
+    state.map.tiles.forEach( yTile => {
+        yTile.forEach( tile => {
+            if (tile.type === tileType) {
+                tilesWithType.push(tile);
+            }
+        })
+    })
+    const tilesInRadius = tilesWithType.filter(tile => {
+        return tile.x >= playerPos[0] - centerOffset && tile.x <= playerPos[0] - centerOffset + radius
+            && tile.y >= playerPos[1] - centerOffset && tile.y <= playerPos[1] - centerOffset + radius
+    })
+    return tilesInRadius;
+}
+
+Player.getDistanceToTile = function (tile) {
+    let playerPos = state.player.position;
+    playerPos = playerPos.map(v => Math.floor(v));
+    const dx = tile.x - playerPos[0];
+    const dy = tile.y - playerPos[1];
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    return distance;
+}
