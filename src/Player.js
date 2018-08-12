@@ -468,6 +468,12 @@ Player.prototype.getZombieSpeedReduction = function() {
             }
         }
     });
+    if (near > 0 && !state.unlocks.zombies2) {
+        var steps = 0.01;
+        if (state.dayTime % steps < state.lastDayTime % steps) {
+            SoundManager.play("zattack", 0.3);
+        }
+    }
     var base = state.unlocks.zombies2 ? 1.25 : 0.85;
     return Math.min(3, Math.max(0.2, Math.pow(base, near)));
 };
