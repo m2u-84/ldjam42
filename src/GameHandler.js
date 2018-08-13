@@ -3,7 +3,7 @@ function GameHandler(parentElement) {
 
     loader = new Loader();
     keyHandler = new KeyHandler(window, ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "e", "w", "a", "s", "d",
-        "f", "t"]);
+        "f", "t", " ", "Enter"]);
     renderSorter = new RenderSorter();
     this.corpseHandler = new CorpseHandler();
     this.startScreen = new StartScreen();
@@ -28,7 +28,8 @@ function GameHandler(parentElement) {
         StartScreen,
         Owl,
         BatHandler, 
-        Bat
+        Bat,
+        Tutorial
     ].map(c => ({class: c, instances: []}));
 
     // Global game state which can be accessed by all game objects
@@ -36,6 +37,8 @@ function GameHandler(parentElement) {
         debugMode: false,
         currentTime: 0,
         dt: 0,
+        time: 0,
+        startGameTime: 0,
         map: new Map(32, 32, 24, 24),
         player: new Player([16.5,21.5]),
         corpses: [],
@@ -44,7 +47,7 @@ function GameHandler(parentElement) {
         graves: [],
         keyStates: keyHandler.keyStates,
         cam: { x: 0, y: 0 },
-        money: 50,
+        money: 20,
         shopOpen: false,
         startScreen: true,
         pauseScreen: false,
@@ -66,9 +69,9 @@ function GameHandler(parentElement) {
             order: false,
             repair: false
         },
-        initialSpawnAmount: 5,
-        spawnIncreaseRate: 0.3,
-        spawnAnimationTime: 0.035,
+        initialSpawnAmount: 10,
+        spawnIncreaseRate: 0.5,
+        spawnAnimationTime: 0.02,
         spawningGap: 0.005,
         owl: null
     };
@@ -89,6 +92,7 @@ function GameHandler(parentElement) {
     lightSystem.setAmbientColor("#404070");
 
     shop = new Shop();
+    tutorial = new Tutorial();
 
     musicManager = new MusicManager([
         document.getElementById("music1"),
@@ -128,6 +132,7 @@ GameHandler.prototype.load = function() {
         }
     }
     state.map.load();
+    tutorial.load();
     this.pauseScreenImage = loader.loadImage("img/misc/instructions transparent3.png");
     this.dayCounterIcon = loader.loadImage("img/hud/calendar.png");
     this.moneyCounterIcon = loader.loadImage("img/hud/moneybag.png");
@@ -148,8 +153,11 @@ GameHandler.prototype.gameLoop = function() {
     this.lastTime = t;
     this.currentTime += dt;
     state.time = this.currentTime;
+    if (tutorial.active) {
+        state.startGameTime = state.time;
+    }
     state.lastDayTime = state.dayTime;
-    state.dayTime = state.time / 120000;
+    state.dayTime = (state.time - state.startGameTime) / 120000;
     state.dt = dt;
     state.lastTime = this.lastTime;
 
@@ -167,11 +175,12 @@ GameHandler.prototype.gameLoop = function() {
         }
     }
 
-        state.map.update();
-        state.zombies.forEach(z => z.update(dt));
-        state.player.update(dt);
-        this.corpseHandler.update(dt);
-        this.batHandler.update(dt);
+    state.map.update();
+    state.zombies.forEach(z => z.update(dt));
+    state.player.update(dt);
+    this.corpseHandler.update(dt);
+    this.batHandler.update(dt);
+    tutorial.update();
 
     requestAnimationFrame(this.gameLoop.bind(this));
 };
@@ -204,6 +213,7 @@ GameHandler.prototype.renderLoop = function() {
     renderSorter.clear();
 
     state.map.draw(this.ctx);
+    tutorial.drawTile(this.ctx);
     state.graves.forEach(g => g.draw(this.ctx));
     state.corpses.forEach(c => c.draw(this.ctx));
     state.zombies.forEach(z => z.draw(this.ctx));
@@ -227,7 +237,9 @@ GameHandler.prototype.renderLoop = function() {
     Corpse.displayCount(this.ctx, -4, this.canvas.height - 20, state.corpses.length - state.unloadingCorpses.length);
     // Corpse.displayCount2(this.ctx, -4, this.canvas.height - 20, state.corpses.filter(c => !state.unloadingCorpses.includes(c)));
     // Shop Info
-    var display = (state.map.getTile(state.player.tile[0], state.player.tile[1]) == state.map.shopTile);
+    var tx = state.player.tile[0], ty = state.player.tile[1];
+    var display = (state.map.getTile(tx, ty) == state.map.shopTile || state.map.getTile(tx - 1, ty) == state.map.shopTile ||
+        state.map.getTile(tx + 1, ty) == state.map.shopTile);
     state.readyToShop = display;
     var alpha = fadeAlpha("shopInfoText", display ? 1 : 0);
     if (alpha > 0) {
@@ -258,6 +270,8 @@ GameHandler.prototype.renderLoop = function() {
     this.ctx.shadowOffsetY = 1;
     this.ctx.shadowBlur = 1;
     this.ctx.shadowColor = "rgba(0, 0, 0, 1)";
+
+    tutorial.drawHUD(this.ctx);
 
     alpha = fadeAlpha("moneyAlpha", display ? 2 : 0.7);
 

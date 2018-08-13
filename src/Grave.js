@@ -62,14 +62,7 @@ Grave.prototype.drawProgress = function(ctx) {
             if (state.dayTime % 0.01 < state.lastDayTime % 0.01 && state.dayTime % 1 > 0.7) {
                 if (Math.random() < 0.005) {
                     // Spawn zombie
-                    this.ejectCorpse();
-                    var zx = this.cx, zy = this.cy;
-                    var zombie = new Zombie([zx, zy]);
-                    state.zombies.push(zombie);
-                    SoundManager.play("resurrection", 1);
-                    if (state.unlocks.order) {
-                        this.rotten = false;
-                    }
+                    this.spawnZombie();
                 }
             }
         } else {
@@ -81,11 +74,31 @@ Grave.prototype.drawProgress = function(ctx) {
     }
 };
 
+Grave.prototype.spawnZombie = function() {
+    if (!this.empty) {
+        this.ejectCorpse();
+        var zx = this.cx, zy = this.cy;
+        var zombie = new Zombie([zx, zy]);
+        state.zombies.push(zombie);
+        SoundManager.play("resurrection", 1);
+        if (state.unlocks.order) {
+            this.rotten = false;
+        }
+        return zombie;
+    }
+    return null;
+};
+
 Grave.prototype.takeCorpse = function(corpse) {
     this.empty = false;
     removeItem(state.corpses, corpse);
     this.fillTime = state.dayTime;
-    this.expirationTime = this.fillTime + (state.unlocks.maggots ? 1.9 : 3.1);
+    var timeFactor = 1;
+    if (state.map.findNeighbour(this.x1, this.y1, tile => tile.type == TileTypes.TORCH, false) ||
+            state.map.findNeighbour(this.x2, this.y2, tile => tile.type == TileTypes.TORCH, false)) {
+        timeFactor = 0.75;
+    }
+    this.expirationTime = this.fillTime + timeFactor * (state.unlocks.maggots ? 1.9 : 3.1);
     shop.awardMoney(50, this.cx, this.cy);
 };
 
