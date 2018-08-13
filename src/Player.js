@@ -234,6 +234,7 @@ Player.prototype.update = function(delta) {
                     state.map.set(tile.x, tile.y, TileTypes.TORCH);
                     this.torch = false;
                     state.unlocks.torches = false;
+                    Grave.checkAllForTorches();
                 }
             }
         } else {
@@ -243,7 +244,7 @@ Player.prototype.update = function(delta) {
             var durationFactor = 1;
             if (this.pulling) {
                 // Check if dropped on grave
-                if (this.targetTile && this.targetTile.type == TileTypes.GRAVE && this.targetTile.reference.empty) {
+                if (this.targetTile && this.targetTile.type == TileTypes.GRAVE && this.targetTile.reference.empty && !this.targetTile.reference.rotten) {
                     this.targetTile.reference.takeCorpse(this.pulling);
                     SoundManager.play("burial", 0.5);
                 }
@@ -281,20 +282,21 @@ Player.prototype.update = function(delta) {
                                     SoundManager.play("obstacles", 0.6);
                                 }
                                 if (state.unlocks.shovel2) { durationFactor = 0.75; }
-                                if (state.unlocks.shovel3) { durationFactor = 0.5; }
+                                if (state.unlocks.shovel3) { durationFactor = 0.4; }
                             } else if (tile.type == TileTypes.PATH) {
                                 // Dig
                                 this.action = PlayerActions.DIG;
                                 this.digSound.trigger();
                                 SoundManager.play("digging", 0.15);
                                 if (state.unlocks.shovel2) { durationFactor = 0.75; }
-                                if (state.unlocks.shovel3) { durationFactor = 0.5; }
+                                if (state.unlocks.shovel3) { durationFactor = 0.4; }
                             } else if (tile.type == TileTypes.HOLE || tile.type == TileTypes.GRAVE) {
                                 if (tile.type == TileTypes.HOLE || tile.reference && tile.reference.empty) {
+                                    // Fill
                                     this.action = PlayerActions.FILL;
                                     this.digSound.trigger();
                                     if (state.unlocks.shovel2) { durationFactor = 0.75; }
-                                    if (state.unlocks.shovel3) { durationFactor = 0.5; }
+                                    if (state.unlocks.shovel3) { durationFactor = 0.4; }
                                 }
                             } else if (tile.type == TileTypes.TORCH) {
                                 // Take torch

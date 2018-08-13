@@ -19,6 +19,7 @@ function Grave(x1, y1, x2, y2) {
     // Center coordinate
     this.cx = (x1 + x2) / 2;
     this.cy = (y1 + y2) / 2;
+    this.torched = false;
 }
 
 Grave.load = function() {
@@ -95,24 +96,36 @@ Grave.prototype.takeCorpse = function(corpse) {
     this.empty = false;
     removeItem(state.corpses, corpse);
     this.fillTime = state.dayTime;
-    var timeFactor = 1;
-    if (state.map.findNeighbour(this.x1, this.y1, tile => tile.type == TileTypes.TORCH, false) ||
-            state.map.findNeighbour(this.x2, this.y2, tile => tile.type == TileTypes.TORCH, false)) {
-        timeFactor = 0.6;
-    }
-    this.expirationTime = this.fillTime + timeFactor * (state.unlocks.maggots ? 1.4 : 2.1);
+    this.expirationTime = this.fillTime + (state.unlocks.maggots ? 1.4 : 2.1);
+    this.checkForTorches();
     shop.awardMoney(50, this.cx, this.cy);
+};
+
+Grave.prototype.checkForTorches = function() {
+    if (!this.torched) {
+        if (state.map.findNeighbour(this.x1, this.y1, tile => tile.type == TileTypes.TORCH, false) ||
+                state.map.findNeighbour(this.x2, this.y2, tile => tile.type == TileTypes.TORCH, false)) {
+            this.expirationTime = this.fillTime + 0.6 * (this.expirationTime - this.fillTime);
+            this.torched = true;
+        }
+    }
+};
+
+Grave.checkAllForTorches = function() {
+    state.graves.forEach(g => g.checkForTorches());
 };
 
 Grave.prototype.ejectCorpse = function() {
     this.empty = true;
     this.rotten = !state.unlocks.repair;
+    this.torched = false;
 };
 
 Grave.prototype.remove = function() {
     if (this.empty) {
         if (this.rotten) {
             this.rotten = false;
+            this.torched = false;
         } else {
             // Reset tiles
             state.map.set(this.x1, this.y1, TileTypes.PATH);
