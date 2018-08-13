@@ -156,7 +156,7 @@ Player.prototype.update = function(delta) {
     }
 
     // play movement sound
-    if (keys.w || keys.a || keys.d || keys.s || keys.ArrowDown || keys.ArrowLeft || keys.ArrowRight || keys.ArrowUp) {
+    if (!state.shopOpen && (keys.w || keys.a || keys.d || keys.s || keys.ArrowDown || keys.ArrowLeft || keys.ArrowRight || keys.ArrowUp)) {
         this.movementSound.trigger();
     }
 
@@ -254,7 +254,7 @@ Player.prototype.update = function(delta) {
             } else {
                 // Open Shop?
                 if (state.readyToShop) {
-                    state.shopOpen = true;
+                    // state.shopOpen = true;
                 } else {
                     // Pick corpse based on point in front of player (between player and target tile)
                     var pickx = 0.5 * (this.targetPosition[0] + 0.5 + this.position[0]);
