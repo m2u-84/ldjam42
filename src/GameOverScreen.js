@@ -28,7 +28,7 @@ GameOverScreen.load = function() {
     GameOverScreen.background = loader.loadImage("img/menus/game-over-screen.jpg");
     GameOverScreen.thuds = [];
     for (var i = 0; i < 20; i++) {
-        GameOverScreen.thuds[i] = loader.loadAudio({src: "sounds/thud2.wav"});
+        GameOverScreen.thuds[i] = loader.loadAudio({src: "sounds/thud2.mp3"});
     }
     GameOverScreen.prevThud = 0;
     GameOverScreen.dancingZombie = loader.loadImage("img/character/zombieEndingSprite.png", 5);
