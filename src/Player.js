@@ -254,7 +254,7 @@ Player.prototype.update = function(delta) {
             } else {
                 // Open Shop?
                 if (state.readyToShop) {
-                    state.shopOpen = true;
+                    // state.shopOpen = true;
                 } else {
                     // Pick corpse based on point in front of player (between player and target tile)
                     var pickx = 0.5 * (this.targetPosition[0] + 0.5 + this.position[0]);

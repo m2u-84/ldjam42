@@ -408,4 +408,11 @@ GameHandler.prototype.handleKeyDown = function(e) {
             state.zombies.push(z);
         }
     }
+    if (state.shopOpen) {
+        shop.handleKeyDown(e);
+    } else {
+        if (state.readyToShop && e.key == "e") {
+            state.shopOpen = true;
+        }
+    }
 };

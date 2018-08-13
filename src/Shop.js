@@ -33,13 +33,15 @@ function Shop() {
     this.prevClick = 1;
     this.mouseClick = 0;
 
+    this.focusButton = 100;
+
     this.floatingTexts = [];
 }
 
 Shop.update = function() {
-    this.prevClick = this.mouseClick;
-    this.mouseClick = state.mouseClick;
-    this.newClick = this.mouseClick && !this.prevClick;
+    Shop.prevClick = Shop.mouseClick;
+    Shop.mouseClick = state.mouseClick;
+    Shop.newClick = Shop.mouseClick && !Shop.prevClick;
 };
 
 Shop.load = function() {
@@ -78,17 +80,17 @@ Shop.prototype.draw = function(ctx) {
         var s = (this.open == id ? ">" : "") + article[0];
         // if (!article[4]) { s += " (" + article[1] + ")" };
         if (!state.unlocks[article[2]]) { s += " (" + article[1] + ")" };
-        if (Shop.button(ctx, bx, by + 22 * (i + 1), s, bw, state.unlocks[article[2]], this.open == id)) {
+        if (Shop.button(ctx, bx, by + 22 * (i + 1), s, bw, state.unlocks[article[2]], this.open == id, id)) {
             this.open = id;
         }
     }
     // Up
-    if (Shop.button(ctx, bx, by, "/\\     More Items     /\\", bw, this.page < 1)) {
+    if (Shop.button(ctx, bx, by, "/\\     More Items     /\\", bw, this.page < 1, null, 101)) {
         this.page--;
         this.open = -1;
     }
     // Down
-    if (Shop.button(ctx, bx, by + 22 * (i + 1), "\\/     More Items     \\/", bw, this.page >= this.pageCount - 1)) {
+    if (Shop.button(ctx, bx, by + 22 * (i + 1), "\\/     More Items     \\/", bw, this.page >= this.pageCount - 1, null, 102)) {
         this.page++;
         this.open = -1;
     }
@@ -113,7 +115,7 @@ Shop.prototype.draw = function(ctx) {
     var buyTitle = this.open < 0 ? "Buy" : ("Buy (" + (article ? article[1] : "") + ")");
     var article = this.options[this.open];
     var disabled = this.open < 0 || state.unlocks[article[2]] || article[1] > state.money;
-    if (Shop.button(ctx, tx + 50, y + h - 22, buyTitle, 84, disabled)) { // article[4])) {
+    if (Shop.button(ctx, tx + 50, y + h - 22, buyTitle, 84, disabled, null, 103)) { // article[4])) {
         // article[4] = true;
         // Take money
         shop.removeMoney(article[1]);
@@ -125,38 +127,47 @@ Shop.prototype.draw = function(ctx) {
     }
 
     // Back button
-    if (Shop.button(ctx, bx, y + h - 22, "Leave Shop", 84)) {
+    if (Shop.button(ctx, bx, y + h - 22, "Leave Shop", 84, null, null, 100)) {
         state.shopOpen = false;
     }
 };
 
-Shop.button = function(ctx, x, y, text, w, disabled, pressed) {
+Shop.button = function(ctx, x, y, text, w, disabled, pressed, id) {
     var h = 20;
     var x1 = Math.floor(x - w/2), y1 = Math.floor(y - h/2);
     // Inside?
     var mouse = state.mousePos;
+    var focused = (id == shop.focusButton);
     var hover = !disabled && !pressed && (mouse[0] >= x1 && mouse[1] >= y1 && mouse[0] <= x1 + w && mouse[1] <= y1 + h);
     var imgindex = w < 100 ? 0 : 2;
-    if (hover) { imgindex++; }
+    if (hover) { imgindex++; shop.focusButton = id; }
     var img = Shop.buttons[imgindex];
     /*
     ctx.fillStyle = "black";
     ctx.fillRect(x1, y1, w, h); */
     // ctx.fillStyle = hover ? "white": "gray";
     // ctx.fillRect(x1 + 1, y1 + 1, w - 2, h - 2);
+    ctx.save();
+    if (focused) {
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.shadowBlur = 3;
+        ctx.shadowColor = "rgba(255, 200, 45, 0.8)";
+    }
     drawImage(ctx, img, x1 + w/2, y1 + h/2, w, h, 0.5, 0.5, false, pressed ? Math.PI : 0);
+    ctx.restore();
     // ctx.drawImage(img, x1, y1, w, h);
     // Text
-    ctx.fillStyle = hover ? "black" : "rgba(0,0,0,0.75)";
+    ctx.fillStyle = hover || focused ? "black" : "rgba(0,0,0,0.75)";
     ctx.textAlign = "center";
     if (disabled) { ctx.globalAlpha = 0.4; }
     var prevFont = ctx.font;
-    if (hover) { ctx.font = "bold 10px Arial"; }
+    if (hover || focused) { ctx.font = "bold 10px Arial"; }
     ctx.fillText(text, x, y + 4);
     ctx.font = prevFont;
     ctx.globalAlpha = 1;
     // Click?
-    return hover && this.newClick;
+    return hover && Shop.newClick;
 };
 
 Shop.prototype.awardMoney = function(money, x, y) {
@@ -201,4 +212,88 @@ Shop.prototype.drawFloatingTexts = function(ctx) {
         ctx.fillText(s, x, y - 5 - yoff);
     }
     ctx.globalAlpha = 1;
+};
+
+Shop.prototype.handleKeyDown = function(e) {
+    if (e.key == "e" || e.key == "Enter") {
+        if (this.focusButton >= 100) {
+            if (this.focusButton == 100) {
+                // Leave
+                state.shopOpen = false;
+            } else if (this.focusButton == 102) {
+                if (this.page < 2) { this.page++ }
+            } else if (this.focusButton == 101) {
+                if (this.page > 0) { this.page--; }
+            } else if (this.focusButton == 103) {
+                // Buy
+                if (this.open >= 0) {
+                    var article = this.options[this.open]
+                    if (state.money >= article[1]) {
+                        if (!state.unlocks[article[2]]) {
+                            // Buy!
+                            this.focusButton = 100;
+                            shop.removeMoney(article[1]);
+                            state.unlocks[article[2]] = true;
+                            SoundManager.play("purchase", 1);
+                        }
+                    }
+                }
+            }
+        } else {
+            // Move to buy button
+            this.focusButton = 103;
+        }
+    } else if (e.key == "ArrowRight" || e.key == "d" ) {
+        this.focusButton = 103;
+    } else if (e.key == "ArrowLeft" || e.key == "a") {
+        if (this.focusButton == 103) {
+            this.focusButton = 100;
+        }
+    } else {
+        var up = e.key == "ArrowUp" || e.key == "w";
+        var down = e.key == "ArrowDown" || e.key == "s";
+        var ud = (up ? 1 : 0) - (down ? 1 : 0);
+        if (ud) {
+            if (this.focusButton < 100) {
+                // one of the items is selected
+                var other = this.focusButton - ud;
+                // would be page change?
+                if (Math.floor(other / this.perPage) != Math.floor(this.focusButton / this.perPage)) {
+                    if (ud > 0) {
+                        this.focusButton = 101;
+                    } else {
+                        this.focusButton = 102;
+                    }
+                } else {
+                    this.focusButton = other;
+                }
+            } else if (this.focusButton == 100) {
+                // Leave is selected
+                if (ud > 0) {
+                    this.focusButton = 102;
+                }
+            } else if (this.focusButton == 102) {
+                // Move up is selected
+                if (ud > 0) {
+                    // Select lowest visible item
+                    this.focusButton = this.perPage * this.page + this.perPage - 1;
+                } else {
+                    // Focus leave button
+                    this.focusButton = 100;
+                }
+            } else if (this.focusButton == 101) {
+                // Move up is selected
+                if (ud < 0) {
+                    // Select highest visible item
+                    this.focusButton = this.perPage * this.page;
+                }
+            }
+            // if item was selected, show it
+            if (this.focusButton < 100) {
+                if (this.focusButton < 0) { this.focusButton = 0; }
+                if (this.focusButton >= this.options.length) { this.focusButton = this.options.length - 1; }
+                this.open = this.focusButton;
+            }
+        }
+    }
 };
