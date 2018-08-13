@@ -2,7 +2,7 @@
 function StartScreen() {
   this.mouseClick = 0;
   this.startTime = null;
-  this.creditsString = "GRAVE HEART - Ludum Dare 42 game by Kevin-Alexander Grewe, Bastian Lang, Ranjit Mevius, Markus Over, Jenny van Veen, Matthias Wetter. Thanks to ip.labs for providing space and coffee.";
+  this.creditsString = "“GRAVE HEART” – Ludum Dare 42 game by Kevin-Alexander Grewe, Bastian Lang, Ranjit Mevius, Markus Over, Jenny van Veen, and Matthias Wetter. Thanks to ip.labs for providing space and coffee.";
 }
 
 StartScreen.load = function() {
@@ -34,7 +34,7 @@ StartScreen.prototype.draw = function(ctx) {
   // Credits
   ctx.textAlign = "left";
   var x = 350 - (((+Date.now() - this.startTime) / 18) % 1500);
-  var y = ctx.canvas.height - 6;
-  ctx.fillStyle = "white";
+  var y = ctx.canvas.height - 8;
+  ctx.fillStyle = "#4AB";
   ctx.fillText(this.creditsString, x, y);
 }
