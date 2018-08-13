@@ -1,16 +1,18 @@
-# Welcome to Graveheart, the cozy local cemetery!
+# Welcome to “Grave Heart”, the cozy local cemetery!
 
-A place where you’ll find many dead people. **Too many** I should rather say because space is tight and new bodies are constantly arriving.
+A place where you’ll find many dead people. **Too many** I should rather say because space is tight and new bodies are arriving constantly.
 
 Oh, and then there is Hans! He’s not dead. Well maybe a little on the inside – dealing with corpses 24/7 can make you a little… numb.
 
-So why don’t you help him? All you gotta do is bury all the deceased before to many of them start piling up!
+So why don’t you help him? All you gotta do is bury all the deceased before too many of them start piling up!
 
 By the way – did we mention that you might encounter an occasional **zombie**?! If that doesn’t get you on board right now we don’t know what will!
 
 ## What are you waiting for? Go dig in!
 
 The game is written as an **HTML5 browser application so you don’t even have to install anything!** Well… apart from a browser, which you obviously have. Lucky you!
+
+Here are the best ways to experience the game:
 
 - **[Directly playable browser game](http://shellfishgames.com/games/graveheart/index.html) – this is what you want in most cases**
 - [Downloadable version](http://shellfishgames.com/dl/graveheart.zip) – if you prefer playing locally or offline
