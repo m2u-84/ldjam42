@@ -7,6 +7,7 @@ function GameHandler(parentElement) {
     renderSorter = new RenderSorter();
     this.corpseHandler = new CorpseHandler();
     this.startScreen = new StartScreen();
+    this.batHandler = new BatHandler();
 
     window.addEventListener("keydown", this.handleKeyDown.bind(this));
 
@@ -25,7 +26,9 @@ function GameHandler(parentElement) {
         SoundManager,
         Zombie,
         StartScreen,
-        Owl
+        Owl,
+        BatHandler, 
+        Bat
     ].map(c => ({class: c, instances: []}));
 
     // Global game state which can be accessed by all game objects
@@ -168,6 +171,7 @@ GameHandler.prototype.gameLoop = function() {
         state.zombies.forEach(z => z.update(dt));
         state.player.update(dt);
         this.corpseHandler.update(dt);
+        this.batHandler.update(dt);
 
     requestAnimationFrame(this.gameLoop.bind(this));
 };
@@ -207,6 +211,7 @@ GameHandler.prototype.renderLoop = function() {
     renderSorter.render();
     state.unloadingCorpses.forEach(c => c.draw(this.ctx)); // <- render flying corpses on top again, so they're over fence
     if (state.owl) state.owl.draw(this.ctx);
+    if (state.bat) state.bat.draw(this.ctx);
 
     lightSystem.drawLight(null, 160, 120, 200, "#ffffff", 0.6);
     // lightSystem.drawLight(null, 160 + 160 * Math.sin(state.time * 0.001), 120 + 120 * Math.sin(state.time * 0.00132), 130, "#3030ff", 0.6);
