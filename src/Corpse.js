@@ -11,6 +11,11 @@ Corpse.load = function() {
         loader.loadImage("img/character/corpse.png"),
         loader.loadImage("img/character/corpseBag.png")
     ];
+    Corpse.countingSprites = [
+        loader.loadImage("img/character/corpseBag.png"),
+        loader.loadImage("img/character/corpseBagYellow.png"),
+        loader.loadImage("img/character/corpseBagRed.png")
+    ];
 };
 
 Corpse.prototype.draw = function(ctx) {
@@ -50,14 +55,15 @@ Corpse.displayCount = function(ctx, x, y, count) {
     ctx.scale(0.75, 0.75);
     let row = 0;
     let column = 0;
+    let corpseImageIndex = 0;
     for (var i = 0; i < count; i++) {
-        if (column < 38) {
-            ctx.drawImage(Corpse.sprites[1], 11 * column, row * (-30));
-            column += 1;
-        } else {
-            row += 1;
+        if (column === 38) {
+            corpseImageIndex = corpseImageIndex <= 1 ? corpseImageIndex + 1 : corpseImageIndex; // GameOver here
             column = 0;
         }
+        
+        ctx.drawImage(Corpse.countingSprites[corpseImageIndex], 11 * column, row * (-30));
+        column += 1;
     }
     ctx.restore();
 };
