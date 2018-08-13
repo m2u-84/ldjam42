@@ -18,7 +18,7 @@ Here are the best ways to experience the game:
 - [Downloadable version](http://shellfishgames.com/dl/graveheart.zip) – if you prefer playing locally or offline
 - [Source code](https://github.com/m2u-84/ldjam42) – if your inner coding geek can’t resist it
 
-The interface is mainly controlled via keyboard buttons. Only the graveyard shop (curious thing, isn’t it?!) needs a little mouse interaction. To make things even easier for you we included an in-game tutorial. So dive right in!
+The interface is mainly controlled via keyboard buttons. Only the graveyard shop (curious thing, isn’t it?!) needs a little mouse interaction. To make things even easier for you we included an **in-game tutorial**. So dive right in!
 
 ## The team
 
@@ -50,4 +50,4 @@ Our **special thanks** go out to:
 
 - all the people behind Ludum Dare for organizing this great event
 - ip.labs for providing free coffee and enough space (haha, noticed that little pun we smuggled in here?)
-- **and you of course** for taking the time to read all this, test our little game, and give us a (hopefully) favorable rating! Much appreciated!
+- **and you of course** for taking the time to read all this and test our little game. Much appreciated!
