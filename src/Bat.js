@@ -9,7 +9,8 @@ Bat.load = function() {
 };
 
 Bat.prototype.draw = function(ctx) {
-    var x = this.position[0] * state.map.tw, y = this.position[1] * state.map.th;
+    var x = this.position[0] * state.map.tw;
+    var y = this.position[1] * state.map.th + 18 * Math.sin(state.dayTime * 500);
     var frame = Math.floor(state.time / 400) % 2;
     drawImage(ctx, Bat.sprite, Math.floor(x), Math.floor(y) , null, null, null, null, state.bat.mirrored, 0, frame);
 };

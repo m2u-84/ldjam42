@@ -65,7 +65,7 @@ Corpse.displayCount = function(ctx, x, y, count) {
             corpseImageIndex = 2;
         }
 
-        if (column === 38) {
+        if (column >= 38) {
             state.gameOver = true;
         }
 
