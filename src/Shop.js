@@ -119,6 +119,7 @@ Shop.prototype.draw = function(ctx) {
         // article[4] = true;
         // Take money
         shop.removeMoney(article[1]);
+        loader.loadAudio({src: "sounds/shop_purchase.wav", volume: 0.35}).play();
         // Unlock officially
         state.unlocks[article[2]] = true;
         SoundManager.play("purchase", 1);
@@ -233,6 +234,7 @@ Shop.prototype.handleKeyDown = function(e) {
                             // Buy!
                             this.focusButton = 100;
                             shop.removeMoney(article[1]);
+                            loader.loadAudio({src: "sounds/shop_purchase.wav", volume: 0.35}).play();
                             state.unlocks[article[2]] = true;
                             SoundManager.play("purchase", 1);
                         }
