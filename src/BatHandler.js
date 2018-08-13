@@ -23,7 +23,7 @@ BatHandler.prototype.update = function(delta) {
         if (state.dayTime - this.lastCheck > this.minTimeBetweenSpawns) {
             if (Math.random() < this.spawnProbability) {
                 this.startPos = [playerPos[0] - 8, Math.floor(playerPos[1] - 6 + Math.random() * 12)];
-                this.endPos = [playerPos[0] + 8, Math.floor(playerPos[1] - 6 + Math.random() * 12)];
+                this.endPos = [playerPos[0] + 12, Math.floor(playerPos[1] - 6 + Math.random() * 12)];
                 this.animationDuration = 0.015 + Math.random() * 0.015;
                 this.mirrored = true;
                 // make bat fly in other direction
