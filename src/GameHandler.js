@@ -76,7 +76,10 @@ function GameHandler(parentElement) {
         maximumSpawningAmount: 25,
         spawnAnimationTime: 0.02,
         spawningGap: 0.002,
-        owl: null
+        owl: null,
+        moneyEarned: 20,
+        burials: 0,
+        zombiesKilled: 0
     };
 
     this.startTime = +Date.now();

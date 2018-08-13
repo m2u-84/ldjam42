@@ -5,7 +5,7 @@ function GameOverScreen() {
     this.startTime = 0;
 
     this.fillScreenAnimation = 10000;
-    this.showStatisticsAfter = this.fillScreenAnimation + 2500;
+    this.showStatisticsAfter = this.fillScreenAnimation + 1200;
 
     this.corpses = [];
     var count = 1000;
@@ -31,13 +31,14 @@ GameOverScreen.load = function() {
         GameOverScreen.thuds[i] = loader.loadAudio({src: "sounds/thud2.wav"});
     }
     GameOverScreen.prevThud = 0;
+    GameOverScreen.dancingZombie = loader.loadImage("img/character/zombieEndingSprite.png", 5);
 };
 
 GameOverScreen.playThudSound = function(volume) {
     GameOverScreen.prevThud++;
     if (GameOverScreen.prevThud >= GameOverScreen.thuds.length) { GameOverScreen.prevThud = 0; }
     var snd = GameOverScreen.thuds[GameOverScreen.prevThud];
-    snd.volume = volume != null ? volume : 1;
+    snd.volume = (volume != null) ? volume : 1;
     snd.play();
 };
 
@@ -50,7 +51,7 @@ GameOverScreen.prototype.draw = function(ctx) {
         this.startTime = time;
         var cx = ctx.canvas.width / 2, cy = ctx.canvas.height / 2;
         this.corpses.forEach(c => { c[0] += cx; c[1] += cy; });
-        setTimeout(() => SoundManager.play("gameover", 1), 1500);
+        setTimeout(() => SoundManager.play("gameover", 1), this.fillScreenAnimation + 700);
     }
 
     // Fill screen with corpses
@@ -77,11 +78,45 @@ GameOverScreen.prototype.draw = function(ctx) {
     if (time > this.startTime + this.showStatisticsAfter) {
         var x = (ctx.canvas.width - GameOverScreen.background.width) / 2,
             y = (ctx.canvas.height - GameOverScreen.background.height) / 2;
-        drawImage(ctx, GameOverScreen.background, x, y, null, null, 0, 0);
+        ctx.drawImage(GameOverScreen.background, x, y);
+        var xm = x + GameOverScreen.background.width / 2;
+        var x2 = x + GameOverScreen.background.width;
         // Days
+        ctx.textAlign = "center";
+        ctx.fillStyle = "white";
+        ctx.shadowOffsetX = 1;
+        ctx.shadowOffsetY = 1;
+        ctx.shadowBlur = 2;
+        ctx.shadowColor = "rgba(0, 0, 0, 1)";
+        var dayy = y + 88;
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.fillText("You managed to keep it up for", xm, dayy - 22);
+        ctx.drawImage(gameHandler.dayCounterIcon, xm - 38, dayy - 15, 24, 24);
+        ctx.textAlign = "left";
+        ctx.fillText(state.dayTime.toFixed(1) + " days!", xm, dayy);
         // Corpses buried
+        var rowy = dayy + 40;
+        var cx = xm - 90;
+        ctx.drawImage(Corpse.sprites[1], cx - 20, rowy - 12, 24, 24);
+        ctx.fillText("" + state.burials, cx + 6, rowy + 4);
+        ctx.textAlign = "center";
+        ctx.fillText("Burials", cx, rowy + 28);
+        ctx.textAlign = "left";
         // Zombies killed
+        var zx = xm - 5;
+        var frame = Math.floor(time / 200) % 4;
+        drawImage(ctx, GameOverScreen.dancingZombie, zx - 20, rowy, 24, 24, 0.5, 0.5, (time % 6400 < 3200), 0, frame);
+        ctx.fillText("" + state.zombiesKilled, zx, rowy + 4);
+        ctx.textAlign = "center";
+        ctx.fillText("Zombie Kills", zx - 3, rowy + 28);
+        ctx.textAlign = "left";
         // Dollards earned
+        var dx = xm + 70;
+        ctx.drawImage(gameHandler.moneyCounterIcon, dx - 20, rowy - 12, 24, 24);
+        ctx.fillText("" + state.moneyEarned, dx + 12, rowy + 4);
+        ctx.textAlign = "center";
+        ctx.fillText("Money earned", dx, rowy + 28);
         // F5 to restart
+        ctx.fillText("[Press F5 to play again]", xm, rowy + 52);
     }
 };

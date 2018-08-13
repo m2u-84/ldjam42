@@ -90,6 +90,7 @@ Grave.prototype.spawnZombie = function() {
 };
 
 Grave.prototype.takeCorpse = function(corpse) {
+    state.burials++;
     this.empty = false;
     removeItem(state.corpses, corpse);
     this.fillTime = state.dayTime;

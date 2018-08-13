@@ -112,5 +112,6 @@ Zombie.prototype.damage = function(dmg) {
     if (this.hp <= 0) {
         removeItem(state.zombies, this);
         this.following = null;
+        state.zombiesKilled++;
     }
 };

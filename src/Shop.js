@@ -161,6 +161,7 @@ Shop.prototype.awardMoney = function(money, x, y) {
     if (state.unlocks.hypnosis) {
         money = Math.round(money * 1.2);
     }
+    state.moneyEarned += money;
     state.money += money;
     // Show floating text
     var text = [money, x, y, state.time];

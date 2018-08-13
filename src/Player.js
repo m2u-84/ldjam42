@@ -298,8 +298,8 @@ Player.prototype.update = function(delta) {
                                 }
                             } else if (tile.type == TileTypes.TORCH) {
                                 // Take torch
-                                var newTile = state.map.set(tile.x, tile.y, TileTypes.GROUND);
-                                newTile.decoImage = null;
+                                state.map.set(tile.x, tile.y, TileTypes.GROUND);
+                                state.map.getTile(tile.x, tile.y).decoImage = null;
                                 this.torch = true;
                                 state.unlocks.torches = true;
                             } else if (tile.type == TileTypes.FENCE || tile.type == TileTypes.FENCE_SIDE
