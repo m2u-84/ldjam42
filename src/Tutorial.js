@@ -34,7 +34,7 @@ function Tutorial() {
         ["Now get rid of the zombie.\nIt might take a few hits.", this.zombie, () => state.zombies.length < 1],
         ["Good work! We're almost done here.\n(Space)", null, " ", () => this.shopTile = [state.map.shopTile.x, state.map.shopTile.y]],
         ["Look out for the shop now,\nwe need to buy stuff", this.shopTile, () => equalTile(state.player.tile, state.map.shopTile, 1)],
-        ["Open the shop and buy a torch", this.shopTile, () => state.unlocks.torches],
+        ["Open the shop and buy a torch", this.shopTile, () => state.player.torch],
         ["Go place it next to the grave", torchTile, () => isType(torchTile, TileTypes.TORCH)],
         ["Torches accelerate the decay\nof nearby graves. Which is good\n,because you need to deal with\na lot of corpses.\n(Space)", null, " "],
         ["Last thing before the actual\ngame starts: The zombie left\nits grave unusable.\n(Space)", null, " "],

@@ -111,6 +111,7 @@ function Player(position) {
     this.action = PlayerActions.NONE;
     this.actionStarted = 0;
     this.actionDuration = 1000;
+    this.torch = false;
 }
 inherit(Player, Character);
 
@@ -122,6 +123,7 @@ Player.load = function() {
     Player.fightSprite = loader.loadImage("img/character/char fight.png", 4);
     Player.dragSprite = loader.loadImage("img/character/char drag.png", 4);
     Player.digSprite = loader.loadImage("img/character/char digging.png", 4);
+    Player.torchSprite = loader.loadImage("img/character/torch carry.png", 4);
 };
 
 Player.update = function() {
@@ -186,6 +188,13 @@ Player.prototype.update = function(delta) {
         this.velocity[0] = this.velocity[1] = 0;
     }
 
+    // Torch?
+    if (!state.shopOpen && state.unlocks.torches && !this.torch) {
+        this.action = PlayerActions.NONE;
+        this.pulling = false;
+        this.torch = true;
+    }
+
     // enable / disable torch sounds based on radius around player
     const torchSoundRadius = 4;
     const torchesInRadius = Player.getTilesInRadius(torchSoundRadius, TileTypes.TORCH).concat(Player.getTilesInRadius(torchSoundRadius, TileTypes.COLLIDING_TORCH));
@@ -203,7 +212,7 @@ Player.prototype.update = function(delta) {
     }
 
     // F pressed?
-    if (keys.f && !this.action) {
+    if (!this.torch && keys.f && !this.action) {
         // Attack action
         this.action = PlayerActions.ATTACK;
         this.actionStarted = state.time;
@@ -216,73 +225,93 @@ Player.prototype.update = function(delta) {
     var prev = this.ePressed;
     this.ePressed = keys.e;
     if (this.ePressed && !prev) {
-        this.actionStarted = state.time;
-        // E was pressed just now, try to drag corpse
-        var durationFactor = 1;
-        if (this.pulling) {
-            // Check if dropped on grave
-            if (this.targetTile && this.targetTile.type == TileTypes.GRAVE && this.targetTile.reference.empty) {
-                this.targetTile.reference.takeCorpse(this.pulling);
-                SoundManager.play("burial", 0.5);
+        if (this.torch) {
+            // Place torch if tile is empty
+            var tile = this.targetTile;
+            if (tile) {
+                if (tile.type == TileTypes.GROUND && !tile.decoImage) {
+                    // Place torch
+                    state.map.set(tile.x, tile.y, TileTypes.TORCH);
+                    this.torch = false;
+                    state.unlocks.torches = false;
+                }
             }
-            // Abort pull action
-            this.pulling = null;
-            this.action = PlayerActions.NONE;
         } else {
-            // Open Shop?
-            if (state.readyToShop) {
-                state.shopOpen = true;
+            // No torch, so start an action maybe
+            this.actionStarted = state.time;
+            // E was pressed just now, try to drag corpse
+            var durationFactor = 1;
+            if (this.pulling) {
+                // Check if dropped on grave
+                if (this.targetTile && this.targetTile.type == TileTypes.GRAVE && this.targetTile.reference.empty) {
+                    this.targetTile.reference.takeCorpse(this.pulling);
+                    SoundManager.play("burial", 0.5);
+                }
+                // Abort pull action
+                this.pulling = null;
+                this.action = PlayerActions.NONE;
             } else {
-                // Pick corpse based on point in front of player (between player and target tile)
-                var pickx = 0.5 * (this.targetPosition[0] + 0.5 + this.position[0]);
-                var picky = 0.5 * (this.targetPosition[1] + 0.5 + this.position[1]);
-                var corpse = Player.getNearestCorpse(pickx, picky, 1);
-                if (corpse) {
-                    this.pulling = corpse;
-                    this.action = PlayerActions.PULL;
-                    SoundManager.play("dragging", 0.4);
+                // Open Shop?
+                if (state.readyToShop) {
+                    state.shopOpen = true;
                 } else {
-                    // Other action
-                    var tile = this.targetTile;
-                    if (tile) {
-                        if (tile.type == TileTypes.TREE) {
-                            // Cut Tree
-                            this.cutTreeSound.trigger();
-                            this.action = PlayerActions.CUT;
-                            if (state.unlocks.axe2) { durationFactor = 0.7; }
-                            if (state.unlocks.axe3) { durationFactor = 0.3; }
-                        } else if (tile.type == TileTypes.GROUND) {
-                            // Path
-                            this.action = PlayerActions.PATH;
-                            this.digSound.trigger();
-                            if (tile.decoImage) {
-                                SoundManager.play("obstacles", 0.6);
-                            }
-                            if (state.unlocks.shovel2) { durationFactor = 0.75; }
-                            if (state.unlocks.shovel3) { durationFactor = 0.5; }
-                        } else if (tile.type == TileTypes.PATH) {
-                            // Dig
-                            this.action = PlayerActions.DIG;
-                            this.digSound.trigger();
-                            SoundManager.play("digging", 0.15);
-                            if (state.unlocks.shovel2) { durationFactor = 0.75; }
-                            if (state.unlocks.shovel3) { durationFactor = 0.5; }
-                        } else if (tile.type == TileTypes.HOLE || tile.type == TileTypes.GRAVE) {
-                            if (tile.type == TileTypes.HOLE || tile.reference && tile.reference.empty) {
-                                this.action = PlayerActions.FILL;
+                    // Pick corpse based on point in front of player (between player and target tile)
+                    var pickx = 0.5 * (this.targetPosition[0] + 0.5 + this.position[0]);
+                    var picky = 0.5 * (this.targetPosition[1] + 0.5 + this.position[1]);
+                    var corpse = Player.getNearestCorpse(pickx, picky, 1);
+                    if (corpse) {
+                        this.pulling = corpse;
+                        this.action = PlayerActions.PULL;
+                        SoundManager.play("dragging", 0.4);
+                    } else {
+                        // Other action
+                        var tile = this.targetTile;
+                        if (tile) {
+                            if (tile.type == TileTypes.TREE) {
+                                // Cut Tree
+                                this.cutTreeSound.trigger();
+                                this.action = PlayerActions.CUT;
+                                if (state.unlocks.axe2) { durationFactor = 0.7; }
+                                if (state.unlocks.axe3) { durationFactor = 0.3; }
+                            } else if (tile.type == TileTypes.GROUND) {
+                                // Path
+                                this.action = PlayerActions.PATH;
                                 this.digSound.trigger();
+                                if (tile.decoImage) {
+                                    SoundManager.play("obstacles", 0.6);
+                                }
                                 if (state.unlocks.shovel2) { durationFactor = 0.75; }
                                 if (state.unlocks.shovel3) { durationFactor = 0.5; }
+                            } else if (tile.type == TileTypes.PATH) {
+                                // Dig
+                                this.action = PlayerActions.DIG;
+                                this.digSound.trigger();
+                                SoundManager.play("digging", 0.15);
+                                if (state.unlocks.shovel2) { durationFactor = 0.75; }
+                                if (state.unlocks.shovel3) { durationFactor = 0.5; }
+                            } else if (tile.type == TileTypes.HOLE || tile.type == TileTypes.GRAVE) {
+                                if (tile.type == TileTypes.HOLE || tile.reference && tile.reference.empty) {
+                                    this.action = PlayerActions.FILL;
+                                    this.digSound.trigger();
+                                    if (state.unlocks.shovel2) { durationFactor = 0.75; }
+                                    if (state.unlocks.shovel3) { durationFactor = 0.5; }
+                                }
+                            } else if (tile.type == TileTypes.TORCH) {
+                                // Take torch
+                                state.map.set(tile.x, tile.y, TileTypes.GROUND);
+                                tile.decoImage = null;
+                                this.torch = true;
+                                state.unlocks.torches = true;
+                            } else if (tile.type == TileTypes.FENCE || tile.type == TileTypes.FENCE_SIDE
+                                        || tile.type == TileType.STONE_FENCE || tile.type == TileType.STONE_FENCE_SIDE) {
+                                this.cutTreeSound.trigger();
                             }
-                        } else if (tile.type == TileTypes.FENCE || tile.type == TileTypes.FENCE_SIDE
-                                    || tile.type == TileType.STONE_FENCE || tile.type == TileType.STONE_FENCE_SIDE) {
-                            this.cutTreeSound.trigger();
                         }
                     }
                 }
             }
+            this.actionDuration = playerActions[this.action].duration * durationFactor;
         }
-        this.actionDuration = playerActions[this.action].duration * durationFactor;
     } else if (!this.ePressed && this.action > 0 && !playerActions[this.action].move && this.action != PlayerActions.ATTACK) {
         // e released during blocking action -> abort action
         this.action = PlayerActions.NONE;
@@ -365,6 +394,7 @@ Player.prototype.draw = function(ctx) {
     if (this.action == PlayerActions.DIG) { sprite = Player.digSprite; }
     if (this.action == PlayerActions.CUT) { sprite = Player.fightSprite; }
     if (this.action == PlayerActions.ATTACK) { sprite = Player.fightSprite; }
+    if (this.torch) { sprite = Player.torchSprite; }
     if (this.action == PlayerActions.PATH) {
         sprite = this.targetTile && this.targetTile.decoImage ? Player.fightSprite : Player.digSprite;
     }
@@ -385,7 +415,7 @@ Player.prototype.draw = function(ctx) {
 Player.prototype.getFrame = function(sprite) {
     var frame = 0;
     var tStart = this.action ? this.actionStarted : 0;
-    if (!sprite || sprite == Player.sprite || sprite == Player.dragSprite) {
+    if (!sprite || sprite == Player.sprite || sprite == Player.dragSprite || sprite == Player.torchSprite) {
         var frame = 1;
         if (this.velocity[0] || this.velocity[1]) {
             // Running animation

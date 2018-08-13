@@ -93,7 +93,12 @@ Grave.prototype.takeCorpse = function(corpse) {
     this.empty = false;
     removeItem(state.corpses, corpse);
     this.fillTime = state.dayTime;
-    this.expirationTime = this.fillTime + (state.unlocks.maggots ? 1.9 : 3.1);
+    var timeFactor = 1;
+    if (state.map.findNeighbour(this.x1, this.y1, tile => tile.type == TileTypes.TORCH, false) ||
+            state.map.findNeighbour(this.x2, this.y2, tile => tile.type == TileTypes.TORCH, false)) {
+        timeFactor = 0.75;
+    }
+    this.expirationTime = this.fillTime + timeFactor * (state.unlocks.maggots ? 1.9 : 3.1);
     shop.awardMoney(50, this.cx, this.cy);
 };
 

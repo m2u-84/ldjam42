@@ -76,7 +76,8 @@ Shop.prototype.draw = function(ctx) {
         var article = this.options[id];
         // Button
         var s = (this.open == id ? ">" : "") + article[0];
-        if (!article[4]) { s += " (" + article[1] + ")" };
+        // if (!article[4]) { s += " (" + article[1] + ")" };
+        if (!state.unlocks[article[2]]) { s += " (" + article[1] + ")" };
         if (Shop.button(ctx, bx, by + 24 * (i + 1), s, bw, (article[1] > state.money) || state.unlocks[article[2]], this.open == id)) {
             this.open = id;
         }
@@ -93,9 +94,9 @@ Shop.prototype.draw = function(ctx) {
     }
 
     // Right: Content of things to buy
+    var tx = bx + 84, ty = y + 20;
     if (this.open >= 0) {
         var article = this.options[this.open];
-        var tx = bx + 84, ty = y + 20;
         // Title
         ctx.textAlign = "left";
         ctx.fillStyle = "white";
@@ -109,9 +110,9 @@ Shop.prototype.draw = function(ctx) {
     }
 
     // Buy button
-    var buyTitle = "Buy (" + (article ? article[1] : "") + ")";
-    if (Shop.button(ctx, tx + 50, y + h - 20, buyTitle, 84, this.open < 0 || article[4])) {
-        article[4] = true;
+    var buyTitle = this.open < 0 ? "Buy" : ("Buy (" + (article ? article[1] : "") + ")");
+    if (Shop.button(ctx, tx + 50, y + h - 20, buyTitle, 84, this.open < 0 || state.unlocks[article[2]])) { // article[4])) {
+        // article[4] = true;
         // Take money
         shop.removeMoney(article[1]);
         // Unlock officially
