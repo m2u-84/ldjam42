@@ -78,7 +78,7 @@ Shop.prototype.draw = function(ctx) {
         var s = (this.open == id ? ">" : "") + article[0];
         // if (!article[4]) { s += " (" + article[1] + ")" };
         if (!state.unlocks[article[2]]) { s += " (" + article[1] + ")" };
-        if (Shop.button(ctx, bx, by + 24 * (i + 1), s, bw, (article[1] > state.money) || state.unlocks[article[2]], this.open == id)) {
+        if (Shop.button(ctx, bx, by + 24 * (i + 1), s, bw, state.unlocks[article[2]], this.open == id)) {
             this.open = id;
         }
     }
@@ -111,7 +111,9 @@ Shop.prototype.draw = function(ctx) {
 
     // Buy button
     var buyTitle = this.open < 0 ? "Buy" : ("Buy (" + (article ? article[1] : "") + ")");
-    if (Shop.button(ctx, tx + 50, y + h - 20, buyTitle, 84, this.open < 0 || state.unlocks[article[2]])) { // article[4])) {
+    var article = this.options[this.open];
+    var disabled = this.open < 0 || state.unlocks[article[2]] || article[1] > state.money;
+    if (Shop.button(ctx, tx + 50, y + h - 20, buyTitle, 84, disabled)) { // article[4])) {
         // article[4] = true;
         // Take money
         shop.removeMoney(article[1]);
