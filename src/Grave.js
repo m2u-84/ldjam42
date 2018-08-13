@@ -42,17 +42,18 @@ Grave.prototype.draw = function(ctx) {
 
 };
 
-Grave.prototype.drawProgress = function(ctx) {
+Grave.prototype.update = function(ctx) {
     // Progress
     if (!this.empty) {
         if (state.dayTime <= this.expirationTime) {
             var x = (this.x1 + this.x2 + 1) / 2 * state.map.tw;
             var y = (this.y1 + this.y2 + 1) / 2 * state.map.th;
             // only in range of player
+            /*
             if (Math.abs(this.cx - state.player.position[0]) <= 3 && Math.abs(this.cy - state.player.position[1]) <= 3) {
                 var p = (state.dayTime - this.fillTime) / (this.expirationTime - this.fillTime);
                 drawProgressBar(ctx, x, y, 32, p, "#8080a0");
-            }
+            }*/
             // Give money for grave rent?
             if (state.dayTime % 1 >= 0.195 && state.lastDayTime % 1 < 0.195) {
                 shop.awardMoney(5, this.cx, this.cy);

@@ -71,8 +71,8 @@ function GameHandler(parentElement) {
             order: false,
             repair: false
         },
-        initialSpawnAmount: 5,
-        spawnIncreaseRate: 0.35,
+        initialSpawnAmount: 6,
+        spawnIncreaseRate: 0.37,
         maximumSpawningAmount: 25,
         spawnAnimationTime: 0.02,
         spawningGap: 0.002,
@@ -187,6 +187,7 @@ GameHandler.prototype.gameLoop = function() {
         state.map.update();
         state.zombies.forEach(z => z.update(dt));
         state.player.update(dt);
+        state.graves.forEach(g => g.update(dt));
         this.corpseHandler.update(dt);
         this.batHandler.update(dt);
         tutorial.update();
