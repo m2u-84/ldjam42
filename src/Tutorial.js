@@ -27,7 +27,7 @@ function Tutorial() {
         ["Press E while pulling a corpse and looking\nat a grave to bury it", this.tile, () => state.corpses.length == 0],
         ["Press F to pay respect.", null, () => state.keyStates.f],
         ["Just kidding, there is no respect in this game.", null, 3000],
-        ["Graves usually take 3 days\nto process a corpse.After that,\nthey can be reused.\n(Space)", null, " "],
+        ["Graves usually take 3 days\nto process a corpse. After that,\nthey can be reused.\n(Space)", null, " "],
         ["Sometimes however, the dead arise.\nBut don't be afraid.\n(Space)", null, " "],
         ["They're only a minor nuisance.\nThey don't hurt you, but they slow you down.\n(Space)", null, " ", makeTheZombie],
         ["You can fight by pressing F", this.zombie, "f"],
@@ -36,11 +36,12 @@ function Tutorial() {
         ["Look out for the shop now,\nwe need to buy stuff", this.shopTile, () => equalTile(state.player.tile, state.map.shopTile, 1)],
         ["Open the shop and buy a torch", this.shopTile, () => state.player.torch],
         ["Go place it next to the grave", torchTile, () => isType(torchTile, TileTypes.TORCH)],
-        ["Torches accelerate the decay\nof nearby graves. Which is good\n,because you need to deal with\na lot of corpses.\n(Space)", null, " "],
-        ["Last thing before the actual\ngame starts: The zombie left\nits grave unusable.\n(Space)", null, " "],
+        ["Torches accelerate the decay\nof nearby graves. Which is good,\nbecause you need to deal with a lot of corpses.\n(Space)", null, " "],
+        ["Last thing before the actual\ngame starts: The sassy zombie left\nits grave unusable.\n(Space)", null, " "],
         ["Hold E once more while looking\nat it to remove the grave\nso it doesn't waste any space.", null, () => isType(tile, TileTypes.PATH)],
         ["Well done.\nThe sun will rise soon.\nYou'll get your first\ntruckload of corpses.\nBetter prepare the graves!\n(Space)", null, " "],
         ["Just one last hint:\nYou can press P or Escape to pause the game\nand see the controls.\nHave a look!", null, () => state.pauseScreen],
+        ["", null, () => !state.pauseScreen],
         ["Great, that's all.\nGet digging already.\nEnjoy!", null, 5000]
     ].map(stage => {
         // Make sure third element is always a callback
