@@ -23,7 +23,7 @@ function GameOverScreen() {
 }
 
 GameOverScreen.load = function() {
-    GameOverScreen.background = loader.loadImage("img/misc/background shop.png");
+    GameOverScreen.background = loader.loadImage("img/menus/game-over-screen.jpg");
 };
 
 GameOverScreen.prototype.draw = function(ctx) {
@@ -41,7 +41,7 @@ GameOverScreen.prototype.draw = function(ctx) {
     var tdif = time - this.startTime;
     var f = tdif / this.fillScreenAnimation;
     var p = Math.pow(f, 2);
-    var corpses = this.corpses.length * p;
+    var corpses = Math.min(this.corpses.length * p, this.corpses.length);
     var spr = Corpse.sprites[1];
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     for (var i = 0; i < corpses; i++) {
@@ -53,7 +53,7 @@ GameOverScreen.prototype.draw = function(ctx) {
     if (time > this.startTime + this.showStatisticsAfter) {
         var x = (ctx.canvas.width - GameOverScreen.background.width) / 2,
             y = (ctx.canvas.height - GameOverScreen.background.height) / 2;
-        drawImage(ctx, GameOverScreen.background, x, y);
+        drawImage(ctx, GameOverScreen.background, x, y, null, null, 0, 0);
         // Days
         // Corpses buried
         // Zombies killed
