@@ -239,6 +239,11 @@ GameHandler.prototype.renderLoop = function() {
     if (state.bat) state.bat.draw(this.ctx);
 
     lightSystem.drawLight(null, 160, 120, 200, "#ffffff", 0.6);
+    if (state.player.torch) {
+        var alpha = 0.3 + 0.5 * 0.8 * getFlicker(state.time * 0.00002, 1);
+        var size = 140 * (0.6 + 0.4 * getFlicker(state.time * 0.000027, 1));
+        lightSystem.drawLight(null, 160, 120, size, "#f0a030", alpha);
+    }
     // lightSystem.drawLight(null, 160 + 160 * Math.sin(state.time * 0.001), 120 + 120 * Math.sin(state.time * 0.00132), 130, "#3030ff", 0.6);
     lightSystem.renderToContext(this.ctx);
 

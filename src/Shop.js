@@ -9,7 +9,7 @@ function Shop() {
         ["Super Shovel", 1000, "shovel3", "Get the Ultra\nShovel 9000 to\nshovel like there's\nno tomorrow.\nThink like a shovel.\nBe the shovel!"],
         ["Maggots", 500, "maggots", "Unleash the power\nof maggots. Graves\nwill take less time\nfor decomposition.\n\n(This is good)"],
         ["Boots", 200, "boots", "Get some good boots.\nThey are the best.\nYou're gonna love them.\n\nBuy now and get a free\ntoaster!*\n\n* Restrictions apply"],
-        ["Better Axe", 150, "axe2", "This axe is not good.\nBut it is better.\nBetter than your rusty\nexcuse for a shovel.\nWhere did you get it?\nAt the toilet store?"],
+        ["Better Axe", 150, "axe2", "This axe is not good.\nBut it is better.\nBetter than your rusty\nexcuse for an axe.\nWhere did you get it?\nAt the toilet store?"],
         ["Super Axe", 1200, "axe3", "You ever wanted to\nsay 'And my Axe!'?\nNow you can. This\naxe will do the job.\nIn fact it will do\nALL the jobs!"],
         ["World Peace", 1000, "peace", "Bring peace to the world.\nWill reduce dead bodies\nsomewhat. Maybe. Even\nin peace there's death,\nafter all. Don't be sad."],
         // ["Cool Corpses", 250, "cooling", "Keep corpses cool,\nso they don't\ndecomposte\nprematurely."],
