@@ -206,8 +206,8 @@ GameHandler.prototype.renderLoop = function() {
     // HUD (screen)
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     // Corpse Count
-    Corpse.displayCount(this.ctx, -4, this.canvas.height - 20, state.corpses.length - state.unloadingCorpses.length);
-    // Corpse.displayCount2(this.ctx, -4, this.canvas.height - 20, state.corpses.filter(c => !state.unloadingCorpses.includes(c)));
+    // Corpse.displayCount(this.ctx, -4, this.canvas.height - 20, state.corpses.length - state.unloadingCorpses.length);
+    Corpse.displayCount2(this.ctx, -4, this.canvas.height - 20, state.corpses.filter(c => !state.unloadingCorpses.includes(c)));
     // Shop Info
     var display = (state.map.getTile(state.player.tile[0], state.player.tile[1]) == state.map.shopTile);
     state.readyToShop = display;
