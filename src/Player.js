@@ -229,7 +229,7 @@ Player.prototype.update = function(delta) {
             // Place torch if tile is empty
             var tile = this.targetTile;
             if (tile) {
-                if (tile.type == TileTypes.GROUND && !tile.decoImage) {
+                if (tile.type == TileTypes.GROUND && !tile.decoImage || tile.type == TileTypes.PATH) {
                     // Place torch
                     state.map.set(tile.x, tile.y, TileTypes.TORCH);
                     this.torch = false;

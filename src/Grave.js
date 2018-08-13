@@ -60,7 +60,7 @@ Grave.prototype.drawProgress = function(ctx) {
 
             // Randomly spawn zombies
             if (state.dayTime % 0.01 < state.lastDayTime % 0.01 && state.dayTime % 1 > 0.7) {
-                if (Math.random() < 0.005) {
+                if (Math.random() < 0.007) {
                     // Spawn zombie
                     this.spawnZombie();
                 }
