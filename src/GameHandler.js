@@ -8,6 +8,8 @@ function GameHandler(parentElement) {
     this.corpseHandler = new CorpseHandler();
     this.startScreen = new StartScreen();
 
+    window.addEventListener("keydown", this.handleKeyDown.bind(this));
+
     this.classes = [
         // Player, Zombies, Corpses, Graves, ...
         Tile,
@@ -120,6 +122,8 @@ GameHandler.prototype.load = function() {
         }
     }
     state.map.load();
+    this.pauseScreenImage = loader.loadImage("img/misc/instructions transparent3.png");
+    this.dayCounterIcon = loader.loadImage("img/hud/calendar.png");
     return loader.loadAll();
 };
 
@@ -226,30 +230,40 @@ GameHandler.prototype.renderLoop = function() {
         shop.draw(this.ctx);
     }
 
+    // Pause Screen
+    if (state.pauseScreen) {
+        // Add additional black layer, as transparency of image turned out to be too low
+        this.ctx.fillStyle = "rgba(0,0,0,0.25)";
+        this.ctx.fillRect(0,0,this.canvas.width, this.canvas.height);
+        // Draw instruction screen
+        this.ctx.drawImage(this.pauseScreenImage, 0, 0, this.canvas.width, this.canvas.height);
+    }
+
     // Money counter
     this.ctx.shadowOffsetX = 1;
     this.ctx.shadowOffsetY = 1;
     this.ctx.shadowBlur = 1;
     this.ctx.shadowColor = "rgba(0, 0, 0, 1)";
 
-    alpha = fadeAlpha("moneyAlpha", display ? 5 : 0);
+    alpha = fadeAlpha("moneyAlpha", display ? 2 : 0.7);
 
     if (alpha > 0) {
         var moneyCounterIcon = loader.loadImage("img/hud/moneybag.png");
+        this.ctx.globalAlpha = alpha;
         this.ctx.drawImage(moneyCounterIcon, 5, 2, 16, 16);
         this.ctx.fillStyle = "#f0c030";
         this.ctx.textAlign = "left";
-        this.ctx.globalAlpha = alpha;
-        this.ctx.fillText(this.state.money + " Gold", 24, 14);
+        this.ctx.fillText(this.state.money, 24, 14);
     }
 
     this.ctx.globalAlpha = 1;
 
     // Day counter
-    var dayCounterIcon = loader.loadImage("img/hud/calendar.png");
-    this.ctx.drawImage(dayCounterIcon, this.canvas.width - 64, 2, 16, 16);
+    var offset = state.dayTime < 10 ? 54 : 62;
+    this.ctx.drawImage(this.dayCounterIcon, this.canvas.width - offset, 2, 16, 16);
     this.ctx.fillStyle = "white";
-    this.ctx.fillText("Day " + Math.ceil(state.dayTime), this.canvas.width - 25, 14);
+    this.ctx.textAlign = "left";
+    this.ctx.fillText("Day " + Math.ceil(state.dayTime), this.canvas.width - offset + 21, 14);
 
     this.ctx.shadowOffsetX = 0;
     this.ctx.shadowOffsetY = 0;
@@ -303,4 +317,10 @@ GameHandler.prototype.handleMouseDown = function(e) {
 
 GameHandler.prototype.handleMouseUp = function(e) {
     state.mouseClick = false;
+};
+
+GameHandler.prototype.handleKeyDown = function(e) {
+    if (e.key == "p" || e.key == "Escape") {
+        state.pauseScreen = !state.pauseScreen;
+    }
 };

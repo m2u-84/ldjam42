@@ -143,6 +143,9 @@ Player.update = function() {
 Player.prototype.update = function(delta) {
     // Set Velocity based on State (inserted by keyHandler)
     var keys = state.keyStates;
+    if (state.pauseScreen || state.startScreen) {
+        keys = {};
+    }
     var vx = 0, vy = 0;
     // Only move when no prohibiting action is active, and when player is not currently in shop
     if (playerActions[this.action].move && !state.shopOpen) {
