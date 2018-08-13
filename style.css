@@ -1,6 +1,7 @@
 
 body {
     background-color: black;
+    overflow: hidden;
 }
 
 h1 {
@@ -18,4 +19,7 @@ h1 {
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     object-fit: contain;
+    margin-top: calc((100vh - 700px) / 2);
+    max-height: 100vh;
+    max-width: 100vw;
 }
