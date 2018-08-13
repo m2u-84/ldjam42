@@ -71,8 +71,8 @@ function GameHandler(parentElement) {
             order: false,
             repair: false
         },
-        initialSpawnAmount: 10,
-        spawnIncreaseRate: 0.5,
+        initialSpawnAmount: 5,
+        spawnIncreaseRate: 0.35,
         maximumSpawningAmount: 25,
         spawnAnimationTime: 0.02,
         spawningGap: 0.002,
