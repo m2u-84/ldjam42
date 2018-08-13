@@ -1,6 +1,6 @@
 
 
-const MUSIC_VOLUME = 0.1;
+const MUSIC_VOLUME = 0.2;
 const AMBIENT_VOLUME = 0.4;
 
 function MusicManager(audios) {
