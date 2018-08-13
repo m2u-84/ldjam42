@@ -40,6 +40,8 @@ function GameHandler(parentElement) {
         currentTime: 0,
         dt: 0,
         time: 0,
+        dayTime: 0,
+        lastDayTime: 0,
         startGameTime: 0,
         map: new Map(32, 32, 24, 24),
         player: new Player([16.5,21.5]),
