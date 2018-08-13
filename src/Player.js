@@ -1,65 +1,65 @@
 const movementSounds = [{
-        src: "sounds/step_dirt.wav",
+        src: "sounds/step_dirt.mp3",
         playbackRate: 1,
         volume: .15,
         tileTypes: [TileTypes.GROUND, TileTypes.PATH]
     }, {
-        src: "sounds/step_dirt2.wav",
+        src: "sounds/step_dirt2.mp3",
         playbackRate: 1,
         volume: .15,
         tileTypes: [TileTypes.GROUND, TileTypes.PATH]
     }, {
-        src: "sounds/step_dirt3.wav",
+        src: "sounds/step_dirt3.mp3",
         playbackRate: 1,
         volume: .15,
         tileTypes: [TileTypes.GROUND, TileTypes.PATH]
     }, {
-        src: "sounds/step_dirt4.wav",
+        src: "sounds/step_dirt4.mp3",
         playbackRate: 1,
         volume: .15,
         tileTypes: [TileTypes.GROUND, TileTypes.PATH]
     }, {
-        src: "sounds/step_stone.wav",
+        src: "sounds/step_stone.mp3",
         playbackRate: .8,
         volume: .3,
         tileTypes: [TileTypes.STONE]
     }, {
-        src: "sounds/step_stone3.wav",
+        src: "sounds/step_stone3.mp3",
         playbackRate: .8,
         volume: .6,
         tileTypes: [TileTypes.STONE]
 }];
 
 const draggingSounds =  [{
-        src: "sounds/player_drag.wav",
+        src: "sounds/player_drag.mp3",
         playbackRate: 1.6,
         volume: 0.6
     }, {
-        src: "sounds/player_drag3.wav",
+        src: "sounds/player_drag3.mp3",
         playbackRate: 2.3,
         volume: 0.6
 }]
 
 const digSound = {
-    src: "sounds/player_dig.wav",
+    src: "sounds/player_dig.mp3",
     playbackRate: 1.5,
     volume: 0.2
 }
 
 const treeFallingSound = {
-    src: "sounds/tree_falling.wav",
+    src: "sounds/tree_falling.mp3",
     playbackRate: 1,
     volume: 0.5
 }
 
 const cuttingTreeSounds = {
-    src: "sounds/player_cut_tree2.wav",
+    src: "sounds/player_cut_tree2.mp3",
     playbackRate: 1,
     volume: 0.2
 };
 
 const torchCrackle = {
-    src: "sounds/torch_crackle_loop.wav",
+    src: "sounds/torch_crackle_loop.mp3",
     playbackRate: 1,
     volume: 0.3,
     minVolume: 0,
@@ -161,7 +161,7 @@ Player.prototype.update = function(delta) {
     }
 
     // set velocity basedon underground
-    let velocity = this.VELOCITY; 
+    let velocity = this.VELOCITY;
     if (this.tile) {
         var tile = state.map.getTile(this.tile[0], this.tile[1]);
         if (tile.type == TileTypes.PATH) {
@@ -374,7 +374,7 @@ Player.prototype.update = function(delta) {
       if (moving) {
           this.dragSound.trigger();
       }
-    } 
+    }
     Character.prototype.update.call(this, delta);
 
     // Target tile
@@ -455,7 +455,7 @@ Player.pullCorpse = function(corpse, x, y, distance) {
 
 Player.getTilesInRadius = function (radius, tileType) {
     let playerPos = state.player.position;
-    let centerOffset = Math.floor(radius); 
+    let centerOffset = Math.floor(radius);
     let tilesWithType = [];
     state.map.tiles.forEach( yTile => {
         yTile.forEach( tile => {

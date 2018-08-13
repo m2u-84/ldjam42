@@ -7,7 +7,7 @@ function CorpseHandler() {
         volume: 0.2
     }
     this.thud2 = {
-        src: "sounds/thud2.wav",
+        src: "sounds/thud2.mp3",
         playbackRate: 1,
         volume: 1
     }
@@ -16,7 +16,7 @@ function CorpseHandler() {
 
 CorpseHandler.load = function() {
     CorpseHandler.thud2 = loader.loadAudio({
-        src: "sounds/thud2.wav",
+        src: "sounds/thud2.mp3",
         playbackRate: 1,
         volume: 1
     });
@@ -42,7 +42,7 @@ CorpseHandler.prototype.update = function(delta) {
             CorpseHandler.thud2.play();
         }
     }
-    
+
     // Spawning-Time  -  Add new corpses
     if (this.lastDayTime <= 0.25 && relativeDayTime > 0.25) {
         this.truckSound.trigger();
@@ -61,7 +61,7 @@ CorpseHandler.prototype.update = function(delta) {
             state.corpses.push(corpse);
         }
     }
-    
-    
+
+
     this.lastDayTime = relativeDayTime;
 }
