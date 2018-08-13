@@ -79,7 +79,8 @@ function GameHandler(parentElement) {
         owl: null,
         moneyEarned: 20,
         burials: 0,
-        zombiesKilled: 0
+        zombiesKilled: 0,
+        maxGraveCount: 0
     };
 
     this.startTime = +Date.now();
@@ -162,7 +163,10 @@ GameHandler.prototype.gameLoop = function() {
     this.currentTime += dt;
     state.time = this.currentTime;
     if (tutorial.active) {
-        state.startGameTime = state.time;
+        state.maxGraveCount = Math.max(state.maxGraveCount, state.graves.length);
+        if (state.maxGraveCount < 3) {
+            state.startGameTime = state.time; // Math.max(state.startGameTime, state.time - 10000 * state.graves.length);
+        }
     }
     state.lastDayTime = state.dayTime;
     state.dayTime = (state.time - state.startGameTime) / 120000;
