@@ -113,5 +113,20 @@ Zombie.prototype.damage = function(dmg) {
         removeItem(state.zombies, this);
         this.following = null;
         state.zombiesKilled++;
+        // Multi splatter
+        for (var i = 0; i < 5; i++) {
+            setTimeout(() => {
+                var dx = this.position[0] - state.player.position[0] + 0.1 * (Math.random() - Math.random());
+                var dy = this.position[1] - state.player.position[1] + 0.1 * (Math.random() - Math.random());
+                var angle = Math.atan2(dx, dy) + Math.PI * Math.pow(Math.random(), 2) * (Math.random() < 0.5 ? 1 : -1);
+                splatterManager.add(this.position[0], this.position[1], -Math.PI - angle);
+            }, 100 * i + 60 * Math.random() - 60);
+        }
+    } else {
+        // Single splatter
+        var dx = this.position[0] - state.player.position[0];
+        var dy = this.position[1] - state.player.position[1];
+        var angle = Math.atan2(dx, dy);
+        splatterManager.add(this.position[0], this.position[1], -Math.PI - angle);
     }
 };

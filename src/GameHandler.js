@@ -30,7 +30,8 @@ function GameHandler(parentElement) {
         Tutorial,
         GameOverScreen,
         BatHandler,
-        Bat
+        Bat,
+        SplatterManager
     ].map(c => ({class: c, instances: []}));
 
     // Global game state which can be accessed by all game objects
@@ -88,6 +89,7 @@ function GameHandler(parentElement) {
     this.lastTime = this.startTime;
 
     gameOverScreen = new GameOverScreen();
+    splatterManager = new SplatterManager();
 
     // Setup canvas
     this.canvas = document.createElement("canvas");
@@ -233,6 +235,7 @@ GameHandler.prototype.renderLoop = function() {
     state.corpses.forEach(c => c.draw(this.ctx));
     state.zombies.forEach(z => z.draw(this.ctx));
     state.player.draw(this.ctx);
+    splatterManager.draw(this.ctx);
     renderSorter.render();
     state.unloadingCorpses.forEach(c => c.draw(this.ctx)); // <- render flying corpses on top again, so they're over fence
     if (state.owl) state.owl.draw(this.ctx);
@@ -396,6 +399,11 @@ GameHandler.prototype.handleKeyDown = function(e) {
     } else if (e.key == "g") {
         if (state.debugMode) {
             shop.awardMoney(250);
+        }
+    } else if (e.key == "z") {
+        if (state.debugMode) {
+            var z = new Zombie([state.player.position[0], state.player.position[1] - 3]);
+            state.zombies.push(z);
         }
     }
 };
