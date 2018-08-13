@@ -156,7 +156,7 @@ Player.prototype.update = function(delta) {
     }
 
     // play movement sound
-    if (keys.w || keys.a || keys.d || keys.s || keys.ArrowDown || keys.ArrowLeft || keys.ArrowRight || keys.ArrowUp) {
+    if (!state.shopOpen && (keys.w || keys.a || keys.d || keys.s || keys.ArrowDown || keys.ArrowLeft || keys.ArrowRight || keys.ArrowUp)) {
         this.movementSound.trigger();
     }
 
