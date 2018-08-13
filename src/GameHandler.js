@@ -327,7 +327,6 @@ GameHandler.prototype.renderLoop = function() {
 
     if (state.startScreen) {
         this.startScreen.draw(this.ctx);
-        window.onkeydown = function(e) { state.startScreen = false }
     }
 
     requestAnimationFrame(this.renderLoop.bind(this));
@@ -376,6 +375,9 @@ GameHandler.prototype.handleMouseUp = function(e) {
 };
 
 GameHandler.prototype.handleKeyDown = function(e) {
+    if (state.startScreen) {
+        state.startScreen = false;
+    }
     if (e.key == "p" || e.key == "Escape") {
         state.pauseScreen = !state.pauseScreen;
     } else if (e.key == "D") {

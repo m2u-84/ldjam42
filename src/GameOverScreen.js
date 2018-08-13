@@ -93,7 +93,7 @@ GameOverScreen.prototype.draw = function(ctx) {
         ctx.fillText("You managed to keep it up for", xm, dayy - 22);
         ctx.drawImage(gameHandler.dayCounterIcon, xm - 38, dayy - 15, 24, 24);
         ctx.textAlign = "left";
-        ctx.fillText(state.dayTime.toFixed(1) + " days!", xm, dayy);
+        ctx.fillText(Math.ceil(state.dayTime) + " days!", xm, dayy);
         // Corpses buried
         var rowy = dayy + 40;
         var cx = xm - 90;

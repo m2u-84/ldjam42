@@ -57,6 +57,8 @@ function Tutorial() {
     this.active = true;
     this.lines = [];
     this.nextStage();
+    this.startTime = 0;
+    this.prevEnter = true;
 
     function equalTile(t1, t2, tolerance) {
         if (!tolerance) {
@@ -92,6 +94,10 @@ Tutorial.prototype.load = function() {
 
 Tutorial.prototype.update = function() {
     if (!this.active) { return; }
+    // Start Screen
+    if (!state.startScreen && this.startTime == 0) {
+        this.startTime = +Date.now();
+    }
     // Current Stage done?
     var t = +Date.now();
     if (t > this.lastStageChange + 1000) {
@@ -102,9 +108,10 @@ Tutorial.prototype.update = function() {
         }
     }
     // Cancel tutorial?
-    if (state.keyStates.Enter && t - this.lastStageChange > 3000) {
+    if (state.keyStates.Enter && !this.prevEnter && t - this.startTime > 1000) {
         this.active = false;
     }
+    this.prevEnter = state.keyStates.Enter;
 };
 
 Tutorial.prototype.nextStage = function() {
