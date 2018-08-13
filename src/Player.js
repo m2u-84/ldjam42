@@ -234,6 +234,7 @@ Player.prototype.update = function(delta) {
                     state.map.set(tile.x, tile.y, TileTypes.TORCH);
                     this.torch = false;
                     state.unlocks.torches = false;
+                    Grave.checkAllForTorches();
                 }
             }
         } else {
