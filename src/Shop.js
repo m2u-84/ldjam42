@@ -130,7 +130,7 @@ Shop.button = function(ctx, x, y, text, w, disabled, pressed) {
     var x1 = Math.floor(x - w/2), y1 = Math.floor(y - h/2);
     // Inside?
     var mouse = state.mousePos;
-    var hover = !disabled && (mouse[0] >= x1 && mouse[1] >= y1 && mouse[0] <= x1 + w && mouse[1] <= y1 + h);
+    var hover = !disabled && !pressed && (mouse[0] >= x1 && mouse[1] >= y1 && mouse[0] <= x1 + w && mouse[1] <= y1 + h);
     var imgindex = w < 100 ? 0 : 2;
     if (hover) { imgindex++; }
     var img = Shop.buttons[imgindex];
@@ -145,7 +145,10 @@ Shop.button = function(ctx, x, y, text, w, disabled, pressed) {
     ctx.fillStyle = hover ? "black" : "rgba(0,0,0,0.75)";
     ctx.textAlign = "center";
     if (disabled) { ctx.globalAlpha = 0.4; }
+    var prevFont = ctx.font;
+    if (hover) { ctx.font = "bold 10px Arial"; }
     ctx.fillText(text, x, y + 4);
+    ctx.font = prevFont;
     ctx.globalAlpha = 1;
     // Click?
     return hover && this.newClick;

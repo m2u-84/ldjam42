@@ -222,7 +222,9 @@ GameHandler.prototype.renderLoop = function() {
     Corpse.displayCount(this.ctx, -4, this.canvas.height - 20, state.corpses.length - state.unloadingCorpses.length);
     // Corpse.displayCount2(this.ctx, -4, this.canvas.height - 20, state.corpses.filter(c => !state.unloadingCorpses.includes(c)));
     // Shop Info
-    var display = (state.map.getTile(state.player.tile[0], state.player.tile[1]) == state.map.shopTile);
+    var tx = state.player.tile[0], ty = state.player.tile[1];
+    var display = (state.map.getTile(tx, ty) == state.map.shopTile || state.map.getTile(tx - 1, ty) == state.map.shopTile ||
+        state.map.getTile(tx + 1, ty) == state.map.shopTile);
     state.readyToShop = display;
     var alpha = fadeAlpha("shopInfoText", display ? 1 : 0);
     if (alpha > 0) {

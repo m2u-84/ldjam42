@@ -48,7 +48,8 @@ Zombie.prototype.update = function(dt) {
             if (dx * dx + dy * dy < 0.01) {
                 this.sleepUntil = state.time + 500 + Math.random() * 1500;
                 this.velocity = [ 0, 0 ];
-                this.followOffset = [Math.random() - Math.random(), Math.random() - Math.random()].map(v => 0.7 * v);
+                this.followOffset = [Math.random() - Math.random(), Math.random() - Math.random()].map(
+                    v => (state.unlocks.zombies2 ? 3 : 0.7) * v);
             }
         } else {
             // Found player?
@@ -56,7 +57,8 @@ Zombie.prototype.update = function(dt) {
             if (dx * dx + dy * dy < 5) {
                 // Follow player
                 this.following = state.player;
-                this.followOffset = [Math.random() - Math.random(), Math.random() - Math.random()].map(v => 0.7 * v);
+                this.followOffset = [Math.random() - Math.random(), Math.random() - Math.random()].map(
+                    v => (state.unlocks.zombies2 ? 3 : 0.7) * v);
                 // Only comment when spawn time is long enough in the past, otherwise spawnign zombies might speak twice at once
                 if (state.time - this.spawnTime > 5000) {
                     SoundManager.play("sighting", 0.4);

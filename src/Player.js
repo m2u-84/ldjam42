@@ -501,6 +501,7 @@ Player.prototype.damageZombies = function() {
     var pickx = 0.5 * (this.targetPosition[0] + 0.5 + this.position[0]);
     var picky = 0.5 * (this.targetPosition[1] + 0.5 + this.position[1]);
     var dmg = 2 + (state.unlocks.axe2 ? 1 : 0) + (state.unlocks.axe3 ? 4 : 0);
+    var damageDealt = false;
     for (var i = state.zombies.length - 1; i >= 0; i--) {
         var z = state.zombies[i];
         var dx = z.position[0] - pickx, dy = z.position[1] - picky;
@@ -510,7 +511,10 @@ Player.prototype.damageZombies = function() {
             var d = Math.sqrt(dx * dx + dy * dy);
             z.velocity = [ dx/d, dy/d ].map(v => v * 0.03);
             z.sleepUntil = state.time + 500;
-            z.damage(dmg);
+            if (!damageDealt) {
+                damageDealt = true;
+                z.damage(dmg);
+            }
         }
     }
 };
