@@ -102,7 +102,7 @@ Tutorial.prototype.update = function() {
         }
     }
     // Cancel tutorial?
-    if (state.keyStates.Enter) {
+    if (state.keyStates.Enter && t - this.lastStageChange > 3000) {
         this.active = false;
     }
 };
