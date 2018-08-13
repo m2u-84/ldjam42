@@ -227,6 +227,11 @@ GameHandler.prototype.renderLoop = function() {
     }
 
     // Money counter
+    this.ctx.shadowOffsetX = 1;
+    this.ctx.shadowOffsetY = 1;
+    this.ctx.shadowBlur = 1;
+    this.ctx.shadowColor = "rgba(0, 0, 0, 1)";
+
     alpha = fadeAlpha("moneyAlpha", display ? 5 : 0);
 
     if (alpha > 0) {
@@ -245,6 +250,10 @@ GameHandler.prototype.renderLoop = function() {
     this.ctx.drawImage(dayCounterIcon, this.canvas.width - 64, 2, 16, 16);
     this.ctx.fillStyle = "white";
     this.ctx.fillText("Day " + Math.ceil(state.dayTime), this.canvas.width - 25, 14);
+
+    this.ctx.shadowOffsetX = 0;
+    this.ctx.shadowOffsetY = 0;
+    this.ctx.shadowBlur = 0;
 
     if (state.startScreen) {
         this.startScreen.draw(this.ctx);
