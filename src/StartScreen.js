@@ -7,7 +7,7 @@ function StartScreen() {
 
 StartScreen.load = function() {
   StartScreen.title = loader.loadImage("img/menus/title-screen.jpg");
-  StartScreen.button = loader.loadImage("img/misc/button large.png");
+  StartScreen.button = loader.loadImage("img/misc/button-large.png");
 }
 
 StartScreen.prototype.draw = function(ctx) {

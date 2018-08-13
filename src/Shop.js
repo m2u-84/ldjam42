@@ -44,12 +44,12 @@ Shop.update = function() {
 
 Shop.load = function() {
     Shop.buttons = [
-        loader.loadImage("img/misc/button small.png"),
-        loader.loadImage("img/misc/button small shadow.png"),
-        loader.loadImage("img/misc/button large.png"),
-        loader.loadImage("img/misc/button large shadow.png")
+        loader.loadImage("img/misc/button-small.png"),
+        loader.loadImage("img/misc/button-small-shadow.png"),
+        loader.loadImage("img/misc/button-large.png"),
+        loader.loadImage("img/misc/button-large-shadow.png")
     ];
-    Shop.background = loader.loadImage("img/misc/background shop.png");
+    Shop.background = loader.loadImage("img/misc/background-shop.png");
 };
 
 Shop.prototype.draw = function(ctx) {

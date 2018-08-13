@@ -119,11 +119,11 @@ Player.prototype.VELOCITY = 0.0027 * testSpeedWalkFactor;
 Player.prototype.PULL_DISTANCE = 0.7;
 
 Player.load = function() {
-    Player.sprite = loader.loadImage("img/character/characteranimation2.png", 4);
-    Player.fightSprite = loader.loadImage("img/character/char fight.png", 4);
-    Player.dragSprite = loader.loadImage("img/character/char drag.png", 4);
-    Player.digSprite = loader.loadImage("img/character/char digging.png", 4);
-    Player.torchSprite = loader.loadImage("img/character/torch carry.png", 4);
+    Player.sprite = loader.loadImage("img/character/character-animation2.png", 4);
+    Player.fightSprite = loader.loadImage("img/character/char-fight.png", 4);
+    Player.dragSprite = loader.loadImage("img/character/char-drag.png", 4);
+    Player.digSprite = loader.loadImage("img/character/char-digging.png", 4);
+    Player.torchSprite = loader.loadImage("img/character/torch-carry.png", 4);
 };
 
 Player.update = function() {

@@ -27,9 +27,9 @@ Tile.load = function() {
         new TileType("Path", [ "img/ground/path.png" ], false, true, 1),
         new TileType("Stone", [ "img/ground/stonefloor.png" ], false, true, 1),
         new TileType("Fence", [ "img/ground/mud1.png" ], true, false, 1, ["img/environment/fence.png", 0.5, 0.9]),
-        new TileType("FenceSide", [ "img/ground/mud1.png" ], true, false, 1, ["img/environment/fence side.png", 0.5, 0.9]),
+        new TileType("FenceSide", [ "img/ground/mud1.png" ], true, false, 1, ["img/environment/fence-side.png", 0.5, 0.9]),
         new TileType("StoneFence", [ "img/ground/stonefloor.png" ], true, false, 1, ["img/environment/fence.png", 0.5, 0.9]),
-        new TileType("StoneFenceSide", [ "img/ground/stonefloor.png" ], true, false, 1, ["img/environment/fence side.png", 0.5, 0.9]),
+        new TileType("StoneFenceSide", [ "img/ground/stonefloor.png" ], true, false, 1, ["img/environment/fence-side.png", 0.5, 0.9]),
         new TileType("Torch", "img/ground/mud3.png", false, false, 0, ["img/environment/torch.png", 0.5, 1.3, 3, 150], ["#f0c030", 140, 1]),
         new TileType("Shop", "img/ground/path.png", true, false, null, ["img/environment/shop.png", 0.5, 0.9]),
         new TileType("Colliding Torch", "img/ground/mud3.png", true, false, 0, ["img/environment/torch.png", 0.5, 0.95, 3, 150], ["#f0c030", 175, 1]),
@@ -76,7 +76,7 @@ function Tile(x, y, tp, map) {
     this.type = tp;
     // reference may refer to Grave or other static object in map that's bound to a tile
     this.reference = null;
-    
+
     // Type dependent behaviour
     var type = tileTypes[tp];
     this.tileType = type;

@@ -29,7 +29,7 @@ function GameHandler(parentElement) {
         Owl,
         Tutorial,
         GameOverScreen,
-        BatHandler, 
+        BatHandler,
         Bat
     ].map(c => ({class: c, instances: []}));
 
@@ -61,7 +61,7 @@ function GameHandler(parentElement) {
             shovel2: false,
             shovel3: false,
             axe2: false,
-            axe3: false, 
+            axe3: false,
             maggots: false,
             boots: false,
             cooling: false, // TODO
@@ -141,7 +141,7 @@ GameHandler.prototype.load = function() {
     }
     state.map.load();
     tutorial.load();
-    this.pauseScreenImage = loader.loadImage("img/misc/instructions transparent4.png");
+    this.pauseScreenImage = loader.loadImage("img/misc/instructions-transparent.png");
     this.dayCounterIcon = loader.loadImage("img/hud/calendar.png");
     this.moneyCounterIcon = loader.loadImage("img/hud/moneybag.png");
     return loader.loadAll();
@@ -183,7 +183,7 @@ GameHandler.prototype.gameLoop = function() {
                 }
             }
         }
-    
+
         state.map.update();
         state.zombies.forEach(z => z.update(dt));
         state.player.update(dt);
