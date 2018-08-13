@@ -9,7 +9,7 @@ function Shop() {
         ["Super Shovel", 1000, "shovel3", "Get the Ultra\nShovel 9000 to\nshovel like there's\nno tomorrow.\nThink like a shovel.\nBe the shovel!"],
         ["Maggots", 500, "maggots", "Unleash the power\nof maggots. Graves\nwill take less time\nfor decomposition.\n\n(This is good)"],
         ["Boots", 200, "boots", "Get some good boots.\nThey are the best.\nYou're gonna love them.\n\nBuy now and get a free\ntoaster!*\n\n* Restrictions apply"],
-        ["Better Axe", 150, "axe2", "This axe is not good.\nBut it is better.\nBetter than your rusty\nexcuse for a shovel.\nWhere did you get it?\nAt the toilet store?"],
+        ["Better Axe", 150, "axe2", "This axe is not good.\nBut it is better.\nBetter than your rusty\nexcuse for an axe.\nWhere did you get it?\nAt the toilet store?"],
         ["Super Axe", 1200, "axe3", "You ever wanted to\nsay 'And my Axe!'?\nNow you can. This\naxe will do the job.\nIn fact it will do\nALL the jobs!"],
         ["World Peace", 1000, "peace", "Bring peace to the world.\nWill reduce dead bodies\nsomewhat. Maybe. Even\nin peace there's death,\nafter all. Don't be sad."],
         // ["Cool Corpses", 250, "cooling", "Keep corpses cool,\nso they don't\ndecomposte\nprematurely."],
@@ -19,7 +19,7 @@ function Shop() {
         ["Grow West", 600, "west", "Expand.\West is where\nthe nice things are.\nEnjoy the weather,\nthe cocktails, and\nlong weekends!"],
         ["Grow North", 800, "north", "Expand.\nSpace will still be\nrunning out later.\nBecome King in the\nNorth!"],
         ["Orderly Zombies", 1500, "order", "Zombies leave their\ngraves all clean and\ntidy. So you can\nreuse them without any\nfurther work required!"],
-        ["Quick Repair", 5000, "repair", "Gain the power to\nrepair rotten graves\ninstantly, without any\nredigging required.\nOptimize throughput!"]
+        ["Auto Repair", 5000, "repair", "Gain the power to\nauto repair rotten graves\nwhen their corpse is\ngone. Optimize\nthroughput!"]
         // ["Zombie Virus", 200, "zombies", "Some will rise from\nthe dead early.\nMore room for corpses!\nAnd mostly harmless."],
     ].sort((a,b) => a[1] - b[1]);
     this.options.forEach(o => {
@@ -49,7 +49,7 @@ Shop.load = function() {
         loader.loadImage("img/misc/button-large.png"),
         loader.loadImage("img/misc/button-large-shadow.png")
     ];
-    Shop.background = loader.loadImage("img/misc/background-shop.png");
+    Shop.background = loader.loadImage("img/menus/shop-screen.jpg");
 };
 
 Shop.prototype.draw = function(ctx) {
@@ -69,7 +69,7 @@ Shop.prototype.draw = function(ctx) {
 
     // Left: Titles of things to buy
     var first = this.perPage * this.page;
-    var bx = x + 70, by = y + 16, bw = 132;
+    var bx = x + 78, by = y + 22, bw = 132;
     for (var i = 0; i < this.perPage; i++) {
         var id = first + i;
         if (id >= this.options.length) { break; }
@@ -78,23 +78,23 @@ Shop.prototype.draw = function(ctx) {
         var s = (this.open == id ? ">" : "") + article[0];
         // if (!article[4]) { s += " (" + article[1] + ")" };
         if (!state.unlocks[article[2]]) { s += " (" + article[1] + ")" };
-        if (Shop.button(ctx, bx, by + 24 * (i + 1), s, bw, state.unlocks[article[2]], this.open == id)) {
+        if (Shop.button(ctx, bx, by + 22 * (i + 1), s, bw, state.unlocks[article[2]], this.open == id)) {
             this.open = id;
         }
     }
     // Up
-    if (Shop.button(ctx, bx, by, "/\\", bw, this.page < 1)) {
+    if (Shop.button(ctx, bx, by, "/\\     More Items     /\\", bw, this.page < 1)) {
         this.page--;
         this.open = -1;
     }
     // Down
-    if (Shop.button(ctx, bx, by + 24 * (i + 1), "\\/", bw, this.page >= this.pageCount - 1)) {
+    if (Shop.button(ctx, bx, by + 22 * (i + 1), "\\/     More Items     \\/", bw, this.page >= this.pageCount - 1)) {
         this.page++;
         this.open = -1;
     }
 
     // Right: Content of things to buy
-    var tx = bx + 84, ty = y + 20;
+    var tx = bx + 75, ty = y + 24;
     if (this.open >= 0) {
         var article = this.options[this.open];
         // Title
@@ -113,7 +113,7 @@ Shop.prototype.draw = function(ctx) {
     var buyTitle = this.open < 0 ? "Buy" : ("Buy (" + (article ? article[1] : "") + ")");
     var article = this.options[this.open];
     var disabled = this.open < 0 || state.unlocks[article[2]] || article[1] > state.money;
-    if (Shop.button(ctx, tx + 50, y + h - 20, buyTitle, 84, disabled)) { // article[4])) {
+    if (Shop.button(ctx, tx + 50, y + h - 22, buyTitle, 84, disabled)) { // article[4])) {
         // article[4] = true;
         // Take money
         shop.removeMoney(article[1]);
@@ -125,7 +125,7 @@ Shop.prototype.draw = function(ctx) {
     }
 
     // Back button
-    if (Shop.button(ctx, bx, y + h - 20, "Leave Shop", 84)) {
+    if (Shop.button(ctx, bx, y + h - 22, "Leave Shop", 84)) {
         state.shopOpen = false;
     }
 };

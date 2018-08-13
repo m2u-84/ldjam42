@@ -30,7 +30,8 @@ function GameHandler(parentElement) {
         Tutorial,
         GameOverScreen,
         BatHandler,
-        Bat
+        Bat,
+        SplatterManager
     ].map(c => ({class: c, instances: []}));
 
     // Global game state which can be accessed by all game objects
@@ -39,6 +40,8 @@ function GameHandler(parentElement) {
         currentTime: 0,
         dt: 0,
         time: 0,
+        dayTime: 0,
+        lastDayTime: 0,
         startGameTime: 0,
         map: new Map(32, 32, 24, 24),
         player: new Player([16.5,21.5]),
@@ -88,6 +91,7 @@ function GameHandler(parentElement) {
     this.lastTime = this.startTime;
 
     gameOverScreen = new GameOverScreen();
+    splatterManager = new SplatterManager();
 
     // Setup canvas
     this.canvas = document.createElement("canvas");
@@ -233,12 +237,18 @@ GameHandler.prototype.renderLoop = function() {
     state.corpses.forEach(c => c.draw(this.ctx));
     state.zombies.forEach(z => z.draw(this.ctx));
     state.player.draw(this.ctx);
+    splatterManager.draw(this.ctx);
     renderSorter.render();
     state.unloadingCorpses.forEach(c => c.draw(this.ctx)); // <- render flying corpses on top again, so they're over fence
     if (state.owl) state.owl.draw(this.ctx);
     if (state.bat) state.bat.draw(this.ctx);
 
     lightSystem.drawLight(null, 160, 120, 200, "#ffffff", 0.6);
+    if (state.player.torch) {
+        var alpha = 0.3 + 0.5 * 0.8 * getFlicker(state.time * 0.00002, 1);
+        var size = 140 * (0.6 + 0.4 * getFlicker(state.time * 0.000027, 1));
+        lightSystem.drawLight(null, 160, 120, size, "#f0a030", alpha);
+    }
     // lightSystem.drawLight(null, 160 + 160 * Math.sin(state.time * 0.001), 120 + 120 * Math.sin(state.time * 0.00132), 130, "#3030ff", 0.6);
     lightSystem.renderToContext(this.ctx);
 
@@ -391,6 +401,11 @@ GameHandler.prototype.handleKeyDown = function(e) {
     } else if (e.key == "g") {
         if (state.debugMode) {
             shop.awardMoney(250);
+        }
+    } else if (e.key == "z") {
+        if (state.debugMode) {
+            var z = new Zombie([state.player.position[0], state.player.position[1] - 3]);
+            state.zombies.push(z);
         }
     }
 };
