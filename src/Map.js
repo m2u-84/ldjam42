@@ -310,7 +310,6 @@ Map.prototype.enhanceFenceArea = function(leftTopRight, count) {
 };
 
 Map.prototype.applyFence = function(x1, y1, x2, y2, l, t, r, b, stone) {
-    console.log(x1, y1, x2, y2, this.tilesX, this.tilesY);
     var tp1 = stone ? TileTypes.STONE_FENCE : TileTypes.FENCE;
     var tp2 = stone ? TileTypes.STONE_FENCE_SIDE : TileTypes.FENCE_SIDE;
     var self = this;

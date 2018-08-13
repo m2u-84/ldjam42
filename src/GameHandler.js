@@ -3,7 +3,7 @@ function GameHandler(parentElement) {
 
     loader = new Loader();
     keyHandler = new KeyHandler(window, ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "e", "w", "a", "s", "d",
-        "f"]);
+        "f", "t"]);
     renderSorter = new RenderSorter();
     this.corpseHandler = new CorpseHandler();
     this.startScreen = new StartScreen();
@@ -134,6 +134,10 @@ GameHandler.prototype.gameLoop = function() {
     var t = +Date.now();
     var dt = t - this.lastTime;
 
+    if (state.debugMode && state.keyStates.t) {
+        dt *= 8;
+    }
+
     if (state.startScreen || state.pauseScreen || state.shopOpen) { dt = 0; }
 
     this.lastTime = t;
@@ -199,6 +203,7 @@ GameHandler.prototype.renderLoop = function() {
     state.zombies.forEach(z => z.draw(this.ctx));
     state.player.draw(this.ctx);
     renderSorter.render();
+    state.unloadingCorpses.forEach(c => c.draw(this.ctx)); // <- render flying corpses on top again, so they're over fence
     if (state.owl) state.owl.draw(this.ctx);
 
     lightSystem.drawLight(null, 160, 120, 200, "#ffffff", 0.6);
