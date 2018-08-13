@@ -10,8 +10,7 @@ function Tutorial() {
     var corpseTile = [19, 15]; 
     this.shopTile = null;
     this.stages = [
-        ["Welcome to Grave Heart!\n(press Space to continue)", null, " "],
-        ["Note you can always skip this tutorial\nby pressing Enter on your keyboard\n(Space to proceed)", null, " "],
+        ["Welcome to Grave Heart!\nPress [Space] to start Tutorial, or [Enter] to skip it.\nIf you play this for the first time, the tutorial\nis strongly recommended!", null, " "],
         ["You can Move using the arrow keys.\nGet to the spot highlighted by a blue square", tile, () => equalTile(state.player.tile, tile)],
         ["Note the green square beside you\nIt indicates which tile you can interact with\n(Space to proceed)", null, " "],
         ["Now go look at that tree very closely", treeTile, () => equalTile(state.player.targetTile, treeTile)],

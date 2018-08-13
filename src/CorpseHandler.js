@@ -14,6 +14,14 @@ function CorpseHandler() {
     this.truckSound = loader.loadAudio(truck);
 }
 
+CorpseHandler.load = function() {
+    CorpseHandler.thud2 = loader.loadAudio({
+        src: "sounds/thud2.wav",
+        playbackRate: 1,
+        volume: 1
+    });
+};
+
 CorpseHandler.prototype.update = function(delta) {
 
     let relativeDayTime = state.dayTime - Math.floor(state.dayTime);
@@ -30,8 +38,8 @@ CorpseHandler.prototype.update = function(delta) {
         corpseToAnimate.angle = unloadingProgress * corpseToAnimate.rotationAmount;
         if (unloadingProgress === 1 ) {
             state.unloadingCorpses.splice(i, 1);
-            this.thud2.volume = Math.random() * 0.8 + 0.2;
-            loader.loadAudio(this.thud2).play();
+            CorpseHandler.thud2.volume = Math.random() * 0.8 + 0.2;
+            CorpseHandler.thud2.play();
         }
     }
     

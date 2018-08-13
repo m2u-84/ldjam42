@@ -20,10 +20,25 @@ function GameOverScreen() {
         var y = radius * Math.cos(posAngle);
         this.corpses.push([x, y, angle, size]);
     }
+
+    this.lastCorpses = 0;
 }
 
 GameOverScreen.load = function() {
     GameOverScreen.background = loader.loadImage("img/menus/game-over-screen.jpg");
+    GameOverScreen.thuds = [];
+    for (var i = 0; i < 20; i++) {
+        GameOverScreen.thuds[i] = loader.loadAudio({src: "sounds/thud2.wav"});
+    }
+    GameOverScreen.prevThud = 0;
+};
+
+GameOverScreen.playThudSound = function(volume) {
+    GameOverScreen.prevThud++;
+    if (GameOverScreen.prevThud >= GameOverScreen.thuds.length) { GameOverScreen.prevThud = 0; }
+    var snd = GameOverScreen.thuds[GameOverScreen.prevThud];
+    snd.volume = volume != null ? volume : 1;
+    snd.play();
 };
 
 GameOverScreen.prototype.draw = function(ctx) {
@@ -35,13 +50,22 @@ GameOverScreen.prototype.draw = function(ctx) {
         this.startTime = time;
         var cx = ctx.canvas.width / 2, cy = ctx.canvas.height / 2;
         this.corpses.forEach(c => { c[0] += cx; c[1] += cy; });
+        setTimeout(() => SoundManager.play("gameover", 1), 1500);
     }
 
     // Fill screen with corpses
     var tdif = time - this.startTime;
     var f = tdif / this.fillScreenAnimation;
     var p = Math.pow(f, 2);
-    var corpses = Math.min(this.corpses.length * p, this.corpses.length);
+    var corpses = Math.round(Math.min(this.corpses.length * p, this.corpses.length));
+    if (corpses > this.lastCorpses) {
+        var modulo = Math.round(4 + 20 * p);
+        if (corpses % modulo < this.lastCorpses % modulo) {
+            var volume = 0.2 + p * (0.6 * p + 0.2 * Math.random() - 0.2 * Math.random());
+            GameOverScreen.playThudSound(volume);
+        }
+        this.lastCorpses = corpses;
+    }
     var spr = Corpse.sprites[1];
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     for (var i = 0; i < corpses; i++) {
