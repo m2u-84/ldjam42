@@ -68,8 +68,9 @@ function GameHandler(parentElement) {
         },
         initialSpawnAmount: 10,
         spawnIncreaseRate: 0.5,
+        maximumSpawningAmount: 50,
         spawnAnimationTime: 0.02,
-        spawningGap: 0.005,
+        spawningGap: 0.002,
         owl: null
     };
 

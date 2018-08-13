@@ -38,7 +38,10 @@ CorpseHandler.prototype.update = function(delta) {
     // Spawning-Time  -  Add new corpses
     if (this.lastDayTime <= 0.25 && relativeDayTime > 0.25) {
         this.truckSound.trigger();
-        let spawningAmount = state.initialSpawnAmount * (1 + Math.floor(state.dayTime) * state.spawnIncreaseRate);
+        let spawningAmount = Math.min(
+            state.initialSpawnAmount * (1 + Math.floor(state.dayTime) * state.spawnIncreaseRate),
+            state.maximumSpawningAmount
+        );
         if (state.unlocks.peace) { spawningAmount *= 0.7; }
         for (let i = 0; i < spawningAmount; i++) {
             const corpse = new Corpse([ 16, 45 ]);

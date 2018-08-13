@@ -58,10 +58,13 @@ Corpse.displayCount = function(ctx, x, y, count) {
     let corpseImageIndex = 0;
     for (var i = 0; i < count; i++) {
         if (column === 38) {
-            corpseImageIndex = corpseImageIndex <= 1 ? corpseImageIndex + 1 : corpseImageIndex; // GameOver here
+            if(corpseImageIndex === 2) {
+                state.gameOver = true;
+            }
+            corpseImageIndex = corpseImageIndex <= 1 ? corpseImageIndex + 1 : corpseImageIndex; 
             column = 0;
         }
-        
+
         ctx.drawImage(Corpse.countingSprites[corpseImageIndex], 11 * column, row * (-30));
         column += 1;
     }
