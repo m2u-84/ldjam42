@@ -104,6 +104,8 @@ Map.prototype.load = function() {
             }
         }
     }
+    // Fence around stone zone
+    this.applyFence(1, this.tilesY - entranceHeight + 1, this.tilesX - 2, this.tilesY - 2, true, false, true, true, true);
 
     // Entry Torch
     this.set(playerPos[0] - 1, fenceArea[3] + 1, TileTypes.TORCH);
@@ -292,48 +294,52 @@ Map.prototype.enhanceFenceArea = function(leftTopRight, count) {
         case 0:
             // Expand Left
             this.fenceArea[0] -=count;
-            applyFence(this.fenceArea[0], this.fenceArea[1], this.fenceArea[0] + count, this.fenceArea[3], true, true, false, true);
+            this.applyFence(this.fenceArea[0], this.fenceArea[1], this.fenceArea[0] + count, this.fenceArea[3], true, true, false, true);
             break;
         case 1:
             // Expand Top
             this.fenceArea[1] -= count;
-            applyFence(this.fenceArea[0], this.fenceArea[1], this.fenceArea[2], this.fenceArea[1] + count, true, true, true, false);
+            this.applyFence(this.fenceArea[0], this.fenceArea[1], this.fenceArea[2], this.fenceArea[1] + count, true, true, true, false);
             break;
         case 2:
             // Expand Right
             this.fenceArea[2] += count;
-            applyFence(this.fenceArea[2] - count, this.fenceArea[1], this.fenceArea[2], this.fenceArea[3], false, true, true, true);
+            this.applyFence(this.fenceArea[2] - count, this.fenceArea[1], this.fenceArea[2], this.fenceArea[3], false, true, true, true);
             break;
     }
+};
 
-    function applyFence(x1, y1, x2, y2, l, t, r, b) {
-        // Clear inner
-        for (var y = y1; y <= y2; y++) {
-            for (var x = x1; x <= x2; x++) {
-                var tp = self.getTile(x, y).type;
-                if (tp == TileTypes.FENCE || tp == TileTypes.FENCE_SIDE) {
-                    self.set(x, y, TileTypes.GROUND);
-                }
-            }
-        }
-        // Add fences
-        if (l) {
-            addRow(x1 - 1, y1, 0, 1, y2 - y1 + 1, TileTypes.FENCE_SIDE);
-        }
-        if (t) {
-            addRow(x1, y1 - 1, 1, 0, x2 - x1 + 1, TileTypes.FENCE);
-        }
-        if (r) {
-            addRow(x2 + 1, y1, 0, 1, y2 - y1 + 1, TileTypes.FENCE_SIDE);
-        }
-        if (b) {
-            addRow(x1, y2 + 1, 1, 0, x2 - x1 + 1, TileTypes.FENCE);
-        }
-
-        function addRow(x, y, dx, dy, count, tp) {
-            for (var i = 0; i < count; i++) {
-                self.set(x + i * dx, y + i * dy, tp);
+Map.prototype.applyFence = function(x1, y1, x2, y2, l, t, r, b, stone) {
+    console.log(x1, y1, x2, y2, this.tilesX, this.tilesY);
+    var tp1 = stone ? TileTypes.STONE_FENCE : TileTypes.FENCE;
+    var tp2 = stone ? TileTypes.STONE_FENCE_SIDE : TileTypes.FENCE_SIDE;
+    var self = this;
+    // Clear inner
+    for (var y = y1; y <= y2; y++) {
+        for (var x = x1; x <= x2; x++) {
+            var tp = self.getTile(x, y).type;
+            if (tp == tp1 || tp == tp2) {
+                self.set(x, y, TileTypes.GROUND);
             }
         }
     }
-};
+    // Add fences
+    if (l) {
+        addRow(x1 - 1, y1, 0, 1, y2 - y1 + 1, tp2);
+    }
+    if (t) {
+        addRow(x1, y1 - 1, 1, 0, x2 - x1 + 1, tp1);
+    }
+    if (r) {
+        addRow(x2 + 1, y1, 0, 1, y2 - y1 + 1, tp2);
+    }
+    if (b) {
+        addRow(x1, y2 + 1, 1, 0, x2 - x1 + 1, tp1);
+    }
+
+    function addRow(x, y, dx, dy, count, tp) {
+        for (var i = 0; i < count; i++) {
+            self.set(x + i * dx, y + i * dy, tp);
+        }
+    }
+}
