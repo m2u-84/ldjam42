@@ -57,13 +57,25 @@ Corpse.displayCount = function(ctx, x, y, count) {
     let column = 0;
     let corpseImageIndex = 0;
     for (var i = 0; i < count; i++) {
-        if (column === 38) {
-            if(corpseImageIndex === 2) {
-                state.gameOver = true;
-            }
-            corpseImageIndex = corpseImageIndex <= 1 ? corpseImageIndex + 1 : corpseImageIndex; 
-            column = 0;
+        if (column === 12) {
+            corpseImageIndex = 1;
         }
+
+        if (column === 30) {
+            corpseImageIndex = 2;
+        }
+
+        if (column === 38) {
+            state.gameOver = true;
+        }
+
+        // if (column === 38) {
+        //     if(corpseImageIndex === 2) {
+        //         state.gameOver = true;
+        //     }
+        //     corpseImageIndex = corpseImageIndex <= 1 ? corpseImageIndex + 1 : corpseImageIndex; 
+        //     column = 0;
+        // }
 
         ctx.drawImage(Corpse.countingSprites[corpseImageIndex], 11 * column, row * (-30));
         column += 1;
