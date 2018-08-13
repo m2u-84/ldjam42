@@ -100,7 +100,7 @@ Grave.prototype.takeCorpse = function(corpse) {
             state.map.findNeighbour(this.x2, this.y2, tile => tile.type == TileTypes.TORCH, false)) {
         timeFactor = 0.6;
     }
-    this.expirationTime = this.fillTime + timeFactor * (state.unlocks.maggots ? 1.9 : 3.1);
+    this.expirationTime = this.fillTime + timeFactor * (state.unlocks.maggots ? 1.4 : 2.1);
     shop.awardMoney(50, this.cx, this.cy);
 };
 

@@ -26,7 +26,7 @@ function Tutorial() {
         ["Press E while pulling a corpse and looking\nat a grave to bury it", this.tile, () => state.corpses.length == 0],
         ["Press F to pay respect.", null, () => state.keyStates.f],
         ["Just kidding, there is no respect in this game.", null, 3000],
-        ["Buried bodies usually decompose\nwithin three days (obviously). After that,\nthe grave may be repurposed.\n(Space)", null, " "],
+        ["Buried bodies usually decompose\nwithin two days (obviously). After that,\nthe grave may be repurposed.\n(Space)", null, " "],
         ["Sometimes however, the dead arise.\nBut don't be afraid.\n(Space)", null, " "],
         ["They're only a minor nuisance.\nThey don't hurt you, but they slow you down.\n(Space)", null, " ", makeTheZombie],
         ["You can fight by pressing F", this.zombie, "f"],

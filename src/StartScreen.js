@@ -2,7 +2,7 @@
 function StartScreen() {
   this.mouseClick = 0;
   this.startTime = null;
-  this.creditsString = "GRAVE HEART - Ludum Dare 42 game by Kevin Alexander Grewe, Bastian Lang, Ranjit Mevius, Markus Over, Jenny Van Veen, Matthias Wetter. Thanks to ip.labs for providing space and coffee.";
+  this.creditsString = "GRAVE HEART - Ludum Dare 42 game by Kevin-Alexander Grewe, Bastian Lang, Ranjit Mevius, Markus Over, Jenny van Veen, Matthias Wetter. Thanks to ip.labs for providing space and coffee.";
 }
 
 StartScreen.load = function() {
@@ -27,9 +27,9 @@ StartScreen.prototype.draw = function(ctx) {
   var img = StartScreen.title;
   var button = StartScreen.button;
   ctx.drawImage(img, 0, 0, 320, 240);
-  ctx.drawImage(button, 95, 200, 128, 16);
+  ctx.drawImage(button, 95, 194, 128, 16);
   ctx.textAlign = "center";
-  ctx.fillText("Press any key to start!", 158, 211);
+  ctx.fillText("Press any key to start!", 158, 205);
 
   // Credits
   ctx.textAlign = "left";
