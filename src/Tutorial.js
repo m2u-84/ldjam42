@@ -26,8 +26,8 @@ function Tutorial() {
         ["Press E while pulling a corpse and looking\nat a grave to bury it", this.tile, () => state.corpses.length == 0],
         ["Press F to pay respect.", null, () => state.keyStates.f],
         ["Just kidding, there is no respect in this game.", null, 3000],
-        ["Buried bodies usually decompose\nwithin two days (obviously). After that,\nthe grave may be repurposed.\n(Space)", null, " "],
-        ["Sometimes however, the dead arise.\nBut don't be afraid.\n(Space)", null, " "],
+        ["Buried bodies usually decompose\nwithin two days.\nAfter that, the grave may be repurposed.\n(Space)", null, " "],
+        ["Sometimes however, the dead arise.\nBut don't be afraid!\n(Space)", null, " "],
         ["They're only a minor nuisance.\nThey don't hurt you, but they slow you down.\n(Space)", null, " ", makeTheZombie],
         ["You can fight by pressing F", this.zombie, "f"],
         ["Now get rid of the zombie.\nIt might take a few hits.", this.zombie, () => state.zombies.length < 1],
@@ -147,7 +147,7 @@ Tutorial.prototype.drawTile = function(ctx) {
 };
 
 Tutorial.prototype.drawHUD = function(ctx) {
-    if (!this.active || state.pauseScreen ) { return; }
+    if (!this.active || state.pauseScreen || state.shopOpen) { return; }
     var stage = this.stages[this.currentStage];
     // Text
     var text = this.lines;
