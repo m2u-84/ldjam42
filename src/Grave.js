@@ -61,7 +61,7 @@ Grave.prototype.update = function(ctx) {
 
             // Randomly spawn zombies
             if (state.dayTime % 0.01 < state.lastDayTime % 0.01 && state.dayTime % 1 > 0.7) {
-                if (Math.random() < 0.007) {
+                if (Math.random() < 0.005) {
                     // Spawn zombie
                     this.spawnZombie();
                 }
@@ -98,7 +98,7 @@ Grave.prototype.takeCorpse = function(corpse) {
     var timeFactor = 1;
     if (state.map.findNeighbour(this.x1, this.y1, tile => tile.type == TileTypes.TORCH, false) ||
             state.map.findNeighbour(this.x2, this.y2, tile => tile.type == TileTypes.TORCH, false)) {
-        timeFactor = 0.75;
+        timeFactor = 0.6;
     }
     this.expirationTime = this.fillTime + timeFactor * (state.unlocks.maggots ? 1.9 : 3.1);
     shop.awardMoney(50, this.cx, this.cy);
@@ -111,9 +111,13 @@ Grave.prototype.ejectCorpse = function() {
 
 Grave.prototype.remove = function() {
     if (this.empty) {
-        // Reset tiles
-        state.map.set(this.x1, this.y1, TileTypes.PATH);
-        state.map.set(this.x2, this.y2, TileTypes.PATH);
-        removeItem(state.graves, this);
+        if (this.rotten) {
+            this.rotten = false;
+        } else {
+            // Reset tiles
+            state.map.set(this.x1, this.y1, TileTypes.PATH);
+            state.map.set(this.x2, this.y2, TileTypes.PATH);
+            removeItem(state.graves, this);
+        }
     }
 };

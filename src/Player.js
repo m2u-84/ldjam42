@@ -85,7 +85,7 @@ var playerActions = [
     { duration: 3000 / testSpeedFactor, move: false },
     { duration: 5000 / testSpeedFactor, move: false },
     { duration: 1200 / testSpeedFactor, move: false },
-    { duration: 5000 / testSpeedFactor, move: false },
+    { duration: 6000 / testSpeedFactor, move: false },
     { duration: 450, move: false }
 ];
 
