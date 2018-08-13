@@ -17,7 +17,9 @@ function Shop() {
         ["Hypnosis", 750, "hypnosis", "Earn more money with\neverything via the\npower of being a\nhypnotist! This is not\na scam."],
         ["Grow East", 400, "east", "Expand.\nThe East is nice.\nBut is space really\nwhat you're lacking?"],
         ["Grow West", 600, "west", "Expand.\West is where\nthe nice things are.\nEnjoy the weather,\nthe cocktails, and\nlong weekends!"],
-        ["Grow North", 800, "north", "Expand.\nSpace will still be\nrunning out later.\nBecome King in the\nNorth!"]
+        ["Grow North", 800, "north", "Expand.\nSpace will still be\nrunning out later.\nBecome King in the\nNorth!"],
+        ["Orderly Zombies", 1500, "order", "Zombies leave their\ngraves all clean and\ntidy. So you can\nreuse them without any\nfurther work required!"],
+        ["Quick Repair", 5000, "repair", "Gain the power to\nrepair rotten graves\ninstantly, without any\nredigging required.\nOptimize throughput!"]
         // ["Zombie Virus", 200, "zombies", "Some will rise from\nthe dead early.\nMore room for corpses!\nAnd mostly harmless."],
     ].sort((a,b) => a[1] - b[1]);
     this.options.forEach(o => {

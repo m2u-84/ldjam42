@@ -49,17 +49,19 @@ function GameHandler(parentElement) {
         mousePos: [],
         mouseClick: false,
         unlocks: {
-            torches: false, // TODO
-            shovel2: false, // TODO
-            shovel3: false, // TODO
-            axe2: false, // TODO
-            axe3: false, // TODO
-            maggots: false, // TODO
+            torches: false,
+            shovel2: false,
+            shovel3: false,
+            axe2: false,
+            axe3: false, 
+            maggots: false,
             boots: false,
             cooling: false, // TODO
-            zombies: false, // TODO
+            zombies: false,
             zombies2: false, // TODO
-            hypnosis: false // TODO
+            hypnosis: false,
+            order: false,
+            repair: false
         },
         initialSpawnAmount: 5,
         spawnIncreaseRate: 0.3,

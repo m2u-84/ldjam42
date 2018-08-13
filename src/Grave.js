@@ -59,14 +59,17 @@ Grave.prototype.drawProgress = function(ctx) {
             }
 
             // Randomly spawn zombies
-            if (state.dayTime % 0.01 < state.lastDayTime % 0.01 && state.dayTime % 1 > 0.8) {
-                if (Math.random() < 0.007) {
+            if (state.dayTime % 0.01 < state.lastDayTime % 0.01 && state.dayTime % 1 > 0.7) {
+                if (Math.random() < 0.005) {
                     // Spawn zombie
                     this.ejectCorpse();
                     var zx = this.cx, zy = this.cy;
                     var zombie = new Zombie([zx, zy]);
                     state.zombies.push(zombie);
                     SoundManager.play("resurrection", 1);
+                    if (state.unlocks.order) {
+                        this.rotten = false;
+                    }
                 }
             }
         } else {
@@ -88,9 +91,7 @@ Grave.prototype.takeCorpse = function(corpse) {
 
 Grave.prototype.ejectCorpse = function() {
     this.empty = true;
-    this.rotten = true;
-    // Spawn zombie?
-    // TODO Spawn zombie randomly, if zombies have been unlocked
+    this.rotten = !state.unlocks.repair;
 };
 
 Grave.prototype.remove = function() {
