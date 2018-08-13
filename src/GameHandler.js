@@ -123,7 +123,7 @@ function GameHandler(parentElement) {
         }
 
         // Create zombies
-        for (var i = 0; i < 0; i++) {
+        for (var i = 0; i < 20; i++) {
             var zombie = new Zombie([Math.random() * 20, Math.random() * 20]);
             state.zombies.push(zombie);
         }

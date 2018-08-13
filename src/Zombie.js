@@ -61,7 +61,7 @@ Zombie.prototype.update = function(dt) {
                     v => (state.unlocks.zombies2 ? 3 : 0.7) * v);
                 // Only comment when spawn time is long enough in the past, otherwise spawnign zombies might speak twice at once
                 if (state.time - this.spawnTime > 5000) {
-                    SoundManager.play("sighting", 0.4);
+                    SoundManager.play("sighting", 0.65);
                 }
             } else {
                 if (this.targetPosition) {
