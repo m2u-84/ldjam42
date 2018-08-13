@@ -118,6 +118,8 @@ Shop.prototype.draw = function(ctx) {
         // Unlock officially
         state.unlocks[article[2]] = true;
         SoundManager.play("purchase", 1);
+        // Close shop
+        state.shopOpen = false;
     }
 
     // Back button

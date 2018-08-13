@@ -26,7 +26,8 @@ function GameHandler(parentElement) {
         Zombie,
         StartScreen,
         Owl,
-        Tutorial
+        Tutorial,
+        GameOverScreen
     ].map(c => ({class: c, instances: []}));
 
     // Global game state which can be accessed by all game objects
@@ -48,6 +49,7 @@ function GameHandler(parentElement) {
         shopOpen: false,
         startScreen: true,
         pauseScreen: false,
+        gameOver: false,
         readyToShop: false,
         mousePos: [],
         mouseClick: false,
@@ -77,6 +79,8 @@ function GameHandler(parentElement) {
     this.startTime = +Date.now();
     this.currentTime = 0;
     this.lastTime = this.startTime;
+
+    gameOverScreen = new GameOverScreen();
 
     // Setup canvas
     this.canvas = document.createElement("canvas");
@@ -146,7 +150,7 @@ GameHandler.prototype.gameLoop = function() {
         dt *= 8;
     }
 
-    if (state.startScreen || state.pauseScreen || state.shopOpen) { dt = 0; }
+    if (state.startScreen || state.pauseScreen || state.shopOpen || state.gameOver ) { dt = 0; }
 
     this.lastTime = t;
     this.currentTime += dt;
@@ -160,24 +164,26 @@ GameHandler.prototype.gameLoop = function() {
     state.lastTime = this.lastTime;
 
     // Update all classes and instances
-    for (var c of this.classes) {
-        // Static update
-        if (c.class.update) {
-            c.class.update(dt, this.currentTime);
-        }
-        // Instances
-        if (c.instances.length > 0 && c.instances[0].update) {
-            for (var i of c.instances) {
-                i.update(dt, this.currentTime);
+    if (!state.gameOver) {
+        for (var c of this.classes) {
+            // Static update
+            if (c.class.update) {
+                c.class.update(dt, this.currentTime);
+            }
+            // Instances
+            if (c.instances.length > 0 && c.instances[0].update) {
+                for (var i of c.instances) {
+                    i.update(dt, this.currentTime);
+                }
             }
         }
+    
+        state.map.update();
+        state.zombies.forEach(z => z.update(dt));
+        state.player.update(dt);
+        this.corpseHandler.update(dt);
+        tutorial.update();
     }
-
-    state.map.update();
-    state.zombies.forEach(z => z.update(dt));
-    state.player.update(dt);
-    this.corpseHandler.update(dt);
-    tutorial.update();
 
     requestAnimationFrame(this.gameLoop.bind(this));
 };
@@ -223,8 +229,15 @@ GameHandler.prototype.renderLoop = function() {
     // lightSystem.drawLight(null, 160 + 160 * Math.sin(state.time * 0.001), 120 + 120 * Math.sin(state.time * 0.00132), 130, "#3030ff", 0.6);
     lightSystem.renderToContext(this.ctx);
 
+    // Game Over Screen
+    if (state.gameOver) {
+        gameOverScreen.draw(this.ctx);
+        requestAnimationFrame(this.renderLoop.bind(this));
+        return;
+    }
+
     // HUD (in world)
-    state.graves.forEach(g => g.drawProgress(this.ctx));
+    // state.graves.forEach(g => g.drawProgress(this.ctx));
     shop.drawFloatingTexts(this.ctx);
 
     // HUD (screen)
