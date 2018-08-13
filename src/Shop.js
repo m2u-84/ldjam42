@@ -4,20 +4,20 @@ function Shop() {
     // All things to buy in the shop, sorted by price
     // Title, price, attribute name (for state.unlocks), description
     this.options = [
-        ["Torches", 30, "torches", "Unlock the power of\nsetting sticks on fire\nand sticking them into\nthe ground*.\n\n* disclaimer: this does\nnot actually work."],
+        ["Torches", 20, "torches", "Unlock the power of\nsetting sticks on fire\nand sticking them into\nthe ground*.\n\n* disclaimer: this does\nnot actually work."],
         ["Better Shovel", 100, "shovel2", "Get a better shovel\nthat makes shoveling\nfeel like a day at\nthe beach."],
-        ["Super Shovel", 500, "shovel3", "Get the Ultra\nShovel 9000 to\nshovel like there's\nno tomorrow.\nThink like a shovel.\nBe the shovel!"],
-        ["Maggots", 300, "maggots", "Unleash the power\nof maggots. Graves\nwill take less time\nfor decomposition.\n\n(This is good)"],
-        ["Boots", 180, "boots", "Get some good boots.\nThey are the best.\nYou're gonna love them.\n\nBuy now and get a free\ntoaster!*\n\n* Restrictions apply"],
-        ["Better Axe", 100, "axe2", "This axe is not good.\nBut it is better.\nBetter than your rusty\nexcuse for a shovel.\nWhere did you get it?\nAt the toilet store?"],
-        ["Super Axe", 500, "axe3", "You ever wanted to\nsay 'And my Axe!'?\nNow you can. This\naxe will do the job.\nIn fact it will do\nALL the jobs!"],
-        ["World Peace", 800, "peace", "Bring peace to the world.\nWill reduce dead bodies\nsomewhat. Maybe. Even\nin peace there's death,\nafter all. Don't be sad."],
+        ["Super Shovel", 1000, "shovel3", "Get the Ultra\nShovel 9000 to\nshovel like there's\nno tomorrow.\nThink like a shovel.\nBe the shovel!"],
+        ["Maggots", 500, "maggots", "Unleash the power\nof maggots. Graves\nwill take less time\nfor decomposition.\n\n(This is good)"],
+        ["Boots", 200, "boots", "Get some good boots.\nThey are the best.\nYou're gonna love them.\n\nBuy now and get a free\ntoaster!*\n\n* Restrictions apply"],
+        ["Better Axe", 150, "axe2", "This axe is not good.\nBut it is better.\nBetter than your rusty\nexcuse for a shovel.\nWhere did you get it?\nAt the toilet store?"],
+        ["Super Axe", 1200, "axe3", "You ever wanted to\nsay 'And my Axe!'?\nNow you can. This\naxe will do the job.\nIn fact it will do\nALL the jobs!"],
+        ["World Peace", 1000, "peace", "Bring peace to the world.\nWill reduce dead bodies\nsomewhat. Maybe. Even\nin peace there's death,\nafter all. Don't be sad."],
         // ["Cool Corpses", 250, "cooling", "Keep corpses cool,\nso they don't\ndecomposte\nprematurely."],
-        ["Friendly Zombies", 800, "zombies2", "Zombies will respect\nyou now. They speed\nyou up instead of\nslowing you down.\nYou know you need this."],
-        ["Hypnosis", 400, "hypnosis", "Earn more money with\neverything via the\npower of being a\nhypnotist! This is not\na scam."],
-        ["Grow East", 350, "east", "Expand.\nThe East is nice.\nBut is space really\nwhat you're lacking?"],
-        ["Grow West", 350, "west", "Expand.\West is where\nthe nice things are.\nEnjoy the weather,\nthe cocktails, and\nlong weekends!"],
-        ["Grow North", 500, "north", "Expand.\nSpace will still be\nrunning out later.\nBecome King in the\nNorth!"]
+        ["Friendly Zombies", 3600, "zombies2", "Zombies will respect\nyou now. They speed\nyou up instead of\nslowing you down.\nYou know you need this."],
+        ["Hypnosis", 750, "hypnosis", "Earn more money with\neverything via the\npower of being a\nhypnotist! This is not\na scam."],
+        ["Grow East", 400, "east", "Expand.\nThe East is nice.\nBut is space really\nwhat you're lacking?"],
+        ["Grow West", 600, "west", "Expand.\West is where\nthe nice things are.\nEnjoy the weather,\nthe cocktails, and\nlong weekends!"],
+        ["Grow North", 800, "north", "Expand.\nSpace will still be\nrunning out later.\nBecome King in the\nNorth!"]
         // ["Zombie Virus", 200, "zombies", "Some will rise from\nthe dead early.\nMore room for corpses!\nAnd mostly harmless."],
     ].sort((a,b) => a[1] - b[1]);
     this.options.forEach(o => {
