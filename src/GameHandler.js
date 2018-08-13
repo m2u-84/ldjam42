@@ -30,6 +30,7 @@ function GameHandler(parentElement) {
 
     // Global game state which can be accessed by all game objects
     window.state = this.state = {
+        debugMode: false,
         currentTime: 0,
         dt: 0,
         map: new Map(32, 32, 24, 24),
@@ -265,6 +266,17 @@ GameHandler.prototype.renderLoop = function() {
     this.ctx.textAlign = "left";
     this.ctx.fillText("Day " + Math.ceil(state.dayTime), this.canvas.width - offset + 21, 14);
 
+    // In Debug mode, show exact time
+    if (state.debugMode) {
+        var time = 24 * (state.dayTime % 1);
+        var hours = Math.floor(time);
+        var minutes = Math.floor(60 * (time - hours));
+        var timeString = hours + ":" + ((minutes < 10) ? "0" : "") + minutes;
+        this.ctx.fillText(timeString, this.canvas.width - offset + 21, 32);
+        this.ctx.textAlign = "center";
+        this.ctx.fillText("- Debug Mode - ", this.canvas.width / 2, 14);
+    }
+
     this.ctx.shadowOffsetX = 0;
     this.ctx.shadowOffsetY = 0;
     this.ctx.shadowBlur = 0;
@@ -322,5 +334,13 @@ GameHandler.prototype.handleMouseUp = function(e) {
 GameHandler.prototype.handleKeyDown = function(e) {
     if (e.key == "p" || e.key == "Escape") {
         state.pauseScreen = !state.pauseScreen;
+    } else if (e.key == "D") {
+        if (e.ctrlKey && e.shiftKey) {
+            state.debugMode = !state.debugMode;
+        }
+    } else if (e.key == "g") {
+        if (state.debugMode) {
+            shop.awardMoney(250);
+        }
     }
 };

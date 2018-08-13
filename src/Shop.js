@@ -75,7 +75,7 @@ Shop.prototype.draw = function(ctx) {
         // Button
         var s = (this.open == id ? ">" : "") + article[0];
         if (!article[4]) { s += " (" + article[1] + ")" };
-        if (Shop.button(ctx, bx, by + 24 * (i + 1), s, bw, article[1] > state.money, this.open == id)) {
+        if (Shop.button(ctx, bx, by + 24 * (i + 1), s, bw, (article[1] > state.money) || state.unlocks[article[2]], this.open == id)) {
             this.open = id;
         }
     }

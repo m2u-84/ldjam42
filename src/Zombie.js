@@ -8,6 +8,7 @@ function Zombie(position) {
     this.sleepUntil = 0;
     this.followOffset = [0, 0];
     this.spawnTime = state.time;
+    this.collisionStart = 0;
 }
 inherit(Zombie, Character);
 
@@ -18,11 +19,24 @@ Zombie.load = function() {
 };
 
 Zombie.prototype.update = function(dt) {
+    if (this.collided) {
+        if (this.collisionStart == 0) {
+            this.collisionStart = state.time;
+        } else {
+            if (state.time - this.collisionStart > 3000) {
+                this.stuck = true;
+                this.collisionStart = 0;
+            }
+        }
+    } else {
+        this.collisionStart = 0;
+    }
     if (this.stuck) {
         this.following = null;
         this.targetPosition = null;
         this.nextTargetSearch = state.dayTime + Math.random() * 0.1;
         this.velocity = [ 0, 0 ];
+        this.sleepUntil = state.time + 2500 + Math.random() * 1500;
     } else if (state.time > this.sleepUntil) {
         // Follow player?
         if (this.following) {
