@@ -7,7 +7,7 @@ function GameHandler(parentElement) {
     renderSorter = new RenderSorter();
     this.corpseHandler = new CorpseHandler();
     this.startScreen = new StartScreen();
-    
+
     this.classes = [
         // Player, Zombies, Corpses, Graves, ...
         Tile,
@@ -64,11 +64,11 @@ function GameHandler(parentElement) {
         spawningGap: 0.005,
         owl: null
     };
-    
+
     this.startTime = +Date.now();
     this.currentTime = 0;
     this.lastTime = this.startTime;
-    
+
     // Setup canvas
     this.canvas = document.createElement("canvas");
     this.canvas.width = 320;
@@ -91,7 +91,7 @@ function GameHandler(parentElement) {
     parentElement.addEventListener("mousemove", this.handleMouse.bind(this));
     parentElement.addEventListener("mousedown", this.handleMouseDown.bind(this));
     parentElement.addEventListener("mouseup", this.handleMouseUp.bind(this));
-    
+
 
     // First load all the things, then start render and update loops
     this.load().then(() => {
@@ -151,7 +151,7 @@ GameHandler.prototype.gameLoop = function() {
             }
         }
     }
-    
+
         state.map.update();
         state.zombies.forEach(z => z.update(dt));
         state.player.update(dt);
@@ -186,7 +186,7 @@ GameHandler.prototype.renderLoop = function() {
     lightSystem.setAmbientColor(getAmbientColor(state.dayTime % 1));
     lightSystem.clear();
     renderSorter.clear();
-    
+
     state.map.draw(this.ctx);
     state.graves.forEach(g => g.draw(this.ctx));
     state.corpses.forEach(c => c.draw(this.ctx));
@@ -226,25 +226,31 @@ GameHandler.prototype.renderLoop = function() {
         shop.draw(this.ctx);
     }
 
-    // Money
+    // Money counter
     alpha = fadeAlpha("moneyAlpha", display ? 5 : 0);
+
     if (alpha > 0) {
+        var moneyCounterIcon = loader.loadImage("img/hud/moneybag.png");
+        this.ctx.drawImage(moneyCounterIcon, 5, 2, 16, 16);
         this.ctx.fillStyle = "#f0c030";
         this.ctx.textAlign = "left";
         this.ctx.globalAlpha = alpha;
-        this.ctx.fillText(this.state.money + " Gold", 5, 15);
+        this.ctx.fillText(this.state.money + " Gold", 24, 14);
     }
-    this.ctx.globalAlpha = 1;
-    // Day
-    this.ctx.fillStyle = "white";
-    this.ctx.textAlign = "right";
-    this.ctx.fillText("Day " + Math.ceil(state.dayTime), this.canvas.width - 5, 12);
 
-    if(state.startScreen){
+    this.ctx.globalAlpha = 1;
+
+    // Day counter
+    var dayCounterIcon = loader.loadImage("img/hud/calendar.png");
+    this.ctx.drawImage(dayCounterIcon, this.canvas.width - 64, 2, 16, 16);
+    this.ctx.fillStyle = "white";
+    this.ctx.fillText("Day " + Math.ceil(state.dayTime), this.canvas.width - 25, 14);
+
+    if (state.startScreen) {
         this.startScreen.draw(this.ctx);
         window.onkeydown = function(e) { state.startScreen = false }
     }
-    
+
     requestAnimationFrame(this.renderLoop.bind(this));
 };
 
@@ -272,7 +278,7 @@ function getAmbientColor(t) {
     var c1 = ambientColors[index1];
     var c2 = ambientColors[index1 + 1];
     return "rgb(" + Math.round(255 * (f * c2[0] + f1 * c1[0])) + "," + Math.round(255 * (f * c2[1] + f1 * c1[1]))
-            + "," + Math.round(255 * (f * c2[2] + f1 * c1[2])) + ")"; 
+            + "," + Math.round(255 * (f * c2[2] + f1 * c1[2])) + ")";
 }
 
 
