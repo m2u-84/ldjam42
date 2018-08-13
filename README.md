@@ -40,7 +40,7 @@ In detail we are:
 
 ## Disclaimer
 
-We tried to create everything included in this work on our own. That means the pictures you see, the music you hear, and the overall gameplay etc. have been crafted by us within the given 72 hours.
+We tried to create everything included in this work on our own. That means the pictures you see, the music and voices you hear, and the overall gameplay etc. have been crafted by us within the given 72 hours.
 
 Just a few audio takes that we recombined to form more complex soundscapes have been taken from sites like [Freesound](https://freesound.org/). The few external sources we made use of are all providing these contents under **CC0 license**.
 
