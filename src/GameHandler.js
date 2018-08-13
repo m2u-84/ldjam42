@@ -130,7 +130,7 @@ GameHandler.prototype.load = function() {
     }
     state.map.load();
     tutorial.load();
-    this.pauseScreenImage = loader.loadImage("img/misc/instructions transparent3.png");
+    this.pauseScreenImage = loader.loadImage("img/misc/instructions transparent4.png");
     this.dayCounterIcon = loader.loadImage("img/hud/calendar.png");
     this.moneyCounterIcon = loader.loadImage("img/hud/moneybag.png");
     return loader.loadAll();

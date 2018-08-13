@@ -141,7 +141,7 @@ Tutorial.prototype.drawTile = function(ctx) {
 };
 
 Tutorial.prototype.drawHUD = function(ctx) {
-    if (!this.active) { return; }
+    if (!this.active || state.pauseScreen ) { return; }
     var stage = this.stages[this.currentStage];
     // Text
     var text = this.lines;
