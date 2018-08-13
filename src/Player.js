@@ -256,7 +256,7 @@ Player.prototype.update = function(delta) {
                             this.action = PlayerActions.PATH;
                             this.digSound.trigger();
                             if (tile.decoImage) {
-                                SoundManager.play("obstacles", 0.25);
+                                SoundManager.play("obstacles", 0.6);
                             }
                             if (state.unlocks.shovel2) { durationFactor = 0.75; }
                             if (state.unlocks.shovel3) { durationFactor = 0.5; }
@@ -304,7 +304,7 @@ Player.prototype.update = function(delta) {
                 case PlayerActions.CUT:
                     state.map.set(tile.x, tile.y, TileTypes.GROUND);
                     this.treeFallingSound.trigger();
-                    SoundManager.play("treefall", 0.7);
+                    SoundManager.play("treefall", 1);
                     break;
                 case PlayerActions.PATH:
                     if (tile.decoImage) {

@@ -124,6 +124,7 @@ GameHandler.prototype.load = function() {
     state.map.load();
     this.pauseScreenImage = loader.loadImage("img/misc/instructions transparent3.png");
     this.dayCounterIcon = loader.loadImage("img/hud/calendar.png");
+    this.moneyCounterIcon = loader.loadImage("img/hud/moneybag.png");
     return loader.loadAll();
 };
 
@@ -248,9 +249,8 @@ GameHandler.prototype.renderLoop = function() {
     alpha = fadeAlpha("moneyAlpha", display ? 2 : 0.7);
 
     if (alpha > 0) {
-        var moneyCounterIcon = loader.loadImage("img/hud/moneybag.png");
         this.ctx.globalAlpha = alpha;
-        this.ctx.drawImage(moneyCounterIcon, 5, 2, 16, 16);
+        this.ctx.drawImage(this.moneyCounterIcon, 5, 2, 16, 16);
         this.ctx.fillStyle = "#f0c030";
         this.ctx.textAlign = "left";
         this.ctx.fillText(this.state.money, 24, 14);

@@ -24,6 +24,7 @@ Loader.prototype.loadAll = function() {
 };
 
 Loader.prototype.loadImage = function(src, frameCount) {
+    console.log(src);
     this.count++;
     var img = new Image();
     img.onload = () => {
