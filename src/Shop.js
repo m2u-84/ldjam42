@@ -4,7 +4,7 @@ function Shop() {
     // All things to buy in the shop, sorted by price
     // Title, price, attribute name (for state.unlocks), description
     this.options = [
-        ["Torches", 20, "torches", "Unlock the power of\nsetting sticks on fire\nand sticking them into\nthe ground*.\n\n* disclaimer: this does\nnot actually work."],
+        ["Torches", 20, "torches", "Unlock the power of\nsetting sticks on fire\nand sticking them into\nthe ground.\n"],
         ["Better Shovel", 100, "shovel2", "Get a better shovel\nthat makes shoveling\nfeel like a day at\nthe beach."],
         ["Super Shovel", 1000, "shovel3", "Get the Ultra\nShovel 9000 to\nshovel like there's\nno tomorrow.\nThink like a shovel.\nBe the shovel!"],
         ["Maggots", 500, "maggots", "Unleash the power\nof maggots. Graves\nwill take less time\nfor decomposition.\n\n(This is good)"],
