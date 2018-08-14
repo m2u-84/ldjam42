@@ -104,8 +104,9 @@ GameOverScreen.prototype.draw = function(ctx) {
         ctx.textAlign = "left";
         // Zombies killed
         var zx = xm - 5;
-        var frame = Math.floor(time / 200) % 4;
-        drawImage(ctx, GameOverScreen.dancingZombie, zx - 20, rowy, 24, 24, 0.5, 0.5, (time % 6400 < 3200), 0, frame);
+        var frame = Math.floor(time / 120) % 8;
+        if (frame > 4) { frame = 8 - frame; }
+        drawImage(ctx, GameOverScreen.dancingZombie, zx - 20, rowy, 24, 24, 0.5, 0.5, (time % 3840 < 1920), 0, frame);
         ctx.fillText("" + state.zombiesKilled, zx, rowy + 4);
         ctx.textAlign = "center";
         ctx.fillText("Zombie Kills", zx - 3, rowy + 28);
