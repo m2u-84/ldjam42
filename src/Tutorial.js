@@ -19,7 +19,7 @@ function Tutorial() {
         ["Time for some terraforming.\nGo target the previous spot again", tile, () => equalTile(state.player.targetTile, tile)],
         ["Hold E to turn it into a path", tile, () => isType(tile, TileTypes.PATH)],
         ["Hold E once more, to dig a hole there", tile, () => isType(tile, TileTypes.HOLE) || isType(tile, TileTypes.GRAVE)],
-        ["Dig a hole right next to it, to build a grave", nbtile, () => isType(tile, TileTypes.GRAVE), () => state.corpses.push(this.corpse = new Corpse(corpseTile))],
+        ["Dig a hole right next to it, to build a grave", nbtile, () => state.graves.length > 0, () => state.corpses.push(this.corpse = new Corpse(corpseTile))],
         ["Quite the grave digger.\nNow find a corpse. There surely\nis one lying around somewhere.", this.corpse, () => equalTile(state.player.targetTile, corpseTile, 2)],
         ["Press E while looking at it to drag it", this.corpse, () => state.player.pulling],
         ["Time to dispose it. Take it back to the grave.", this.tile, () => equalTile(state.player.targetTile, this.tile, 2)],
