@@ -151,12 +151,12 @@ Player.prototype.update = function(delta) {
     var vx = 0, vy = 0;
     // Only move when no prohibiting action is active, and when player is not currently in shop
     if (playerActions[this.action].move && !state.shopOpen) {
-        var vx = ((keys.ArrowRight || keys.d ? 1 : 0) - (keys.ArrowLeft || keys.a ? 1 : 0));
-        var vy = ((keys.ArrowDown || keys.s ? 1 : 0) - (keys.ArrowUp || keys.w ? 1 : 0));
+        var vx = ((keys.ArrowRight || keys.Right || keys.d ? 1 : 0) - (keys.ArrowLeft || keys.Left || keys.a ? 1 : 0));
+        var vy = ((keys.ArrowDown || keys.Down || keys.s ? 1 : 0) - (keys.ArrowUp || keys.Up || keys.w ? 1 : 0));
     }
 
     // play movement sound
-    if (!state.shopOpen && (keys.w || keys.a || keys.d || keys.s || keys.ArrowDown || keys.ArrowLeft || keys.ArrowRight || keys.ArrowUp)) {
+    if (!state.shopOpen && (keys.w || keys.a || keys.d || keys.s || keys.Up || keys.Down || keys.Left || keys.Right ||  keys.ArrowDown || keys.ArrowLeft || keys.ArrowRight || keys.ArrowUp)) {
         this.movementSound.trigger();
     }
 

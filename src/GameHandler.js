@@ -2,7 +2,7 @@ function GameHandler(parentElement) {
     this.parentElement = parentElement;
 
     loader = new Loader();
-    keyHandler = new KeyHandler(window, ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "e", "w", "a", "s", "d",
+    keyHandler = new KeyHandler(window, ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Up", "Down", "Left", "Right", "e", "w", "a", "s", "d",
         "f", "t", " ", "Enter"]);
     renderSorter = new RenderSorter();
     this.corpseHandler = new CorpseHandler();
