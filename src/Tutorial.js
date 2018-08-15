@@ -6,8 +6,9 @@ function Tutorial() {
     var torchTile = [tx + 1, ty];
     var nbtile = [tx, ty - 1];
     var treeTile = this.treeTile = [tx - 2, ty - 2];
+    this.graveTile = tile;
     this.corpse = null;
-    var corpseTile = [19, 15]; 
+    var corpseTile = [15, 29]; 
     this.shopTile = null;
     this.stages = [
         ["Welcome to Grave Heart!\nPress [Space] to start Tutorial, or [Enter] to skip it.\nIf you play this for the first time, the tutorial\nis strongly recommended!", null, " "],
@@ -21,8 +22,8 @@ function Tutorial() {
         ["Hold E once more, to dig a hole there", tile, () => isType(tile, TileTypes.HOLE) || isType(tile, TileTypes.GRAVE)],
         ["Dig a hole right next to it, to build a grave", nbtile, () => state.graves.length > 0, () => state.corpses.push(this.corpse = new Corpse(corpseTile))],
         ["Quite the grave digger.\nNow find a corpse. There surely\nis one lying around somewhere.", this.corpse, () => equalTile(state.player.targetTile, corpseTile, 2)],
-        ["Press E while looking at it to drag it", this.corpse, () => state.player.pulling],
-        ["Time to dispose it. Take it back to the grave.", this.tile, () => equalTile(state.player.targetTile, this.tile, 2)],
+        ["Press E while looking at it to drag it", this.corpse, () => state.player.pulling, () => { var g = state.graves[0]; this.graveTile[0] = g.x2; this.graveTile[1] = g.y2; }],
+        ["Time to dispose it. Take it back to the grave.", this.graveTile, () => equalTile(state.player.targetTile, this.tile, 2)],
         ["Press E while pulling a corpse and looking\nat a grave to bury it", this.tile, () => state.corpses.length == 0],
         ["Press F to pay respect.", null, () => state.keyStates.f],
         ["Just kidding, there is no respect in this game.", null, 3000],
@@ -34,7 +35,7 @@ function Tutorial() {
         ["Good work! We're almost done here.\n(Space)", null, " ", () => this.shopTile = [state.map.shopTile.x, state.map.shopTile.y]],
         ["Look out for the shop now,\nwe need to buy stuff", this.shopTile, () => equalTile(state.player.tile, state.map.shopTile, 1)],
         ["Open the shop and buy a torch", this.shopTile, () => state.player.torch, () => { state.map.set(torchTile[0], torchTile[1], TileTypes.GROUND); state.map.getTile(torchTile[0], torchTile[1]).decoImage = null; }],
-        ["Go place it next to the grave", torchTile, () => isType(torchTile, TileTypes.TORCH)],
+        ["Go place it next to the grave", torchTile, () => state.graves.filter(g => g.torched).length > 0],
         ["Torches naturally accelerate\nthe decay of nearby graves. Which is good,\nbecause you need to deal with a lot of corpses.\n(Space)", null, " "],
         ["Last thing before the actual\ngame starts: The sassy zombie left\nits grave unusable.\n(Space)", null, " "],
         ["Hold E once more while looking\nat it to renew the grave\nso it can be used again.", null, () => state.graves.filter(g => g.rotten).length == 0],
