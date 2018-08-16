@@ -99,6 +99,7 @@ function GameHandler(parentElement) {
     this.canvas.height = 240;
     this.ctx = this.canvas.getContext("2d");
     this.ctx.font = "10px Arial";
+    this.drawLoading();
     parentElement.appendChild(this.canvas);
 
     lightSystem = new LightSystem(320, 240);
@@ -372,6 +373,14 @@ function getAmbientColor(t) {
     return "rgb(" + Math.round(255 * (f * c2[0] + f1 * c1[0])) + "," + Math.round(255 * (f * c2[1] + f1 * c1[1]))
             + "," + Math.round(255 * (f * c2[2] + f1 * c1[2])) + ")";
 }
+
+GameHandler.prototype.drawLoading = function() {
+    this.ctx.fillStyle = "black";
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.textAlign = "center";
+    this.ctx.fillStyle = "white";
+    this.ctx.fillText("Loading...", this.canvas.width / 2, this.canvas.height / 2);
+};
 
 
 GameHandler.prototype.handleMouse = function(e) {
