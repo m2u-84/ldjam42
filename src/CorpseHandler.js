@@ -1,3 +1,29 @@
+
+CorpseHandler.gameplayConstants = [
+    {
+        initialSpawnAmount: 4,
+        spawnIncreaseRate: 0.3,
+        maximumSpawningAmount: 20,
+        spawnAnimationTime: 0.02,
+        spawningGap: 0.002,
+    },
+    {
+        initialSpawnAmount: 6,
+        spawnIncreaseRate: 0.37,
+        maximumSpawningAmount: 25,
+        spawnAnimationTime: 0.02,
+        spawningGap: 0.002,
+    },
+    {
+        initialSpawnAmount: 7,
+        spawnIncreaseRate: 0.39,
+        maximumSpawningAmount: 38,
+        spawnAnimationTime: 0.02,
+        spawningGap: 0.005,
+    }
+];
+
+
 function CorpseHandler() {
     this.lastDayTime = 0;
 
@@ -24,12 +50,14 @@ CorpseHandler.load = function() {
 
 CorpseHandler.prototype.update = function(delta) {
 
+    var constants = this.gameplayConstants = CorpseHandler.gameplayConstants[state.difficulty || 0];
+
     let relativeDayTime = state.dayTime - Math.floor(state.dayTime);
     // Animate corpses that are being unloaded
     for (let i = 0; i < state.unloadingCorpses.length; i++) {
         const corpseToAnimate = state.unloadingCorpses[i];
         const timeSinceSpawning = state.dayTime - corpseToAnimate.spawningTime;
-        let unloadingProgress = timeSinceSpawning / state.spawnAnimationTime;
+        let unloadingProgress = timeSinceSpawning / constants.spawnAnimationTime;
         unloadingProgress = unloadingProgress > 1 ? 1 : unloadingProgress;
         corpseToAnimate.setPosition([
             corpseToAnimate.spawningPosition[0] + (corpseToAnimate.finalDestination[0] - corpseToAnimate.spawningPosition[0]) * unloadingProgress,
@@ -47,8 +75,8 @@ CorpseHandler.prototype.update = function(delta) {
     if (this.lastDayTime <= 0.25 && relativeDayTime > 0.25) {
         this.truckSound.trigger();
         let spawningAmount = Math.min(
-            state.initialSpawnAmount * (1 + Math.floor(state.dayTime) * state.spawnIncreaseRate),
-            state.maximumSpawningAmount
+            constants.initialSpawnAmount * (1 + Math.floor(state.dayTime) * constants.spawnIncreaseRate),
+            constants.maximumSpawningAmount
         );
         if (state.unlocks.peace) { spawningAmount *= 0.7; }
         for (let i = 0; i < spawningAmount; i++) {
@@ -56,7 +84,7 @@ CorpseHandler.prototype.update = function(delta) {
             corpse.finalDestination = [10 + Math.random() * 12, 29 + Math.random() * 2];
             corpse.rotationAmount = Math.random() * 5 * Math.PI * 2; // Max 5 Rotationen
             corpse.spawningPosition = [ 16, 45 ];
-            corpse.spawningTime = state.dayTime + i * 0.5 * (state.spawningGap + state.spawningGap * Math.random());
+            corpse.spawningTime = state.dayTime + i * 0.5 * (constants.spawningGap + constants.spawningGap * Math.random());
             state.unloadingCorpses.push(corpse);
             state.corpses.push(corpse);
         }

@@ -1,3 +1,16 @@
+
+GameHandler.gameplayConstants = [
+    {
+        dayDuration: 160
+    },
+    {
+        dayDuration: 140
+    },
+    {
+        dayDuration: 120
+    }
+];
+
 function GameHandler(parentElement) {
     this.parentElement = parentElement;
 
@@ -74,11 +87,7 @@ function GameHandler(parentElement) {
             order: false,
             repair: false
         },
-        initialSpawnAmount: 6,
-        spawnIncreaseRate: 0.37,
-        maximumSpawningAmount: 25,
-        spawnAnimationTime: 0.02,
-        spawningGap: 0.002,
+        difficulty: 0, // <- difficulty can be 0, 1, 2; effects mostly in CorpseHandler
         owl: null,
         moneyEarned: 20,
         burials: 0,
@@ -174,7 +183,8 @@ GameHandler.prototype.gameLoop = function() {
         }
     }
     state.lastDayTime = state.dayTime;
-    state.dayTime = (state.time - state.startGameTime) / 120000;
+    var dayDuration = 1000 * GameHandler.gameplayConstants[state.difficulty || 0].dayDuration;
+    state.dayTime = (state.time - state.startGameTime) / dayDuration;
     state.dt = dt;
     state.lastTime = this.lastTime;
 
