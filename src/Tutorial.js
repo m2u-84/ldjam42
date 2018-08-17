@@ -10,7 +10,7 @@ function Tutorial() {
     var corpseTile = [19, 15]; 
     this.shopTile = null;
     this.stages = [
-        ["Welcome to Grave Heart!\nPress [Space] to start Tutorial, or [Enter] to skip it.\nIf you play this for the first time, the tutorial\nis strongly recommended!", null, " "],
+        ["Welcome to Grave Heart!\nPress [Space] to start Tutorial, or [Escape] to skip it.\nIf you play this for the first time, the tutorial\nis strongly recommended!", null, " "],
         ["You can Move using the arrow keys.\nGet to the spot highlighted by a blue square", tile, () => equalTile(state.player.tile, tile)],
         ["Note the green square beside you\nIt indicates which tile you can interact with\n(Space to proceed)", null, " "],
         ["Now go look at that tree very closely", treeTile, () => equalTile(state.player.targetTile, treeTile)],
@@ -39,7 +39,7 @@ function Tutorial() {
         ["Last thing before the actual\ngame starts: The sassy zombie left\nits grave unusable.\n(Space)", null, " "],
         ["Hold E once more while looking\nat it to renew the grave\nso it can be used again.", null, () => state.graves.filter(g => g.rotten).length == 0],
         ["Well done.\nThe sun will rise soon.\nYou'll get your first\ntruckload of corpses.\nBetter prepare the graves!\n(Space)", null, " "],
-        ["Just one last hint:\nYou can press P or Escape to pause the game\nand see the controls.\nDo that now!", null, () => state.pauseScreen],
+        ["Just one last hint:\nYou can press P to pause the game\nand see the controls.\nDo that now!", null, () => state.pauseScreen],
         ["", null, () => !state.pauseScreen],
         ["Great, that's all.\nGet digging already.\nEnjoy!", null, 5000]
     ].map(stage => {
@@ -58,7 +58,7 @@ function Tutorial() {
     this.lines = [];
     this.nextStage();
     this.startTime = 0;
-    this.prevEnter = true;
+    this.prevEscape = true;
 
     function equalTile(t1, t2, tolerance) {
         if (!tolerance) {
@@ -108,10 +108,10 @@ Tutorial.prototype.update = function() {
         }
     }
     // Cancel tutorial?
-    if (state.keyStates.Enter && !this.prevEnter && t - this.startTime > 1000) {
+    if (state.keyStates.escape && !this.prevEscape && t - this.startTime > 1000) {
         this.active = false;
     }
-    this.prevEnter = state.keyStates.Enter;
+    this.prevEscape = state.keyStates.escape;
 };
 
 Tutorial.prototype.nextStage = function() {

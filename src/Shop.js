@@ -216,7 +216,8 @@ Shop.prototype.drawFloatingTexts = function(ctx) {
 };
 
 Shop.prototype.handleKeyDown = function(e) {
-    if (e.key == "e" || e.key == "Enter") {
+    var key = e.key.toLowerCase();
+    if (key == "e" || key == "enter") {
         if (this.focusButton >= 100) {
             if (this.focusButton == 100) {
                 // Leave
@@ -245,15 +246,15 @@ Shop.prototype.handleKeyDown = function(e) {
             // Move to buy button
             this.focusButton = 103;
         }
-    } else if (e.key == "ArrowRight" || e.key == "d" ) {
+    } else if (key == "arrowright" || key == "d" || key == "right") {
         this.focusButton = 103;
-    } else if (e.key == "ArrowLeft" || e.key == "a") {
+    } else if (key == "arrowleft" || key == "a" || key == "left") {
         if (this.focusButton == 103) {
             this.focusButton = 100;
         }
     } else {
-        var up = e.key == "ArrowUp" || e.key == "w";
-        var down = e.key == "ArrowDown" || e.key == "s";
+        var up = key == "arrowup" || key == "w";
+        var down = key == "arrowdown" || key == "s";
         var ud = (up ? 1 : 0) - (down ? 1 : 0);
         if (ud) {
             if (this.focusButton < 100) {

@@ -4,7 +4,7 @@ function KeyHandler(target, watchers) {
     this.watchers = watchers;
     this.keyStates = {
     };
-    watchers.forEach( key => this.keyStates[key] = false );
+    watchers.forEach( key => this.keyStates[key.toLowerCase()] = false );
 }
 
 KeyHandler.prototype.eventTarget = null;
@@ -24,13 +24,15 @@ KeyHandler.prototype.detach = function() {
 }
 
 KeyHandler.prototype.onKeyDown = function (keyDownEvent) {
-    if (this.keyStates[keyDownEvent.key] != null) {
-        this.keyStates[keyDownEvent.key] = true;
+    var key = keyDownEvent.key.toLowerCase();
+    if (this.keyStates[key] != null) {
+        this.keyStates[key] = true;
     }
 }
 
 KeyHandler.prototype.onKeyUp = function (keyUpEvent) {
-    if (this.keyStates[keyUpEvent.key] != null) {
-        this.keyStates[keyUpEvent.key] = false;
+    var key = keyUpEvent.key.toLowerCase();
+    if (this.keyStates[key] != null) {
+        this.keyStates[key] = false;
     }
 }

@@ -3,7 +3,7 @@ function GameHandler(parentElement) {
 
     loader = new Loader();
     keyHandler = new KeyHandler(window, ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Up", "Down", "Left", "Right", "e", "w", "a", "s", "d",
-        "f", "t", " ", "Enter"]);
+        "f", "t", " ", "Enter", "Escape"]);
     renderSorter = new RenderSorter();
     this.corpseHandler = new CorpseHandler();
     this.startScreen = new StartScreen();
@@ -392,17 +392,20 @@ GameHandler.prototype.handleKeyDown = function(e) {
     if (state.startScreen) {
         state.startScreen = false;
     }
-    if (e.key == "p" || e.key == "Escape") {
-        state.pauseScreen = !state.pauseScreen;
-    } else if (e.key == "D") {
+    var key = e.key.toLowerCase();
+    if (key == "p" || key == "escape") {
+        if (key == "p" || !tutorial.active) {
+            state.pauseScreen = !state.pauseScreen;
+        }
+    } else if (key == "d") {
         if (e.ctrlKey && e.shiftKey) {
             state.debugMode = !state.debugMode;
         }
-    } else if (e.key == "g") {
+    } else if (key == "g") {
         if (state.debugMode) {
             shop.awardMoney(250);
         }
-    } else if (e.key == "z") {
+    } else if (key == "z") {
         if (state.debugMode) {
             var z = new Zombie([state.player.position[0], state.player.position[1] - 3]);
             state.zombies.push(z);
@@ -411,7 +414,7 @@ GameHandler.prototype.handleKeyDown = function(e) {
     if (state.shopOpen) {
         shop.handleKeyDown(e);
     } else {
-        if (state.readyToShop && e.key == "e") {
+        if (state.readyToShop && key == "e") {
             state.shopOpen = true;
         }
     }
